@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "baseUrl": ".",
+    "importHelpers": true,
+    "lib": ["dom", "es5", "es2015", "scripthost"],
+    "module": "amd",
+    "moduleResolution": "classic",
+    "target": "es5"
+  },
+  "include": [
+    "I18n/**/*.ts"
+  ]
+}

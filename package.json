@@ -1,0 +1,52 @@
+{
+   "name": "saby-i18n",
+   "version": "3.18.700",
+   "repository": {
+      "type": "git",
+      "url": "git@github.com:saby/i18n.git"
+   },
+   "files": [
+      "Data/*",
+      "WS.Data/*",
+      "compile.js",
+      "tsconfig.json",
+      "tslib.js"
+   ],
+   "scripts": {
+      "postinstall": "node compile",
+      "prepare": "node prepare",
+      "compile": "node compile",
+      "start": "node app",
+      "test": "node test --isolated",
+      "test:debug": "node node_modules/ws-unit-testing/mocha %NODE_DEBUG_OPTION% --amd test-isolated",
+      "coverage": "node test --isolated --coverage"
+   },
+   "config": {
+      "app_port": 1024,
+      "moduleType": "amd",
+      "root": ".",
+      "tests": "test",
+      "test_server_port": 1025,
+      "test_report": "artifacts/xunit-report.xml",
+      "test_url": {
+         "scheme": "http",
+         "host": "localhost",
+         "port": 1025,
+         "path": "",
+         "query": "reporter=XUnit"
+      },
+      "html_coverage_report": "/artifacts/coverage/index.html",
+      "json_coverage_report": "artifacts/coverage.json"
+   },
+   "dependencies": {
+      "typescript": "^2.9.1"
+   },
+   "devDependencies": {
+      "@tensor-corp/eslint-config": "^2.0.7",
+      "connect": "3.6.x",
+      "eslint": "^5.3.0",
+      "serve-static": "1.13.x",
+      "sbis3-ws": "git+https://git.sbis.ru/sbis/ws.git#rc-3.18.700",
+      "ws-unit-testing": "git+https://git.sbis.ru/ws/unit-testing.git#rc-3.18.600"
+   }
+}
