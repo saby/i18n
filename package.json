@@ -13,7 +13,7 @@
       "tslib.js"
    ],
    "scripts": {
-      "postinstall": "node compile",
+      "postinstall": "node node_modules/saby-typescript/install && node compile",
       "prepare": "node prepare",
       "compile": "node compile",
       "start": "node app",
@@ -39,7 +39,7 @@
       "json_coverage_report": "artifacts/coverage.json"
    },
    "dependencies": {
-      "typescript": "^2.9.1"
+      "saby-typescript": "git+https://platform-git.sbis.ru/saby/TypeScript#rc-3.18.700"
    },
    "devDependencies": {
       "@tensor-corp/eslint-config": "^2.0.7",

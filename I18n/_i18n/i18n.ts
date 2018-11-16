@@ -6,134 +6,70 @@ import pathResolver = require('Core/pathResolver');
 import IoC = require('Core/IoC');
 // @ts-ignore
 import cookie = require('Core/cookie');
+import RkString from './RkString';
 
 const availableLanguage = {
    "ru-RU": "Русский (Россия)",
    "en-US": "English (USA)"
-}
+};
 
 let global = (function () {
       return this || (0, eval)('this');// eslint-disable-line no-eval
    }()),
    localizationEnabled = constants.isServerScript ? false :
       constants.isNodePlatform ? true : global.contents ? !!global.contents.defaultLanguage : constants.i18n,
-   directoryRegexp = /(.*\/)?(resources\/(.+?)|ws)\//,
-   dblSlashes = /\\/g,
-   i18n,
    PLURAL_PREFIX = 'plural#',
    PLURAL_DELIMITER = '|',
    EXPIRES_COOKIES = 2920;
 
-
-const RkString = function RkString(value, resolver) {
-   Object.defineProperties(this, {
-      translatedValue: {
-         enumerable: true,
-         get() {
-            return String(resolver(value) || value);
-         }
-      },
-      length: {
-         enumerable: true,
-         get() {
-            return this.translatedValue.length;
-         }
-      }
-   });
-};
-
-RkString.prototype = Object.create(String.prototype);
-
-RkString.prototype.toString = RkString.prototype.toJSON = RkString.prototype.valueOf = function () {
-   return this.translatedValue;
-};
-
-
 /**
- * Самый простой мерж, мы знаем, что всегда мержим объекты
- * @param {Object} to
- * @param {Object} from
- */
-function merge(to, from) {
-   for (const i in from) {
-      if (from.hasOwnProperty(i) && !to[i]) {
-         to[i] = from[i];
-      }
-   }
-
-   return to;
-}
-
-
-/**
- * Функция возращает сторку c параметрами в формате URL.
- * Пример: '?param1=value1&param2=value2'
- * @param qeury {Array} Массив параметорв запроса.
- * @param deleteParam {String} Имя парметра которое надо исключить.
- * @returns {string}
- */
-function getUrlWithoutParam(qeury, deleteParam) {
-   if (Object.keys(qeury).length === 0 || Object.keys(qeury).length === 1 && qeury.hasOwnProperty(deleteParam)) {
-      return '';
-   }
-
-   var result = '?';
-
-   for (var name in qeury) {
-      if (name !== deleteParam) {
-         result += name + '=' + qeury[name] + '&';
-      }
-   }
-
-   return result.slice(0, result.length - 1);
-}
-
-/**
- * Уставливает язык.
- * Устанавливаем rk
- */
-function init() {
-   if (localizationEnabled) {
-      // Теперь определим текущий язык
-      i18n.setLang(i18n.detectLanguage());
-   } else {
-      i18n.setLang('');
-   }
-
-   // Чтобы функция rk всегда была
-   // На ПП она своя
-   if (!global.hasOwnProperty('rk')) {
-      global.rk = i18n.rk.bind(i18n);
-   }
-}
-
-/**
- * i18n - поддержка интернационализации. Подробнее о механизме интернационализации читайте в разделе <a href="https://wi.sbis.ru/doc/platform/developmentapl/internalization/">Интернационализация и локализация</a>.
+ * I18n - поддержка интернационализации. Подробнее о механизме интернационализации читайте в разделе <a href="https://wi.sbis.ru/doc/platform/developmentapl/internalization/">Интернационализация и локализация</a>.
  * @class Core/i18n
  * @author Aleksey Maltsev.
  * @public
  * @singleton
  */
-i18n = /** @lends Core/i18n.prototype */{
+
+class I18n {
+   /** Разделитель между контекстом и ключом */
+   private _separator: string;
+   /** Текущий язык */
+   private _currentLang: string;
+   /** Все загруженные словари, где ключ - слово на языке оригинала */
+   private _dict: Object;
+   /** Все загруженные словари, где ключ - имя словаря */
+   private _dictNames: Object;
+
+   construct() {
+      this.rk = this.rk.bind(this);
+      this.init();
+
+      /** Разделитель между контекстом и ключом */
+      this._separator = '@@';
+      /** Текущий язык */
+      this._currentLang = '';
+      /** Все загруженные словари, где ключ - слово на языке оригинала */
+      this._dict = {};
+      /** Все загруженные словари, где ключ - имя словаря */
+      this._dictNames = {};
+   }
    /**
     * Инициализация синглтона
     */
    init() {
-      if (this.isInit()) {
-         return;
+      if (localizationEnabled) {
+         // Теперь определим текущий язык
+         this.setLocale(this.detectLanguage());
+      } else {
+         this.setLocale('');
       }
 
-      this.__init = true;
-      init();
-   },
-
-   /**
-    * Возвращает признак инициализации.
-    * @return {boolean}
-    */
-   isInit() {
-      return !!this.__init;
-   },
+      // Чтобы функция rk всегда была
+      // На ПП она своя
+      if (!global.hasOwnProperty('rk')) {
+         global.rk = this.rk.bind(this);
+      }
+   }
 
    /**
     * Возвращает признак: включена ли локализация для текущего приложения.
@@ -142,67 +78,22 @@ i18n = /** @lends Core/i18n.prototype */{
     */
    isEnabled() {
       return localizationEnabled;
-   },
+   }
 
    /**
     * Включает механизм локализации для текущего приложения.
     * @param {Boolean} enable
     * @see isEnabled
     */
-   setEnable(enable) {
+   setEnabled(enable) {
       localizationEnabled = enable;
-      init();
-   },
+      this.init();
+   }
 
    /**
     * Возвращает кодовое обозначение локали того языка, на который локализована данная страница веб-приложения.
-    * @deprecated Используйте метод {@link getLang}.
     */
    detectLanguage() {
-      if (constants.isServerScript) {
-         return '';
-      }
-      if (constants.isNodePlatform) {
-         // <editor-fold desc="TODO">
-         // TODO: Когда все сайты будут с локализацией, корректное определение языка будет такое:
-         // var req = process.domain && process.domain.req,
-         //     cookie = req && req.cookies,
-         //     acceptLanguage = req && req.headers && req.headers['accept-language']
-         //       && req.headers['accept-language'].substr(0, 5),
-         //     lang = (cookie && cookie.lang) ||
-         //       (acceptLanguage && langReg.test(acceptLanguage) && acceptLanguage) || '';
-         //
-         // if (cookie) {
-         //    cookie.lang = lang;
-         // }
-         // return lang;
-         // </editor-fold>
-         // Мы на препроцессоре, язык попробуем определить из куки
-
-         let detectedLng = constants.defaultLanguage;
-         const request = process.domain && process.domain.req;
-
-         if (request) {
-            const reqCookie = request.cookies.lang;
-            const queryLang = request.query.lang;
-
-            detectedLng = queryLang || reqCookie || detectedLng;
-            detectedLng = this.hasLang(detectedLng) ? detectedLng : this.getDefaultLang();
-
-            if (!(process.domain.res.cookies && process.domain.res.cookies.hasOwnProperty('lang')) && queryLang) {
-               cookie.set('lang', detectedLng, {
-                  expires: EXPIRES_COOKIES,
-                  path: '/'
-               });
-
-               const redirectUrl = request.path + getUrlWithoutParam(request.query, 'lang');
-
-               process.domain.res.redirect(redirectUrl);
-            }
-         }
-
-         return detectedLng;
-      }
       if (localizationEnabled) {
          const avLang = this.getAvailableLang();
          let detectedLng = cookie.get('lang') || '';
@@ -220,16 +111,7 @@ i18n = /** @lends Core/i18n.prototype */{
       }
 
       return '';
-   },
-
-   /**
-    * Возращает кодовое значение языка по умолчанию.
-    * @returns {String} <a href="/doc/platform/developmentapl/internalization/locale/">Кодовое обозначение локали</a>.
-    * @see detectLanguage
-    */
-   getDefaultLang() {
-      return constants.defaultLanguage || 'ru-RU';
-   },
+   }
 
    /**
     * Возвращает кодовое обозначение локали того языка, на который локализована данная страница веб-приложения.
@@ -238,9 +120,9 @@ i18n = /** @lends Core/i18n.prototype */{
     * @see detectLanguage
     * @see getAvailableLang
     * @see hasLang
-    * @see setLang
+    * @see setLocale
     */
-   getLang() {
+   getLocale() {
       if (constants.isServerScript) {
          return '';
       }
@@ -251,7 +133,7 @@ i18n = /** @lends Core/i18n.prototype */{
          return this._currentLang;
       }
       return '';
-   },
+   }
 
    /**
     * Возвращает список языков, на которые может быть локализовано веб-приложение.
@@ -264,13 +146,13 @@ i18n = /** @lends Core/i18n.prototype */{
     * }
     * </pre>
     * @see detectLanguage
-    * @see getLang
+    * @see getLocale
     * @see hasLang
-    * @see setLang
+    * @see setLocale
     */
    getAvailableLang() {
       return availableLanguage;
-   },
+   }
 
    /**
     * Возвращает признак: может ли веб-приложение локализовано на указанный язык.
@@ -278,19 +160,19 @@ i18n = /** @lends Core/i18n.prototype */{
     * @returns {Boolean}
     * @see getAvailableLang
     * @see detectLanguage
-    * @see getLang
-    * @see setLang
+    * @see getLocale
+    * @see setLocale
     */
    hasLang(language) {
       return language in availableLanguage;
-   },
+   }
 
    /**
     * Устанавливает язык, на который будут переводиться значения.
     * @param {String} language Двухбуквенное название языка.
     * @returns {boolean}
     */
-   setLang(language) {
+   setLocale(language) {
       if (constants.isServerScript || constants.isNodePlatform) {
          return false;
       }
@@ -317,13 +199,6 @@ i18n = /** @lends Core/i18n.prototype */{
                path: '/'
             });
 
-            currentLang = this._currentLang;
-            document.addEventListener('DOMContentLoaded', () => {
-               if (document.body.classList.length && oldLang) {
-                  document.body.classList.remove(oldLang);
-               }
-               document.body.classList.add(currentLang);
-            });
          }
 
          return changeLang;
@@ -333,15 +208,9 @@ i18n = /** @lends Core/i18n.prototype */{
          path: '/'
       });
 
-      document.addEventListener('DOMContentLoaded', () => {
-         if (document.body.classList.length && this._currentLang) {
-            document.body.classList.remove(this._currentLang);
-         }
-      });
-
 
       return false;
-   },
+   }
 
    _translate(key, ctx, num) {
       /**
@@ -366,7 +235,7 @@ i18n = /** @lends Core/i18n.prototype */{
 
       retValue = key;
       if (!constants.isServerScript && (constants.isNodePlatform || localizationEnabled)) {
-         lang = this.getLang();
+         lang = this.getLocale();
          if (lang && this._dict[lang]) {
             if (num !== undefined) {
                const trans_key = this._getTransKey(PLURAL_PREFIX + key, ctx, lang);
@@ -379,7 +248,7 @@ i18n = /** @lends Core/i18n.prototype */{
 
       // Простое экранирование
       return retValue;
-   },
+   }
 
    /**
     * Возвращает переведенное значение ключа.
@@ -396,7 +265,7 @@ i18n = /** @lends Core/i18n.prototype */{
       }
 
       return new RkString(key, (() => this._translate(key, ctx, num)));
-   },
+   }
    _getTransKey(key, ctx, lang) {
       const trans_key = this._dict[lang][ctx ? `${ctx}${this._separator}${key}` : `${key}`];
       if (trans_key !== undefined) {
@@ -415,101 +284,45 @@ i18n = /** @lends Core/i18n.prototype */{
       }
 
       return undefined;
-   },
+   }
 
    /**
     * Проверят наличие словаря по его имени.
     * @param {String} dictName Имя словаря.
-    * @param {String} [lang=this.getLang()]
+    * @param {String} [lang=this.getLocale()]
     * @returns {boolean}
     * @see setDict
     * @see getDictPath
     */
    hasDict(dictName, lang) {
-      lang = lang || this.getLang();
+      lang = lang || this.getLocale();
       return this._dictNames[lang] ? dictName in this._dictNames[lang] : false;
-   },
+   }
 
    /**
     * Вставляет новый словарь
     * @param {Object} dict.
     * @param {String} name.
-    * @param {String} [lang=this.getLang()]
+    * @param {String} [lang=this.getLocale()]
     * @see hasDict
     * @see getDictPath
     */
    setDict(dict, name, lang) {
-      lang = lang || this.getLang();
+      lang = lang || this.getLocale();
       if (lang && !this.hasDict(name, lang)) {
          if (name) {
             this._dictNames[lang] = this._dictNames[lang] || {};
             this._dictNames[lang][name] = true;
          }
 
-         this._dict[lang] = merge(this._dict[lang] || {}, dict);
+         this._dict[lang] = Object.assign(this._dict[lang] || {}, dict);
       }
-   },
-
-   /**
-    * Отдает путь до словаря по имени модуля.
-    * @param {String} moduleName
-    * @param {String} lang
-    * @param {String} ext
-    * @return {String}
-    * @see hasDict
-    * @see setDict
-    */
-   getDictPath(moduleName, lang, ext) {
-      let
-         modulePath = pathResolver.resolveComponentPath(moduleName),
-         matched,
-         firstLevelDir,
-         dictPath,
-         dictionary;
-
-      dictionary = constants.dictionary || {};
-      if (Object.keys(dictionary).length === 0) {
-         if (typeof global.contents !== 'undefined') {
-            dictionary = global.contents.dictionary || {};
-         } else if (constants.isNodePlatform) {
-            const contents = process.domain && process.domain.service && process.domain.service.getContents();
-            dictionary = contents && contents.dictionary || {};
-         }
-      }
-
-      let resolveByRequire = false;
-      if (!modulePath) {
-         resolveByRequire = true;
-         modulePath = moduleName;
-      } else if (modulePath.indexOf('/') === 0) {
-         resolveByRequire = true;
-         modulePath = modulePath.slice(1);
-      }
-      if (resolveByRequire) {
-         if (modulePath.substr(-ext.length - 1).indexOf(`.${ext}`) !== 0) {
-            modulePath = `${modulePath}.${ext}`;
-         }
-         modulePath = global.requirejs.toUrl(modulePath);
-      }
-      modulePath = modulePath.replace(dblSlashes, '/');
-
-      matched = modulePath.match(directoryRegexp);
-      firstLevelDir = matched && (matched[3] || matched[2]);
-
-      if (firstLevelDir && dictionary[`${firstLevelDir}.${lang}.${ext}`]) {
-         if (firstLevelDir === 'ws') {
-            firstLevelDir = 'WS';
-         }
-         dictPath = `${firstLevelDir}/lang/${lang}/${lang}.${ext}`;
-      }
-
-      return dictPath;
-   },
+   }
 
    _plural(str, num) {
       if (str !== undefined) {
          num = Math.abs(num);
-         let lang = this.getLang(),
+         let lang = this.getLocale(),
             arg;
          arg = [num].concat(str.split(PLURAL_DELIMITER));
          switch (lang) {
@@ -522,7 +335,7 @@ i18n = /** @lends Core/i18n.prototype */{
          }
       }
       return undefined;
-   },
+   }
    _pluralRu(num, word1, word2, word3, word4) {
       // если есть дробная часть
       if (num % 1 > 0) {
@@ -546,7 +359,7 @@ i18n = /** @lends Core/i18n.prototype */{
          return word2;
       }
       return word3;
-   },
+   }
 
    /**
     * Для английской локали
@@ -561,25 +374,21 @@ i18n = /** @lends Core/i18n.prototype */{
          return word2;
       }
       return word1;
-   },
-   __init: false,
+   }
 
-   /** Разделитель между контекстом и ключом */
-   _separator: '@@',
 
-   /** Текущий язык */
-   _currentLang: '',
 
-   /** Все загруженные словари, где ключ - слово на языке оригинала */
-   _dict: {},
+}
 
-   /** Все загруженные словари, где ключ - имя словаря */
-   _dictNames: {},
+let i18n = new I18n();
+let rk = i18n.rk.bind(i18n);
 
-   _rkString: RkString
-};
+rk.setLocale = i18n.setLocale.bind(i18n);
+rk.getLocale = i18n.getLocale.bind(i18n);
+rk.setDict = i18n.setDict.bind(i18n);
+rk.hasDict = i18n.hasDict.bind(i18n);
+rk.isEnabled = i18n.isEnabled.bind(i18n);
+rk.setEnabled = i18n.setEnabled.bind(i18n);
 
-// Сразу инициализируемся
-i18n.init();
 
-export default i18n;
+export default rk;
