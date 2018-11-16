@@ -1,0 +1,11 @@
+/// <amd-module name="I18n/i18n" />
+/**
+ * Library for internationalization
+ * @library I18n/i18n
+ * @includes rk I18n/_i18n/i18n
+ * @includes Enumerable I18n/_i18n/locales
+ * @public
+ * @author Aleksey Maltsev.
+ */
+export {default as rk} from './_i18n/i18n';
+export {default as locales} from './_i18n/locales';

@@ -1,1 +1,7 @@
 .idea
+I18n/**/*.js
+/package-lock.json
+/node_modules
+/artifacts
+/Core
+tsconfig.json

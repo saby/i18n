@@ -1,0 +1,42 @@
+{
+   "name": "saby-i18n",
+   "version": "3.18.700",
+   "repository": {
+      "type": "git",
+      "url": "git@github.com:saby/i18n.git"
+   },
+   "files": [
+      "I18n/*"
+   ],
+   "scripts": {
+      "postinstall": "saby-typescript --install --tsconfig=tsconfig.base.json && tsc",
+      "prepare": "node prepare",
+      "compile": "tsc",
+      "test": "node test --isolated",
+      "test:debug": "node node_modules/ws-unit-testing/mocha %NODE_DEBUG_OPTION% --amd test-isolated",
+      "coverage": "node test --isolated --coverage"
+   },
+   "config": {
+      "moduleType": "amd",
+      "root": ".",
+      "tests": "test",
+      "test_server_port": 1025,
+      "test_report": "artifacts/xunit-report.xml",
+      "test_url": {
+         "scheme": "http",
+         "host": "localhost",
+         "port": 1025,
+         "path": "",
+         "query": "reporter=XUnit"
+      },
+      "html_coverage_report": "/artifacts/coverage/index.html",
+      "json_coverage_report": "artifacts/coverage.json"
+   },
+   "dependencies": {
+      "saby-typescript": "git+https://platform-git.sbis.ru/saby/TypeScript.git#rc-3.18.700"
+   },
+   "devDependencies": {
+      "sbis3-ws": "git+https://git.sbis.ru/sbis/ws.git#rc-3.18.700",
+      "ws-unit-testing": "git+https://git.sbis.ru/ws/unit-testing.git#rc-3.18.600"
+   }
+}

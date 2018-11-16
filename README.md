@@ -1,1 +1,1 @@
-# i18n
+WaSaby Internationalization and localization solution.
