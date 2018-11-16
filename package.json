@@ -6,23 +6,17 @@
       "url": "git@github.com:saby/i18n.git"
    },
    "files": [
-      "Data/*",
-      "WS.Data/*",
-      "compile.js",
-      "tsconfig.json",
-      "tslib.js"
+      "I18n/*"
    ],
    "scripts": {
-      "postinstall": "node node_modules/saby-typescript/install && node compile",
+      "postinstall": "saby-typescript --install --tsconfig=tsconfig.base.json && tsc",
       "prepare": "node prepare",
-      "compile": "node compile",
-      "start": "node app",
+      "compile": "tsc",
       "test": "node test --isolated",
       "test:debug": "node node_modules/ws-unit-testing/mocha %NODE_DEBUG_OPTION% --amd test-isolated",
       "coverage": "node test --isolated --coverage"
    },
    "config": {
-      "app_port": 1024,
       "moduleType": "amd",
       "root": ".",
       "tests": "test",
@@ -39,13 +33,9 @@
       "json_coverage_report": "artifacts/coverage.json"
    },
    "dependencies": {
-      "saby-typescript": "git+https://platform-git.sbis.ru/saby/TypeScript#rc-3.18.700"
+      "saby-typescript": "git+https://platform-git.sbis.ru/saby/TypeScript.git#rc-3.18.700"
    },
    "devDependencies": {
-      "@tensor-corp/eslint-config": "^2.0.7",
-      "connect": "3.6.x",
-      "eslint": "^5.3.0",
-      "serve-static": "1.13.x",
       "sbis3-ws": "git+https://git.sbis.ru/sbis/ws.git#rc-3.18.700",
       "ws-unit-testing": "git+https://git.sbis.ru/ws/unit-testing.git#rc-3.18.600"
    }

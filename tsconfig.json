@@ -1,6 +1,0 @@
-{
-  "extends": "./node_modules/saby-typescript/configs/es5",
-  "include": [
-    "I18n/**/*.ts"
-  ]
-}

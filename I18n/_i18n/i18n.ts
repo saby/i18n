@@ -1,8 +1,6 @@
 // @ts-ignore
 import constants = require('Core/constants');
 // @ts-ignore
-import pathResolver = require('Core/pathResolver');
-// @ts-ignore
 import IoC = require('Core/IoC');
 // @ts-ignore
 import cookie = require('Core/cookie');

@@ -1,9 +1,9 @@
-/// <amd-module name="Data/chain" />
+/// <amd-module name="I18n/i18n" />
 /**
- * Library .
- * @library Data/chain
- * @includes rk Data/_chain/Counted
- * @includes Enumerable Data/_chain/Enumerable
+ * Library for internationalization
+ * @library I18n/i18n
+ * @includes rk I18n/_i18n/i18n
+ * @includes Enumerable I18n/_i18n/locales
  * @public
  * @author Aleksey Maltsev.
  */
