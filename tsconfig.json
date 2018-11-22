@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.base",
+  "include": [
+    "I18n/**/*.ts"
+  ]
+}
