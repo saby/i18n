@@ -4,4 +4,3 @@ I18n/**/*.js
 /node_modules
 /artifacts
 /Core
-tsconfig.json
