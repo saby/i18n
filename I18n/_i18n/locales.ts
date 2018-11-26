@@ -1,3 +1,4 @@
+/// <amd-module name="I18n/_i18n/locales" />
 import i18n from './i18n'
 
 /**

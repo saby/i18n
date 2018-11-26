@@ -1,3 +1,4 @@
+/// <amd-module name="I18n/_i18n/i18n" />
 // @ts-ignore
 import constants = require('Core/constants');
 // @ts-ignore
@@ -92,6 +93,28 @@ class I18n {
     * Возвращает кодовое обозначение локали того языка, на который локализована данная страница веб-приложения.
     */
    detectLanguage() {
+      if (constants.isNodePlatform) {
+         let detectedLng = constants.defaultLanguage;
+         const request = process.domain && process.domain.req;
+
+         if (request) {
+            const queryLang = request.query && request.query.lang;
+            const respond = process.domain.res;
+
+            detectedLng = queryLang || cookie.get('lang') || detectedLng;
+            detectedLng = this.hasLang(detectedLng) ? detectedLng : constants.defaultLanguage;
+
+            if (respond && !(respond.cookies && respond.cookies.hasOwnProperty('lang')) && queryLang) {
+               cookie.set('lang', detectedLng, {
+                   expires: EXPIRES_COOKIES,
+                   path: '/'
+               });
+               const redirectUrl = request.path + this._getUrlWithoutParam(request.query, 'lang');
+               respond.redirect(redirectUrl);
+            }
+         }
+         return detectedLng;
+      }
       if (localizationEnabled) {
          const avLang = this.getAvailableLang();
          let detectedLng = cookie.get('lang') || '';
@@ -375,7 +398,28 @@ class I18n {
    }
 
 
+    /**
+     * Возращает массив параметров строкой в формате URL, исключая указаный параметр.
+     * Пример: '?param1=value1&param2=value2'
+     * @param qeury {Array} Массив параметров запроса.
+     * @param deleteParam {String} Имя исключаемого параметра.
+     * @returns {String}
+     */
+   _getUrlWithoutParam(qeury, deleteParam) {
+      if (Object.keys(qeury).length === 0 || Object.keys(qeury).length === 1 && qeury.hasOwnProperty(deleteParam)) {
+         return '';
+      }
 
+      let result = '?';
+
+      for (const name in qeury) {
+         if (name !== deleteParam) {
+            result += name + '=' + qeury[name] + '&';
+         }
+      }
+
+      return result.slice(0, result.length - 1);
+   }
 }
 
 let i18n = new I18n();
