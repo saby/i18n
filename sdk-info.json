@@ -1,0 +1,10 @@
+{
+    "ui-modules":
+    [
+         "I18n"
+    ],
+    "bl-modules":
+    [
+         "I18n"
+    ]
+}
