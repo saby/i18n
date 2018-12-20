@@ -282,7 +282,7 @@ class I18n {
     */
    rk(key, ctx, num) {
       if (key instanceof RkString) {
-         return typeof window !== 'undefined' ? key.toString() : key;
+         return key;
       }
 
       if (typeof window !== 'undefined' || key === null || key === undefined || !key.indexOf) {
