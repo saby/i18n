@@ -281,6 +281,10 @@ class I18n {
     * @public
     */
    rk(key, ctx, num) {
+      if (key instanceof RkString) {
+         return key;
+      }
+
       if (typeof window !== 'undefined' || key === null || key === undefined || !key.indexOf) {
          return this._translate(key, ctx, num);
       }
