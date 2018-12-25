@@ -1,6 +1,6 @@
 {
    "name": "saby-i18n",
-   "version": "19.100",
+   "version": "19.100.0",
    "repository": {
       "type": "git",
       "url": "git@github.com:saby/i18n.git"
