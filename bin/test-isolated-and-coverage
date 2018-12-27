@@ -1,6 +1,0 @@
-#!/bin/sh
-# Run coverage and testing via Node.js
-
-node -v
-npm install
-node test --isolated --coverage --report

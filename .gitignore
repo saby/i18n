@@ -1,6 +1,8 @@
 .idea
 I18n/**/*.js
 /package-lock.json
+/tsconfig.base.json
 /node_modules
 /artifacts
-/Core
+/View
+/WS.Core
