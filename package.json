@@ -9,9 +9,9 @@
       "I18n/*"
    ],
    "scripts": {
-      "build": "npm run build:typescript && npm run build:units",
+      "build": "npm run build:typescript && npm run build:compile",
       "build:typescript": "saby-typescript --install --tsconfig=tsconfig.base.json",
-      "build:units": "saby-units --install && tsc -b --verbose",
+      "build:compile": "saby-units --install && tsc -b --verbose",
       "start": "node node_modules/saby-units/cli/server",
       "test": "saby-units --isolated",
       "test:node": "saby-units --isolated --report",
@@ -30,7 +30,8 @@
          "port": 1025
       }
    },
-   "dependencies": {},
+   "dependencies": {
+   },
    "devDependencies": {
       "saby-typescript": "git+https://github.com/saby/TypeScript.git#rc-19.100",
       "saby-units": "git+https://github.com/saby/Units.git#rc-19.100",
