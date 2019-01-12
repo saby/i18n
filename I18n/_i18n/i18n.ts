@@ -6,20 +6,29 @@ import IoC = require('Core/IoC');
 // @ts-ignore
 import cookie = require('Core/cookie');
 import RkString from './RkString';
+import 'Core/polyfill';
 
+const PLURAL_PREFIX = 'plural#';
+const PLURAL_DELIMITER = '|';
+const EXPIRES_COOKIES = 2920;
 const availableLanguage = {
    "ru-RU": "Русский (Россия)",
    "en-US": "English (USA)"
 };
 
-let global = (function () {
-      return this || (0, eval)('this');// eslint-disable-line no-eval
-   }()),
-   localizationEnabled = constants.isServerScript ? false :
-      constants.isNodePlatform ? true : global.contents ? !!global.contents.defaultLanguage : constants.i18n,
-   PLURAL_PREFIX = 'plural#',
-   PLURAL_DELIMITER = '|',
-   EXPIRES_COOKIES = 2920;
+const global = (function(): ExtWindow {
+   return this || (0, eval)('this');
+})();
+
+let localizationEnabled = constants.isServerScript ?
+   false :
+   (constants.isNodePlatform ?
+      true :
+      (global.contents ?
+         !!global.contents.defaultLanguage :
+         constants.i18n
+      )
+   );
 
 /**
  * I18n - поддержка интернационализации. Подробнее о механизме интернационализации читайте в разделе <a href="https://wi.sbis.ru/doc/platform/developmentapl/internalization/">Интернационализация и локализация</a>.
@@ -66,7 +75,10 @@ class I18n {
       // Чтобы функция rk всегда была
       // На ПП она своя
       if (!global.hasOwnProperty('rk')) {
-         global.rk = this.rk.bind(this);
+         Object.defineProperty(global,'rk', {
+            enumerable: true,
+            value: i18n.rk.bind(i18n)
+         });
       }
    }
 
@@ -233,7 +245,7 @@ class I18n {
       return false;
    }
 
-   _translate(key, ctx, num) {
+   protected _translate(key, ctx, num) {
       /**
        * Если отдали НЕ строку, или не того кто ей "прикитворяется"
        * то выходим и не переводим
@@ -291,7 +303,8 @@ class I18n {
 
       return new RkString(key, (() => this._translate(key, ctx, num)));
    }
-   _getTransKey(key, ctx, lang) {
+
+   protected _getTransKey(key, ctx, lang) {
       const trans_key = this._dict[lang][ctx ? `${ctx}${this._separator}${key}` : `${key}`];
       if (trans_key !== undefined) {
          return trans_key;
@@ -344,7 +357,7 @@ class I18n {
       }
    }
 
-   _plural(str, num) {
+   protected _plural(str, num) {
       if (str !== undefined) {
          num = Math.abs(num);
          let lang = this.getLocale(),
@@ -361,7 +374,8 @@ class I18n {
       }
       return undefined;
    }
-   _pluralRu(num, word1, word2, word3, word4) {
+
+   protected _pluralRu(num, word1, word2, word3, word4) {
       // если есть дробная часть
       if (num % 1 > 0) {
          return word4;
@@ -394,13 +408,12 @@ class I18n {
     * @returns {String}
     * @private
     */
-   _pluralEn(num, word1, word2) {
+   protected _pluralEn(num, word1, word2) {
       if (num > 1 || num === 0) {
          return word2;
       }
       return word1;
    }
-
 
     /**
      * Возращает массив параметров строкой в формате URL, исключая указаный параметр.
@@ -409,7 +422,7 @@ class I18n {
      * @param deleteParam {String} Имя исключаемого параметра.
      * @returns {String}
      */
-   _getUrlWithoutParam(qeury, deleteParam) {
+    protected _getUrlWithoutParam(qeury, deleteParam) {
       if (Object.keys(qeury).length === 0 || Object.keys(qeury).length === 1 && qeury.hasOwnProperty(deleteParam)) {
          return '';
       }
@@ -426,8 +439,8 @@ class I18n {
    }
 }
 
-let i18n = new I18n();
-let rk = i18n.rk.bind(i18n);
+const i18n = new I18n();
+const rk = i18n.rk.bind(i18n);
 
 rk.setLocale = i18n.setLocale.bind(i18n);
 rk.getLocale = i18n.getLocale.bind(i18n);
@@ -435,6 +448,5 @@ rk.setDict = i18n.setDict.bind(i18n);
 rk.hasDict = i18n.hasDict.bind(i18n);
 rk.isEnabled = i18n.isEnabled.bind(i18n);
 rk.setEnabled = i18n.setEnabled.bind(i18n);
-
 
 export default rk;
