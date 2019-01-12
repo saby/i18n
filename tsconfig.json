@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.base",
   "include": [
-    "I18n/**/*.ts"
+    "I18n/**/*.ts",
+    "WS.Core/ws.d.ts"
   ]
 }
