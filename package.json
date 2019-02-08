@@ -1,6 +1,6 @@
 {
    "name": "saby-i18n",
-   "version": "19.110.0",
+   "version": "19.120.0",
    "repository": {
       "type": "git",
       "url": "git@github.com:saby/i18n.git"
@@ -30,11 +30,10 @@
          "port": 1025
       }
    },
-   "dependencies": {
-   },
+   "dependencies": {},
    "devDependencies": {
-      "saby-typescript": "git+https://github.com/saby/TypeScript.git#rc-19.110",
-      "saby-units": "git+https://github.com/saby/Units.git#rc-19.110",
-      "sbis3-ws": "git+https://git.sbis.ru/sbis/ws.git#rc-19.110"
+      "saby-typescript": "git+https://github.com/saby/TypeScript.git#rc-19.120",
+      "saby-units": "git+https://github.com/saby/Units.git#rc-19.120",
+      "sbis3-ws": "git+https://git.sbis.ru/sbis/ws.git#rc-19.120"
    }
 }
