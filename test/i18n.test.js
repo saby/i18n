@@ -5,16 +5,16 @@
  */
 define([
    'Core/i18n',
-   'Core/constants'
+   'Env/Env'
 ], function (
    i18n,
-   constants
+   Env
 ) {
    describe('i18n', function () {
       describe('.rk()', function () {
          context('in browser', function () {
             beforeEach(function () {
-               if (!constants.isBrowserPlatform) {
+               if (!Env.constants.isBrowserPlatform) {
                   this.skip();
                }
             });
@@ -25,7 +25,7 @@ define([
          });
          context('on server side', function () {
             beforeEach(function () {
-               if (constants.isBrowserPlatform) {
+               if (Env.constants.isBrowserPlatform) {
                   this.skip();
                }
             });
@@ -185,13 +185,13 @@ define([
          var dictPath = 'Foo/lang/en-US/en-US.json';
 
          beforeEach(function () {
-            constants.jsModules.Foo = '/resources/Foo/Foo.module.js';
-            constants.dictionary['Foo.en-US.json'] = true;
+            Env.constants.jsModules.Foo = '/resources/Foo/Foo.module.js';
+            Env.constants.dictionary['Foo.en-US.json'] = true;
          });
 
          afterEach(function () {
-            delete constants.jsModules.Foo;
-            delete constants.dictionary['Foo.en-US.json'];
+            delete Env.constants.jsModules.Foo;
+            delete Env.constants.dictionary['Foo.en-US.json'];
          });
 
          it('should return dictionary for module', function () {
