@@ -1,10 +1,10 @@
 /// <amd-module name="I18n/_i18n/i18n" />
 // @ts-ignore
-import constants = require('Core/constants');
+import { constants } from 'Env/Env';
 // @ts-ignore
-import IoC = require('Core/IoC');
+import { IoC } from 'Env/Env';
 // @ts-ignore
-import cookie = require('Core/cookie');
+import { cookie } from 'Env/Env';
 import RkString from './RkString';
 import loadMetaInfo from './loadMetaInfo';
 import cutParameterFromURL from './cutParameterFromURL';
