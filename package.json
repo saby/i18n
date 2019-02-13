@@ -23,15 +23,14 @@
       "moduleType": "amd",
       "tests": "test",
       "links": {
-         "node_modules/sbis3-ws/ws": "WS.Core",
+         "node_modules/sbis3-ws/WS.Core": "WS.Core",
          "node_modules/sbis3-ws/View": "View"
       },
       "url": {
          "port": 1025
       }
    },
-   "dependencies": {
-   },
+   "dependencies": {},
    "devDependencies": {
       "saby-typescript": "git+https://github.com/saby/TypeScript.git#rc-19.200",
       "saby-units": "git+https://github.com/saby/Units.git#rc-19.200",

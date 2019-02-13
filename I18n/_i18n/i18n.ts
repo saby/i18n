@@ -6,15 +6,21 @@ import IoC = require('Core/IoC');
 // @ts-ignore
 import cookie = require('Core/cookie');
 import RkString from './RkString';
+import loadMetaInfo from './loadMetaInfo';
+import cutParameterFromURL from './cutParameterFromURL';
 import 'Core/polyfill';
 
 const PLURAL_PREFIX = 'plural#';
+const CONTEXT_SEPARATOR = '@@';
 const PLURAL_DELIMITER = '|';
 const EXPIRES_COOKIES = 2920;
-const availableLanguage = {
-   "ru-RU": "Русский (Россия)",
-   "en-US": "English (USA)"
-};
+
+/** Все загруженные словари, где ключ - слово на языке оригинала */
+const dictionary = {};
+/** Все загруженные словари, где ключ - имя словаря */
+const dictionaryNames = {};
+/** Всe загруженная иформация о локализации интерфейсных модулей */
+const modulesInfo = {};
 
 const global = (function(): ExtWindow {
    return this || (0, eval)('this');
@@ -39,47 +45,24 @@ let localizationEnabled = constants.isServerScript ?
  */
 
 class I18n {
-   /** Разделитель между контекстом и ключом */
-   private _separator: string;
    /** Текущий язык */
    private _currentLang: string;
-   /** Все загруженные словари, где ключ - слово на языке оригинала */
-   private _dict: Object;
-   /** Все загруженные словари, где ключ - имя словаря */
-   private _dictNames: Object;
+   /** Язык по-умолчанию */
+   private defaultLanguage: string;
+   /** Список поддерживаемых языков */
+   private availableLanguage: Object;
 
-   construct() {
+   construct(config) {
       this.rk = this.rk.bind(this);
-      this.init();
 
-      /** Разделитель между контекстом и ключом */
-      this._separator = '@@';
       /** Текущий язык */
       this._currentLang = '';
-      /** Все загруженные словари, где ключ - слово на языке оригинала */
-      this._dict = {};
-      /** Все загруженные словари, где ключ - имя словаря */
-      this._dictNames = {};
-   }
-   /**
-    * Инициализация синглтона
-    */
-   init() {
-      if (localizationEnabled) {
-         // Теперь определим текущий язык
-         this.setLocale(this.detectLanguage());
-      } else {
-         this.setLocale('');
-      }
+      /** Язык по-умолчанию */
+      this.defaultLanguage = config.defaultLanguage || 'ru-RU';
+      /** Список поддерживаемых языков */
+      this.availableLanguage = config.availableLanguage || {};
 
-      // Чтобы функция rk всегда была
-      // На ПП она своя
-      if (!global.hasOwnProperty('rk')) {
-         Object.defineProperty(global,'rk', {
-            enumerable: true,
-            value: i18n.rk.bind(i18n)
-         });
-      }
+      this.setLocale(this.detectLanguage());
    }
 
    /**
@@ -87,7 +70,7 @@ class I18n {
     * @return {Boolean}
     * @see setEnable
     */
-   isEnabled() {
+   static isEnabled() {
       return localizationEnabled;
    }
 
@@ -98,7 +81,7 @@ class I18n {
     */
    setEnabled(enable) {
       localizationEnabled = enable;
-      this.init();
+      this.setLocale(this.detectLanguage());
    }
 
    /**
@@ -106,44 +89,70 @@ class I18n {
     */
    detectLanguage() {
       if (constants.isNodePlatform) {
-         let detectedLng = constants.defaultLanguage;
+         let detectedLang = this.defaultLanguage;
          const request = process.domain && process.domain.req;
 
          if (request) {
+            const reqCookie = cookie.get('lang');
             const queryLang = request.query && request.query.lang;
-            const respond = process.domain.res;
 
-            detectedLng = queryLang || cookie.get('lang') || detectedLng;
-            detectedLng = this.hasLang(detectedLng) ? detectedLng : constants.defaultLanguage;
+            detectedLang = queryLang || reqCookie || this._detectLanguageBrowser(request);
+            detectedLang = this.hasLang(detectedLang) ? detectedLang : this.defaultLanguage;
 
-            if (respond && !(respond.cookies && respond.cookies.hasOwnProperty('lang')) && queryLang) {
-               cookie.set('lang', detectedLng, {
-                   expires: EXPIRES_COOKIES,
-                   path: '/'
-               });
-               const redirectUrl = request.path + this._getUrlWithoutParam(request.query, 'lang');
-               respond.redirect(redirectUrl);
+            if (queryLang || !reqCookie) {
+               this._setLocalOnNodeJS(detectedLang, process.domain);
             }
          }
-         return detectedLng;
-      }
-      if (localizationEnabled) {
-         const avLang = this.getAvailableLang();
-         let detectedLng = cookie.get('lang') || '';
 
-         if (!detectedLng) {
-            detectedLng = constants.defaultLanguage || (global.contents && global.contents.defaultLanguage);
+         return detectedLang;
+      }
+
+      if (I18n.isEnabled()) {
+         const avLang = this.availableLanguage;
+         let detectedLang = cookie.get('lang') || '';
+
+         if (!detectedLang) {
+            detectedLang = this.defaultLanguage;
          }
 
          // Если уже ничто не помогло, Возьмем первый язык из доступных
-         if (!detectedLng || detectedLng.length !== 5 || !avLang[detectedLng]) {
-            detectedLng = Object.keys(avLang)[0] || '';
+         if (!detectedLang || detectedLang.length !== 5 || !avLang[detectedLang]) {
+            detectedLang = Object.keys(avLang)[0] || '';
          }
 
-         return detectedLng;
+         return detectedLang;
       }
 
       return '';
+   }
+
+   /**
+    * Функция опрделения языка из настройки браузера.
+    */
+   protected _detectLanguageBrowser(request) {
+      let detectedLang = this.defaultLanguage;
+      const acceptLang = request && request.headers && request.headers['accept-language']
+          && request.headers['accept-language'].split(',');
+
+      if (acceptLang) {
+         acceptLang.some(langHeader => {
+            const lang = langHeader.split(';')[0];
+
+            if (lang.includes('-') && this.hasLang(lang)) {
+               detectedLang = lang;
+               return true;
+            } else if (!lang.includes('-')) {
+               for (const locale in this.availableLanguage) {
+                  if (locale.startsWith(lang)) {
+                     detectedLang = locale;
+                     return true;
+                  }
+               }
+            }
+         });
+      }
+
+      return detectedLang;
    }
 
    /**
@@ -151,7 +160,6 @@ class I18n {
     * @returns {String} <a href="/doc/platform/developmentapl/internalization/locale/">Кодовое обозначение локали</a>.
     * Например, "ru-RU" или "en-US".
     * @see detectLanguage
-    * @see getAvailableLang
     * @see hasLang
     * @see setLocale
     */
@@ -162,42 +170,22 @@ class I18n {
       if (constants.isNodePlatform) {
          return this.detectLanguage();
       }
-      if (localizationEnabled) {
+      if (I18n.isEnabled()) {
          return this._currentLang;
       }
       return '';
    }
 
    /**
-    * Возвращает список языков, на которые может быть локализовано веб-приложение.
-    * @returns {Object} Ключ - <a href="/doc/platform/developmentapl/internalization/locale/">кодовое обозначение локали</a>, значение - текстовая расшифровка локали.
-    * @example
-    * <pre>
-    * {
-    *    ru-RU: "Русский (Россия)",
-    *    en-US: "English (USA)"
-    * }
-    * </pre>
-    * @see detectLanguage
-    * @see getLocale
-    * @see hasLang
-    * @see setLocale
-    */
-   getAvailableLang() {
-      return availableLanguage;
-   }
-
-   /**
     * Возвращает признак: может ли веб-приложение локализовано на указанный язык.
     * @param {String} language <a href="/doc/platform/developmentapl/internalization/locale/">Кодовое обозначение локали</a>.
     * @returns {Boolean}
-    * @see getAvailableLang
     * @see detectLanguage
     * @see getLocale
     * @see setLocale
     */
    hasLang(language) {
-      return language in availableLanguage;
+      return language in this.availableLanguage;
    }
 
    /**
@@ -210,10 +198,8 @@ class I18n {
          return false;
       }
 
-      if (localizationEnabled) {
-         let changeLang = false,
-            oldLang = this._currentLang,
-            currentLang;
+      if (I18n.isEnabled()) {
+         let changeLang = false
 
          if (language && typeof (language) === 'string' && /..-../.test(language) && language !== this._currentLang) {
             const parts = language.split('-');
@@ -237,17 +223,32 @@ class I18n {
          return changeLang;
       }
 
-      cookie.set('lang', null, {
-         path: '/'
-      });
-
-
       return false;
+   }
+
+   /**
+    * Переключает язык на сервисе представлений.
+    * @param lang
+    */
+   protected _setLocalOnNodeJS(lang, domain) {
+      const request = domain && domain.req;
+      const respond = domain && domain.res;
+
+      if (request && respond && !(respond.cookies && respond.cookies.hasOwnProperty('lang'))) {
+         this._currentLang = lang;
+
+         cookie.set('lang', this._currentLang, {
+            expires: EXPIRES_COOKIES,
+            path: '/'
+         });
+
+         respond.redirect(request.originalUrl + cutParameterFromURL(request.query, 'lang'));
+      }
    }
 
    protected _translate(key, ctx, num) {
       /**
-       * Если отдали НЕ строку, или не того кто ей "прикитворяется"
+       * Если отдали НЕ строку, или того кто ей "притворяется"
        * то выходим и не переводим
        */
       if (key === null || key === undefined || !key.indexOf) {
@@ -256,10 +257,10 @@ class I18n {
 
       let retValue = key;
       let lang = '';
-      const index = key.indexOf(this._separator);
+      const index = key.indexOf(CONTEXT_SEPARATOR);
       if (index > -1) {
          ctx = key.substr(0, index);
-         key = key.substr(index + this._separator.length);
+         key = key.substr(index + CONTEXT_SEPARATOR.length);
       }
       if (typeof ctx === 'number') {
          num = ctx;
@@ -267,9 +268,9 @@ class I18n {
       }
 
       retValue = key;
-      if (!constants.isServerScript && (constants.isNodePlatform || localizationEnabled)) {
+      if (I18n.isEnabled()) {
          lang = this.getLocale();
-         if (lang && this._dict[lang]) {
+         if (lang && dictionary[lang]) {
             if (num !== undefined) {
                const trans_key = this._getTransKey(PLURAL_PREFIX + key, ctx, lang);
                retValue = trans_key ? this._plural(trans_key, num) : key;
@@ -279,7 +280,6 @@ class I18n {
          }
       }
 
-      // Простое экранирование
       return retValue;
    }
 
@@ -305,7 +305,7 @@ class I18n {
    }
 
    protected _getTransKey(key, ctx, lang) {
-      const trans_key = this._dict[lang][ctx ? `${ctx}${this._separator}${key}` : `${key}`];
+      const trans_key = dictionary[lang][ctx ? `${ctx}${CONTEXT_SEPARATOR}${key}` : `${key}`];
       if (trans_key !== undefined) {
          return trans_key;
       }
@@ -325,6 +325,32 @@ class I18n {
    }
 
    /**
+    * Функция проверяет, что интерфейсный модуль ещё не обрабатывается.
+    * @param nameModule - имя интерфейсного модуля.
+    * @returns {Boolean}
+    */
+   static isProcessedModule(nameModule) {
+      return modulesInfo.hasOwnProperty(nameModule);
+   }
+
+   /**
+    * Метод возращает информацию о словарях поддерживаемых интерфейсным модулем.
+    * @param nameModule - имя интерфейсного модуля
+    * @param loader - имя интерфейсного модуля
+    * @returns {Deferred}
+    * @see isProcessedModule
+    */
+   static getLocalizationInfoToModule(nameModule, loader) {
+      if (I18n.isProcessedModule(nameModule)) {
+         return modulesInfo[nameModule];
+      }
+
+      modulesInfo[nameModule] = loadMetaInfo(nameModule, loader);
+
+      return modulesInfo[nameModule];
+   }
+
+   /**
     * Проверят наличие словаря по его имени.
     * @param {String} dictName Имя словаря.
     * @param {String} [lang=this.getLocale()]
@@ -334,7 +360,7 @@ class I18n {
     */
    hasDict(dictName, lang) {
       lang = lang || this.getLocale();
-      return this._dictNames[lang] ? dictName in this._dictNames[lang] : false;
+      return dictionaryNames[lang] ? dictName in dictionaryNames[lang] : false;
    }
 
    /**
@@ -349,11 +375,11 @@ class I18n {
       lang = lang || this.getLocale();
       if (lang && !this.hasDict(name, lang)) {
          if (name) {
-            this._dictNames[lang] = this._dictNames[lang] || {};
-            this._dictNames[lang][name] = true;
+            dictionaryNames[lang] = dictionaryNames[lang] || {};
+            dictionaryNames[lang][name] = true;
          }
 
-         this._dict[lang] = Object.assign(this._dict[lang] || {}, dict);
+         dictionary[lang] = Object.assign(dictionary[lang] || {}, dict);
       }
    }
 
@@ -372,6 +398,7 @@ class I18n {
                return str;
          }
       }
+
       return undefined;
    }
 
@@ -414,39 +441,6 @@ class I18n {
       }
       return word1;
    }
-
-    /**
-     * Возращает массив параметров строкой в формате URL, исключая указаный параметр.
-     * Пример: '?param1=value1&param2=value2'
-     * @param qeury {Array} Массив параметров запроса.
-     * @param deleteParam {String} Имя исключаемого параметра.
-     * @returns {String}
-     */
-    protected _getUrlWithoutParam(qeury, deleteParam) {
-      if (Object.keys(qeury).length === 0 || Object.keys(qeury).length === 1 && qeury.hasOwnProperty(deleteParam)) {
-         return '';
-      }
-
-      let result = '?';
-
-      for (const name in qeury) {
-         if (name !== deleteParam) {
-            result += name + '=' + qeury[name] + '&';
-         }
-      }
-
-      return result.slice(0, result.length - 1);
-   }
 }
 
-const i18n = new I18n();
-const rk = i18n.rk.bind(i18n);
-
-rk.setLocale = i18n.setLocale.bind(i18n);
-rk.getLocale = i18n.getLocale.bind(i18n);
-rk.setDict = i18n.setDict.bind(i18n);
-rk.hasDict = i18n.hasDict.bind(i18n);
-rk.isEnabled = i18n.isEnabled.bind(i18n);
-rk.setEnabled = i18n.setEnabled.bind(i18n);
-
-export default rk;
+export default I18n;
