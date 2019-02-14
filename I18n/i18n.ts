@@ -9,3 +9,5 @@
  */
 export {default as rk} from './_i18n/i18n';
 export {default as locales} from './_i18n/locales';
+export {default as Configuration} from './_i18n/Configuration';
+export {default as LoaderMetaInfo} from './_i18n/LoaderMetaInfo';

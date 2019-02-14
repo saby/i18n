@@ -1,26 +1,17 @@
 /// <amd-module name="I18n/_i18n/i18n" />
 // @ts-ignore
-import { constants } from 'Env/Env';
-// @ts-ignore
-import { IoC } from 'Env/Env';
-// @ts-ignore
-import { cookie } from 'Env/Env';
+import { constants, IoC} from 'Env/Env';
 import RkString from './RkString';
-import loadMetaInfo from './loadMetaInfo';
-import cutParameterFromURL from './cutParameterFromURL';
 import 'Core/polyfill';
 
 const PLURAL_PREFIX = 'plural#';
 const CONTEXT_SEPARATOR = '@@';
 const PLURAL_DELIMITER = '|';
-const EXPIRES_COOKIES = 2920;
 
 /** Все загруженные словари, где ключ - слово на языке оригинала */
 const dictionary = {};
 /** Все загруженные словари, где ключ - имя словаря */
 const dictionaryNames = {};
-/** Всe загруженная иформация о локализации интерфейсных модулей */
-const modulesInfo = {};
 
 const global = (function(): ExtWindow {
    return this || (0, eval)('this');
@@ -46,23 +37,21 @@ let localizationEnabled = constants.isServerScript ?
 
 class I18n {
    /** Текущий язык */
-   private _currentLang: string;
+   private _language: string;
    /** Язык по-умолчанию */
-   private defaultLanguage: string;
+   private _defaultLanguage: string;
    /** Список поддерживаемых языков */
-   private availableLanguage: Object;
+   private _availableLanguage: Object;
 
    construct(config) {
       this.rk = this.rk.bind(this);
 
       /** Текущий язык */
-      this._currentLang = '';
+      this._language = config.languge || '';
       /** Язык по-умолчанию */
-      this.defaultLanguage = config.defaultLanguage || 'ru-RU';
+      this._defaultLanguage = config.defaultLanguage || 'ru-RU';
       /** Список поддерживаемых языков */
-      this.availableLanguage = config.availableLanguage || {};
-
-      this.setLocale(this.detectLanguage());
+      this._availableLanguage = config.availableLanguage || {};
    }
 
    /**
@@ -75,175 +64,12 @@ class I18n {
    }
 
    /**
-    * Включает механизм локализации для текущего приложения.
-    * @param {Boolean} enable
-    * @see isEnabled
-    */
-   setEnabled(enable) {
-      localizationEnabled = enable;
-      this.setLocale(this.detectLanguage());
-   }
-
-   /**
-    * Возвращает кодовое обозначение локали того языка, на который локализована данная страница веб-приложения.
-    */
-   detectLanguage() {
-      if (constants.isNodePlatform) {
-         let detectedLang = this.defaultLanguage;
-         const request = process.domain && process.domain.req;
-
-         if (request) {
-            const reqCookie = cookie.get('lang');
-            const queryLang = request.query && request.query.lang;
-
-            detectedLang = queryLang || reqCookie || this._detectLanguageBrowser(request);
-            detectedLang = this.hasLang(detectedLang) ? detectedLang : this.defaultLanguage;
-
-            if (queryLang || !reqCookie) {
-               this._setLocalOnNodeJS(detectedLang, process.domain);
-            }
-         }
-
-         return detectedLang;
-      }
-
-      if (I18n.isEnabled()) {
-         const avLang = this.availableLanguage;
-         let detectedLang = cookie.get('lang') || '';
-
-         if (!detectedLang) {
-            detectedLang = this.defaultLanguage;
-         }
-
-         // Если уже ничто не помогло, Возьмем первый язык из доступных
-         if (!detectedLang || detectedLang.length !== 5 || !avLang[detectedLang]) {
-            detectedLang = Object.keys(avLang)[0] || '';
-         }
-
-         return detectedLang;
-      }
-
-      return '';
-   }
-
-   /**
-    * Функция опрделения языка из настройки браузера.
-    */
-   protected _detectLanguageBrowser(request) {
-      let detectedLang = this.defaultLanguage;
-      const acceptLang = request && request.headers && request.headers['accept-language']
-          && request.headers['accept-language'].split(',');
-
-      if (acceptLang) {
-         acceptLang.some(langHeader => {
-            const lang = langHeader.split(';')[0];
-
-            if (lang.includes('-') && this.hasLang(lang)) {
-               detectedLang = lang;
-               return true;
-            } else if (!lang.includes('-')) {
-               for (const locale in this.availableLanguage) {
-                  if (locale.startsWith(lang)) {
-                     detectedLang = locale;
-                     return true;
-                  }
-               }
-            }
-         });
-      }
-
-      return detectedLang;
-   }
-
-   /**
     * Возвращает кодовое обозначение локали того языка, на который локализована данная страница веб-приложения.
     * @returns {String} <a href="/doc/platform/developmentapl/internalization/locale/">Кодовое обозначение локали</a>.
     * Например, "ru-RU" или "en-US".
-    * @see detectLanguage
-    * @see hasLang
-    * @see setLocale
     */
    getLocale() {
-      if (constants.isServerScript) {
-         return '';
-      }
-      if (constants.isNodePlatform) {
-         return this.detectLanguage();
-      }
-      if (I18n.isEnabled()) {
-         return this._currentLang;
-      }
-      return '';
-   }
-
-   /**
-    * Возвращает признак: может ли веб-приложение локализовано на указанный язык.
-    * @param {String} language <a href="/doc/platform/developmentapl/internalization/locale/">Кодовое обозначение локали</a>.
-    * @returns {Boolean}
-    * @see detectLanguage
-    * @see getLocale
-    * @see setLocale
-    */
-   hasLang(language) {
-      return language in this.availableLanguage;
-   }
-
-   /**
-    * Устанавливает язык, на который будут переводиться значения.
-    * @param {String} language Двухбуквенное название языка.
-    * @returns {boolean}
-    */
-   setLocale(language) {
-      if (constants.isServerScript || constants.isNodePlatform) {
-         return false;
-      }
-
-      if (I18n.isEnabled()) {
-         let changeLang = false
-
-         if (language && typeof (language) === 'string' && /..-../.test(language) && language !== this._currentLang) {
-            const parts = language.split('-');
-            this._currentLang = `${parts[0].toLowerCase()}-${parts[1].toUpperCase()}`;
-            changeLang = true;
-         }
-
-         if (!language) {
-            this._currentLang = '';
-            changeLang = true;
-         }
-
-         if (changeLang) {
-            cookie.set('lang', this._currentLang || null, {
-               expires: EXPIRES_COOKIES,
-               path: '/'
-            });
-
-         }
-
-         return changeLang;
-      }
-
-      return false;
-   }
-
-   /**
-    * Переключает язык на сервисе представлений.
-    * @param lang
-    */
-   protected _setLocalOnNodeJS(lang, domain) {
-      const request = domain && domain.req;
-      const respond = domain && domain.res;
-
-      if (request && respond && !(respond.cookies && respond.cookies.hasOwnProperty('lang'))) {
-         this._currentLang = lang;
-
-         cookie.set('lang', this._currentLang, {
-            expires: EXPIRES_COOKIES,
-            path: '/'
-         });
-
-         respond.redirect(request.originalUrl + cutParameterFromURL(request.query, 'lang'));
-      }
+      return this._language;
    }
 
    protected _translate(key, ctx, num) {
@@ -322,32 +148,6 @@ class I18n {
       }
 
       return undefined;
-   }
-
-   /**
-    * Функция проверяет, что интерфейсный модуль ещё не обрабатывается.
-    * @param nameModule - имя интерфейсного модуля.
-    * @returns {Boolean}
-    */
-   static isProcessedModule(nameModule) {
-      return modulesInfo.hasOwnProperty(nameModule);
-   }
-
-   /**
-    * Метод возращает информацию о словарях поддерживаемых интерфейсным модулем.
-    * @param nameModule - имя интерфейсного модуля
-    * @param loader - имя интерфейсного модуля
-    * @returns {Deferred}
-    * @see isProcessedModule
-    */
-   static getLocalizationInfoToModule(nameModule, loader) {
-      if (I18n.isProcessedModule(nameModule)) {
-         return modulesInfo[nameModule];
-      }
-
-      modulesInfo[nameModule] = loadMetaInfo(nameModule, loader);
-
-      return modulesInfo[nameModule];
    }
 
    /**
