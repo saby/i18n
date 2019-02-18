@@ -1,7 +1,6 @@
 /// <amd-module name="I18n/_i18n/Configuration" />
 // @ts-ignore
 import { cookie } from 'Env/Env';
-import cutParameterFromURL from "./cutParameterFromURL";
 
 const EXPIRES_COOKIES = 2920;
 
