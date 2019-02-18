@@ -9,6 +9,17 @@ class Configuration {
         return !!(cookie.get('lang') || request && request.query && request.query.lang) ;
     }
 
+    static set(language) {
+        cookie.set('lang', language || null, {
+            expires: EXPIRES_COOKIES,
+            path: '/'
+        });
+    }
+
+    static get() {
+        return cookie.get('lang') || null;
+    }
+
     static validate(request) {
         return !(request && request.query && request.query.lang && request.query.lang !== cookie.get('lang'));
     }
@@ -37,17 +48,6 @@ class Configuration {
         }
 
         return detectedLang;
-    }
-
-    static set(language) {
-        cookie.set('lang', language || null, {
-            expires: EXPIRES_COOKIES,
-            path: '/'
-        });
-    }
-
-    static get() {
-        return cookie.get('lang') || null;
     }
 }
 
