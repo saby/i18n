@@ -1,4 +1,3 @@
-/// <amd-module name="I18n/i18n" />
 /**
  * Library for internationalization
  * @library I18n/i18n

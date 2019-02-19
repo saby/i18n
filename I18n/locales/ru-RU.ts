@@ -1,35 +1,35 @@
-/// <amd-module name="I18n/_i18n/locales/ru-RU" />
-
 export default {
     /**
-     * Для английской локали
-     * @param num число
+     * Для русской локали
+     * @param pluralNumber число
      * @param word1 слово для 1
-     * @param word2 слово для нескольких
+     * @param word2 слово для 2-4
+     * @param word3 слово для > 4
+     * @param word4 слово для дробей
      * @returns {String}
      * @private
      */
-    plural: (num, word1, word2, word3, word4) => {
+    plural: (pluralNumber: number, word1: string, word2: string, word3: string, word4: string): string => {
 
         // если есть дробная часть
-        if (num % 1 > 0) {
+        if (pluralNumber % 1 > 0) {
             return word4;
         }
 
         // если две последние цифры 11 ... 19
-        num = num % 100;
-        if (num >= 11 && num <= 19) {
+        pluralNumber = pluralNumber % 100;
+        if (pluralNumber >= 11 && pluralNumber <= 19) {
             return word3;
         }
 
         // все остальные случаи - по последней цифре
-        num = num % 10;
+        pluralNumber = pluralNumber % 10;
 
-        if (num == 1) {
+        if (pluralNumber == 1) {
             return word1;
         }
 
-        if (num == 2 || num == 3 || num == 4) {
+        if (pluralNumber == 2 || pluralNumber == 3 || pluralNumber == 4) {
             return word2;
         }
 

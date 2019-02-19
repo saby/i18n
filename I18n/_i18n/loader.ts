@@ -1,4 +1,3 @@
-/// <amd-module name="I18n/_i18n/loader"/>
 //@ts-ignore
 import {IoC} from 'Env/Env';
 

@@ -1,4 +1,3 @@
-/// <amd-module name="I18n/_i18n/RkString" />
 const RkString = function RkString(value: string, resolver: Function): void {
    Object.defineProperties(this, {
       translatedValue: {

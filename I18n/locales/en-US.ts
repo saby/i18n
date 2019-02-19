@@ -1,8 +1,15 @@
-/// <amd-module name="I18n/_i18n/locales/en-US"/>
+/**
+ * Для английской локали
+ * @param pluralNumber число
+ * @param word1 слово для 1
+ * @param word2 слово для нескольких
+ * @returns {String}
+ * @private
+ */
 export default {
-    plural: (num, word1, word2) => {
+    plural: (pluralNumber: number, word1: string, word2: string): string => {
 
-        if (num > 1 || num === 0) {
+        if (pluralNumber > 1 || pluralNumber === 0) {
             return word2;
         }
 

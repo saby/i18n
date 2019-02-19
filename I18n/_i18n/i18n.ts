@@ -1,4 +1,3 @@
-/// <amd-module name="I18n/_i18n/i18n" />
 // @ts-ignore
 import RkString from './RkString';
 import 'Core/polyfill';
@@ -61,7 +60,7 @@ class I18n {
      * @returns {String}
      * @public
      */
-    rk(key: string, context?: string, pluralNumber?: number) {
+    rk(key: string, context?: string, pluralNumber?: number): string{
        if (typeof key === 'string') {
           if (IS_BROWSER) {
              return this._translate(key, context, pluralNumber)
@@ -107,7 +106,7 @@ class I18n {
 
     protected _translatePlural(key: string, pluralNumber: number): string {
         if (key !== undefined) {
-            return this._plural.apply(this, [Math.abs(pluralNumber)].concat(key.split(PLURAL_DELIMITER)));
+            return this._plural(Math.abs(pluralNumber), ...key.split(PLURAL_DELIMITER));
         }
 
         return '';

@@ -1,5 +1,3 @@
-/// <amd-module name="I18n/_i18n/LoaderMetaInfo" />
-
 // Используем Deferred для работоспособности плагина i18n.
 // @ts-ignore
 import Deferred = require('Core/Deferred');
@@ -29,7 +27,7 @@ class LoaderMetaInfo {
     * @see isProcessedModule
     */
    static getLocalizationInfoToModule(nameModule: string, loader?: Function): Deferred<IModuleInfo> {
-      if (LoaderMetaInfo.isProcessedModule(nameModule)) {
+      if (LoaderMetaInfo.isProcessed(nameModule)) {
          return modulesInfo[nameModule];
       }
 
