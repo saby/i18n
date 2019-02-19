@@ -1,7 +1,6 @@
 // Используем Deferred для работоспособности плагина i18n.
 // @ts-ignore
 import Deferred = require('Core/Deferred');
-
 interface IModuleInfo {
 
 }
@@ -42,7 +41,7 @@ class LoaderMetaInfo {
     * @param loader - имя интерфейсного модуля
     * @returns {Deferred}
     */
-   protected static loadMetaInfo(nameModule: string, loader?: Function): Deferred<IModuleInfo> {
+   protected static loadMetaInfo(nameModule: string, loader: Function=require): Deferred<IModuleInfo> {
       const def = new Deferred();
 
       loader([nameModule + "/.builder/module"], info => {

@@ -60,7 +60,7 @@ class I18n {
      * @returns {String}
      * @public
      */
-    rk(key: string, context?: string, pluralNumber?: number): string{
+    rk(key: string, context?: string, pluralNumber?: number): any {
        if (typeof key === 'string') {
           if (IS_BROWSER) {
              return this._translate(key, context, pluralNumber)

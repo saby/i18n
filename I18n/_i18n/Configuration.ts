@@ -23,22 +23,22 @@ class Configuration {
         return !(request && request.query && request.query.lang && request.query.lang !== cookie.get('lang'));
     }
 
-    static detect(request: IRequest, availableLanguage: object): string {
-        let detectedLang = '';
-        const acceptLang = request && request.headers && request.headers['accept-language']
+    static detect(request: IRequest, availableLocales: object): string {
+        let detectedLocale = '';
+        const acceptLocale = request && request.headers && request.headers['accept-language']
             && request.headers['accept-language'].split(',');
 
-        if (acceptLang) {
-            acceptLang.some(langHeader => {
-                const lang = langHeader.split(';')[0];
+        if (acceptLocale) {
+            acceptLocale.some(localeHeader => {
+                const locale = localeHeader.split(';')[0];
 
-                if (lang.includes('-') && lang in availableLanguage) {
-                    detectedLang = lang;
+                if (locale.includes('-') && locale in availableLocales) {
+                    detectedLocale = locale;
                     return true;
-                } else if (!lang.includes('-')) {
-                    for (const locale in availableLanguage) {
-                        if (locale.startsWith(lang)) {
-                            detectedLang = locale;
+                } else if (!locale.includes('-')) {
+                    for (const availableLocale in availableLocales) {
+                        if (availableLocale.startsWith(locale)) {
+                            detectedLocale = locale;
                             return true;
                         }
                     }
@@ -46,7 +46,7 @@ class Configuration {
             });
         }
 
-        return detectedLang;
+        return detectedLocale;
     }
 }
 
