@@ -5,7 +5,7 @@
  * @public
  * @author Aleksey Maltsev.
  */
-export {default as locale} from './_i18n/i18n';
+export {default as Locale} from './_i18n/Locale';
 export {default as Configuration} from './_i18n/Configuration';
 export {default as Loader} from './_i18n/Loader';
 
