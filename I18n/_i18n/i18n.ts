@@ -14,8 +14,8 @@ const dictionaryNames = {};
 
 interface IConfiguration {
    locale: string,
-   defaultLanguage: string,
-   availableLanguage: object,
+   defaultLocale: string,
+   availableLocale: object,
    plural: Function
 }
 
@@ -27,13 +27,13 @@ interface IConfiguration {
  * @singleton
  */
 
-class I18n {
+class Locale {
    /** Текущий язык */
    public locale: string;
    /** Язык по-умолчанию */
-   private _defaultLanguage: string;
+   private _defaultLocale: string;
    /** Список поддерживаемых языков */
-   private _availableLanguage: Object;
+   private _availableLocale: Object;
     /** Функция для плюралной формы */
    private _plural: Function;
 
@@ -43,9 +43,9 @@ class I18n {
       /** Текущий язык */
       this.locale = config.locale || '';
       /** Язык по-умолчанию */
-      this._defaultLanguage = config.defaultLanguage || 'ru-RU';
+      this._defaultLocale = config.defaultLocale || 'ru-RU';
       /** Список поддерживаемых языков */
-      this._availableLanguage = config.availableLanguage || {};
+      this._availableLocale = config.availableLocale || {};
       /** Функция для плюралной формы */
       this._plural = config.plural || function (key) { return key; };
    }
@@ -130,7 +130,7 @@ class I18n {
     * @see hasDict
     */
    static setDictionary(dict: object, name: string, locale: string): void {
-      if (locale && !I18n.hasDictionary(name, locale)) {
+      if (locale && !Locale.hasDictionary(name, locale)) {
          if (name) {
             dictionaryNames[locale] = dictionaryNames[locale] || {};
             dictionaryNames[locale][name] = true;
@@ -141,4 +141,4 @@ class I18n {
    }
 }
 
-export default I18n;
+export default Locale;

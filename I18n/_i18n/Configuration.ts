@@ -4,19 +4,19 @@ import { cookie } from 'Env/Env';
 const EXPIRES_COOKIES = 2920;
 
 class Configuration {
-    static has(request: IRequest): boolean {
+    static isSet(request: IRequest): boolean {
         return !!(cookie.get('lang') || request && request.query && request.query.lang) ;
     }
 
-    static set(locale: string): void {
+    static save(locale: string): void {
         cookie.set('lang', locale || null, {
             expires: EXPIRES_COOKIES,
             path: '/'
         });
     }
 
-    static get(): string {
-        return cookie.get('lang') || null;
+    static load(request: IRequest): string {
+        return (request && request.query && request.query.lang) || cookie.get('lang') || null;
     }
 
     static validate(request: IRequest): boolean {
