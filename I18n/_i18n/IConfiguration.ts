@@ -1,4 +1,5 @@
-export default interface ILocale {
+export default interface IConfiguration {
+   code: string,
    plural: Function,
    minDays: [],
    shortDays: [],

@@ -1,6 +1,5 @@
-// @ts-ignore
 import RkString from './RkString';
-import 'Core/polyfill';
+import IConfiguration from "./IConfiguration";
 
 const PLURAL_PREFIX = 'plural#';
 const CONTEXT_SEPARATOR = '@@';
@@ -9,15 +8,10 @@ const IS_BROWSER = typeof window !== 'undefined';
 
 /** Все загруженные словари, где ключ - слово на языке оригинала */
 const dictionary = {};
+
 /** Все загруженные словари, где ключ - имя словаря */
 const dictionaryNames = {};
 
-interface IConfiguration {
-   locale: string,
-   defaultLocale: string,
-   availableLocale: object,
-   plural: Function
-}
 
 /**
  * I18n - поддержка интернационализации. Подробнее о механизме интернационализации читайте в разделе <a href="https://wi.sbis.ru/doc/platform/developmentapl/internalization/">Интернационализация и локализация</a>.
@@ -28,49 +22,37 @@ interface IConfiguration {
  */
 
 class Locale {
-   /** Текущий язык */
-   public locale: string;
-   /** Язык по-умолчанию */
-   private _defaultLocale: string;
-   /** Список поддерживаемых языков */
-   private _availableLocale: Object;
-    /** Функция для плюралной формы */
-   private _plural: Function;
+
+   /** Конфигурация локали */
+   private config: IConfiguration = null;
 
    construct(config: IConfiguration) {
-      this.rk = this.rk.bind(this);
 
-      /** Текущий язык */
-      this.locale = config.locale || '';
-      /** Язык по-умолчанию */
-      this._defaultLocale = config.defaultLocale || 'ru-RU';
-      /** Список поддерживаемых языков */
-      this._availableLocale = config.availableLocale || {};
-      /** Функция для плюралной формы */
-      this._plural = config.plural || function (key) { return key; };
+      /** Конфигурация локали */
+      this.config = config;
    }
 
-    /**
-     * Возвращает переведенное значение ключа.
-     * @param {String} key Ключ локализации.
-     * @param {String|Number} context Контекст перевода.
-     * Когда аргумент принимает число, то это трактуется как значение,
-     * под которое нужно подобрать множественную форму перевода слова
-     * @param {Number} pluralNumber Число, под которое нужно подобрать множественную форму перевода слова.
-     * @returns {String}
-     * @public
-     */
-    rk(key: string, context?: string, pluralNumber?: number): any {
-       if (typeof key === 'string') {
-          if (IS_BROWSER) {
-             return this._translate(key, context, pluralNumber)
-          } else {
-             return new RkString(key, (() => this._translate(key, context, pluralNumber)))
-          }
-       } else {
-          return key;
-       }
-    }
+   /**
+    * Возвращает переведенное значение ключа.
+    * @param {String} key Ключ локализации.
+    * @param {String|Number} context Контекст перевода.
+    * Когда аргумент принимает число, то это трактуется как значение,
+    * под которое нужно подобрать множественную форму перевода слова
+    * @param {Number} pluralNumber Число, под которое нужно подобрать множественную форму перевода слова.
+    * @returns {String}
+    * @public
+    */
+   rk(key: string, context?: string, pluralNumber?: number): any {
+      if (typeof key === 'string') {
+         if (IS_BROWSER) {
+            return this._translate(key, context, pluralNumber)
+         } else {
+            return new RkString(key, (() => this._translate(key, context, pluralNumber)))
+         }
+      } else {
+         return key;
+      }
+   }
 
    protected _translate(key: string, context?: string, pluralNumber?: number): string {
       const index = key.indexOf(CONTEXT_SEPARATOR);
@@ -86,7 +68,7 @@ class Locale {
       }
 
       let result = key;
-      if (dictionary[this.locale]) {
+      if (dictionary[this.config.code]) {
          if (pluralNumber !== undefined) {
             const translatedKey = this._translateKey(PLURAL_PREFIX + key, context);
             result = translatedKey ? this._translatePlural(translatedKey, pluralNumber) : key;
@@ -99,18 +81,18 @@ class Locale {
    }
 
    protected _translateKey(key: string, context): string {
-      const translatedKey = dictionary[this.locale][context ? `${context}${CONTEXT_SEPARATOR}${key}` : `${key}`];
+      const translatedKey = dictionary[this.config.code][context ? `${context}${CONTEXT_SEPARATOR}${key}` : `${key}`];
 
       return translatedKey !== undefined ? translatedKey : '';
    }
 
-    protected _translatePlural(key: string, pluralNumber: number): string {
-        if (key !== undefined) {
-            return this._plural(Math.abs(pluralNumber), ...key.split(PLURAL_DELIMITER));
-        }
+   protected _translatePlural(key: string, pluralNumber: number): string {
+      if (key !== undefined) {
+         return this.config.plural(Math.abs(pluralNumber), ...key.split(PLURAL_DELIMITER));
+      }
 
-        return '';
-    }
+      return '';
+   }
 
    /**
     * Проверят наличие словаря по его имени.

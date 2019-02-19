@@ -2,7 +2,7 @@
 // @ts-ignore
 import Deferred = require('Core/Deferred');
 import {IoC} from "../../Env/Env";
-import ILocale from "./ILocale";
+import IConfiguration from "./IConfiguration";
 
 interface IModuleInfo {
    dict: []
@@ -12,7 +12,7 @@ interface IModuleInfo {
 const modulesInfo = {};
 
 class Loader {
-   static locale(locale: string): Promise<ILocale> {
+   static locale(locale: string): Promise<IConfiguration> {
       return import(`I18n/locales/${locale}`).then(
          settingLocal => settingLocal,
          err => {
