@@ -6,6 +6,7 @@
  * @public
  * @author Aleksey Maltsev.
  */
-export {default as rk} from './_i18n/i18n';
+export {default as locale} from './_i18n/i18n';
 export {default as Configuration} from './_i18n/Configuration';
 export {default as LoaderMetaInfo} from './_i18n/LoaderMetaInfo';
+export {default as loader} from './_i18n/loader';

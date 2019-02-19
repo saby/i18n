@@ -1,6 +1,5 @@
 /// <amd-module name="I18n/_i18n/i18n" />
 // @ts-ignore
-import { constants, IoC} from 'Env/Env';
 import RkString from './RkString';
 import 'Core/polyfill';
 
@@ -13,6 +12,13 @@ const IS_BROWSER = typeof window !== 'undefined';
 const dictionary = {};
 /** Все загруженные словари, где ключ - имя словаря */
 const dictionaryNames = {};
+
+interface IConfiguration {
+   locale: string,
+   defaultLanguage: string,
+   availableLanguage: object,
+   plural: Function
+}
 
 /**
  * I18n - поддержка интернационализации. Подробнее о механизме интернационализации читайте в разделе <a href="https://wi.sbis.ru/doc/platform/developmentapl/internalization/">Интернационализация и локализация</a>.
@@ -32,17 +38,17 @@ class I18n {
     /** Функция для плюралной формы */
    private _plural: Function;
 
-   construct(config) {
+   construct(config: IConfiguration) {
       this.rk = this.rk.bind(this);
 
       /** Текущий язык */
-      this._locale = config.languge || '';
+      this._locale = config.locale || '';
       /** Язык по-умолчанию */
       this._defaultLanguage = config.defaultLanguage || 'ru-RU';
       /** Список поддерживаемых языков */
       this._availableLanguage = config.availableLanguage || {};
       /** Функция для плюралной формы */
-      this._plural = config.plural
+      this._plural = config.plural || function (key) { return key; };
    }
 
     /**
@@ -55,7 +61,7 @@ class I18n {
      * @returns {String}
      * @public
      */
-    rk(key, context, pluralNumber) {
+    rk(key: string, context?: string, pluralNumber?: number) {
        if (typeof key === 'string') {
           if (IS_BROWSER) {
              return this._translate(key, context, pluralNumber)
@@ -67,7 +73,7 @@ class I18n {
        }
     }
 
-   protected _translate(key, context, pluralNumber) {
+   protected _translate(key: string, context?: string, pluralNumber?: number): string {
       const index = key.indexOf(CONTEXT_SEPARATOR);
 
       if (index > -1) {
@@ -83,28 +89,28 @@ class I18n {
       let result = key;
       if (dictionary[this._locale]) {
          if (pluralNumber !== undefined) {
-            const translatedKey = this._getTranslateKey(PLURAL_PREFIX + key, context);
+            const translatedKey = this._translateKey(PLURAL_PREFIX + key, context);
             result = translatedKey ? this._translatePlural(translatedKey, pluralNumber) : key;
          } else {
-            result = this._getTranslateKey(key, context) || key;
+            result = this._translateKey(key, context) || key;
          }
       }
 
       return result;
    }
 
-   protected _getTranslateKey(key, context) {
+   protected _translateKey(key: string, context): string {
       const translatedKey = dictionary[this._locale][context ? `${context}${CONTEXT_SEPARATOR}${key}` : `${key}`];
 
-      return translatedKey !== undefined ? translatedKey : undefined;
+      return translatedKey !== undefined ? translatedKey : '';
    }
 
-    protected _translatePlural(str, num) {
-        if (str !== undefined) {
-            return this._plural.apply(this, [Math.abs(num)].concat(str.split(PLURAL_DELIMITER)));
+    protected _translatePlural(key: string, pluralNumber: number): string {
+        if (key !== undefined) {
+            return this._plural.apply(this, [Math.abs(pluralNumber)].concat(key.split(PLURAL_DELIMITER)));
         }
 
-        return undefined;
+        return '';
     }
 
    /**
@@ -113,7 +119,7 @@ class I18n {
     * @param {String} locale Имя локали.
     * @returns {Boolean}
     */
-   static hasDict(dictName, locale) {
+   static hasDict(dictName: string, locale): boolean {
       return dictionaryNames[locale] ? dictName in dictionaryNames[locale] : false;
    }
 
@@ -124,7 +130,7 @@ class I18n {
     * @param {String} locale Имя локали.
     * @see hasDict
     */
-   static setDict(dict, name, locale) {
+   static setDict(dict: object, name: string, locale: string): void {
       if (locale && !I18n.hasDict(name, locale)) {
          if (name) {
             dictionaryNames[locale] = dictionaryNames[locale] || {};

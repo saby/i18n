@@ -1,3 +1,5 @@
+/// <amd-module name="I18n/_i18n/locales/ru-RU" />
+
 export default {
     /**
      * Для английской локали

@@ -1,6 +1,12 @@
 /// <amd-module name="I18n/_i18n/LoaderMetaInfo" />
+
+// Используем Deferred для работоспособности плагина i18n.
 // @ts-ignore
 import Deferred = require('Core/Deferred');
+
+interface IModuleInfo {
+
+}
 
 /** Вся загруженная информация о локализации интерфейсных модулей */
 const modulesInfo = {};
@@ -11,7 +17,7 @@ class LoaderMetaInfo {
     * @param nameModule - имя интерфейсного модуля.
     * @returns {Boolean}
     */
-   static isProcessedModule(nameModule) {
+   static isProcessed(nameModule: string): boolean {
       return modulesInfo.hasOwnProperty(nameModule);
    }
 
@@ -22,7 +28,7 @@ class LoaderMetaInfo {
     * @returns {Deferred}
     * @see isProcessedModule
     */
-   static getLocalizationInfoToModule(nameModule, loader) {
+   static getLocalizationInfoToModule(nameModule: string, loader?: Function): Deferred<IModuleInfo> {
       if (LoaderMetaInfo.isProcessedModule(nameModule)) {
          return modulesInfo[nameModule];
       }
@@ -35,9 +41,10 @@ class LoaderMetaInfo {
    /**
     * Функция грузит модуль с мета-информацией интерфейсного модуля.
     * @param nameModule - имя интерфейсного модуля.
+    * @param loader - имя интерфейсного модуля
     * @returns {Deferred}
     */
-   protected static loadMetaInfo(nameModule, loader) {
+   protected static loadMetaInfo(nameModule: string, loader?: Function): Deferred<IModuleInfo> {
       const def = new Deferred();
 
       loader([nameModule + "/.builder/module"], info => {

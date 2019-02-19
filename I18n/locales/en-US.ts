@@ -1,3 +1,4 @@
+/// <amd-module name="I18n/_i18n/locales/en-US"/>
 export default {
     plural: (num, word1, word2) => {
 
