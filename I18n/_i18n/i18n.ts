@@ -29,7 +29,7 @@ interface IConfiguration {
 
 class I18n {
    /** Текущий язык */
-   private _locale: string;
+   public locale: string;
    /** Язык по-умолчанию */
    private _defaultLanguage: string;
    /** Список поддерживаемых языков */
@@ -41,7 +41,7 @@ class I18n {
       this.rk = this.rk.bind(this);
 
       /** Текущий язык */
-      this._locale = config.locale || '';
+      this.locale = config.locale || '';
       /** Язык по-умолчанию */
       this._defaultLanguage = config.defaultLanguage || 'ru-RU';
       /** Список поддерживаемых языков */
@@ -86,7 +86,7 @@ class I18n {
       }
 
       let result = key;
-      if (dictionary[this._locale]) {
+      if (dictionary[this.locale]) {
          if (pluralNumber !== undefined) {
             const translatedKey = this._translateKey(PLURAL_PREFIX + key, context);
             result = translatedKey ? this._translatePlural(translatedKey, pluralNumber) : key;
@@ -99,7 +99,7 @@ class I18n {
    }
 
    protected _translateKey(key: string, context): string {
-      const translatedKey = dictionary[this._locale][context ? `${context}${CONTEXT_SEPARATOR}${key}` : `${key}`];
+      const translatedKey = dictionary[this.locale][context ? `${context}${CONTEXT_SEPARATOR}${key}` : `${key}`];
 
       return translatedKey !== undefined ? translatedKey : '';
    }
@@ -118,7 +118,7 @@ class I18n {
     * @param {String} locale Имя локали.
     * @returns {Boolean}
     */
-   static hasDict(dictName: string, locale): boolean {
+   static hasDictionary(dictName: string, locale: string): boolean {
       return dictionaryNames[locale] ? dictName in dictionaryNames[locale] : false;
    }
 
@@ -129,8 +129,8 @@ class I18n {
     * @param {String} locale Имя локали.
     * @see hasDict
     */
-   static setDict(dict: object, name: string, locale: string): void {
-      if (locale && !I18n.hasDict(name, locale)) {
+   static setDictionary(dict: object, name: string, locale: string): void {
+      if (locale && !I18n.hasDictionary(name, locale)) {
          if (name) {
             dictionaryNames[locale] = dictionaryNames[locale] || {};
             dictionaryNames[locale][name] = true;

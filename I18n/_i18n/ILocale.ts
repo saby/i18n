@@ -1,7 +1,4 @@
-//@ts-ignore
-import {IoC} from 'Env/Env';
-
-interface ILocale {
+export default interface ILocale {
    plural: Function,
    minDays: [],
    shortDays: [],
@@ -39,12 +36,4 @@ interface ILocale {
    shortQuarterFormat: string,
    shortTimeFormat: string,
    masks: object
-}
-
-export default (locale: string): Promise<ILocale> => {
-   return import(`I18n/locales/${locale}`).then(
-      settingLocal => settingLocal,
-      err => {
-         IoC.resolve('ILogger').error('Localization', `Для локали ${locale} не смог загрузить настройки.`);
-      });
 }

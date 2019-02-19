@@ -1,36 +1,47 @@
 // Используем Deferred для работоспособности плагина i18n.
 // @ts-ignore
 import Deferred = require('Core/Deferred');
-interface IModuleInfo {
+import {IoC} from "../../Env/Env";
+import ILocale from "./ILocale";
 
+interface IModuleInfo {
+   dict: []
 }
 
 /** Вся загруженная информация о локализации интерфейсных модулей */
 const modulesInfo = {};
 
-class LoaderMetaInfo {
+class Loader {
+   static locale(locale: string): Promise<ILocale> {
+      return import(`I18n/locales/${locale}`).then(
+         settingLocal => settingLocal,
+         err => {
+            IoC.resolve('ILogger').error('Localization', `Для локали ${locale} не смог загрузить настройки.`);
+         });
+   }
+
    /**
-    * Функция проверяет, что интерфейсный модуль ещё не обрабатывается.
+    * Функция проверяет, что интерфейсный модуль грузится.
     * @param nameModule - имя интерфейсного модуля.
     * @returns {Boolean}
     */
-   static isProcessed(nameModule: string): boolean {
+   static isLoadedModule(nameModule: string): boolean {
       return modulesInfo.hasOwnProperty(nameModule);
    }
 
    /**
-    * Метод возращает информацию о словарях поддерживаемых интерфейсным модулем.
+    * Метод возвращает информацию о словарях поддерживаемых интерфейсным модулем.
     * @param nameModule - имя интерфейсного модуля
     * @param loader - имя интерфейсного модуля
     * @returns {Deferred}
     * @see isProcessedModule
     */
-   static getLocalizationInfoToModule(nameModule: string, loader?: Function): Deferred<IModuleInfo> {
-      if (LoaderMetaInfo.isProcessed(nameModule)) {
+   static loadModule(nameModule: string, loader?: Function): Deferred<IModuleInfo> {
+      if (Loader.isLoadedModule(nameModule)) {
          return modulesInfo[nameModule];
       }
 
-      modulesInfo[nameModule] = LoaderMetaInfo.loadMetaInfo(nameModule, loader);
+      modulesInfo[nameModule] = Loader.loadMetaInfo(nameModule, loader);
 
       return modulesInfo[nameModule];
    }
@@ -38,7 +49,7 @@ class LoaderMetaInfo {
    /**
     * Функция грузит модуль с мета-информацией интерфейсного модуля.
     * @param nameModule - имя интерфейсного модуля.
-    * @param loader - имя интерфейсного модуля
+    * @param loader - имя интерфейсного модуля.
     * @returns {Deferred}
     */
    protected static loadMetaInfo(nameModule: string, loader: Function=require): Deferred<IModuleInfo> {
@@ -65,4 +76,4 @@ class LoaderMetaInfo {
    }
 }
 
-export default LoaderMetaInfo;
+export default Loader;
