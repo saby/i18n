@@ -26,7 +26,7 @@ class Locale {
    /** Конфигурация локали */
    private config: IConfiguration = null;
 
-   construct(config: IConfiguration) {
+   constructor(config: IConfiguration) {
 
       /** Конфигурация локали */
       this.config = config;
@@ -87,11 +87,7 @@ class Locale {
    }
 
    protected _translatePlural(key: string, pluralNumber: number): string {
-      if (key !== undefined) {
-         return this.config.plural(Math.abs(pluralNumber), ...key.split(PLURAL_DELIMITER));
-      }
-
-      return '';
+      return this.config.plural(Math.abs(pluralNumber), ...key.split(PLURAL_DELIMITER));
    }
 
    /**

@@ -38,7 +38,7 @@ class Configuration {
             } else if (!locale.includes('-')) {
                for (const availableLocale in availableLocales) {
                   if (availableLocale.startsWith(locale)) {
-                     detectedLocale = locale;
+                     detectedLocale = availableLocale;
                      return true;
                   }
                }

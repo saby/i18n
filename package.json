@@ -25,6 +25,7 @@
       "links": {
          "node_modules/rmi/src/client/Browser": "Browser",
          "node_modules/rmi/src/client/Env": "Env",
+         "node_modules/sbis3-ws/WS.Core": "WS.Core",
          "node_modules/sbis3-ws/View": "View"
       },
       "url": {
