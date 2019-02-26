@@ -1,7 +1,10 @@
 {
   "extends": "./tsconfig.base",
+  "compilerOptions": {
+    "types" : ["requirejs"]
+  },
   "include": [
     "I18n/**/*.ts",
-    "WS.Core/ws.d.ts"
+    "node_modules/sbis3-ws/WS.Core/ws.d.ts"
   ]
 }
