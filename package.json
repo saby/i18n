@@ -25,18 +25,21 @@
       "links": {
          "node_modules/rmi/src/client/Browser": "Browser",
          "node_modules/rmi/src/client/Env": "Env",
-         "node_modules/sbis3-ws/ws": "WS.Core",
+         "node_modules/sbis3-ws/WS.Core": "WS.Core",
          "node_modules/sbis3-ws/View": "View"
       },
       "url": {
          "port": 1025
       }
    },
-   "dependencies": {},
-   "devDependencies": {
-      "rmi": "git+https://git.sbis.ru/sbis/rmi.git#rc-19.300",
-      "saby-typescript": "git+https://github.com/saby/TypeScript.git#rc-19.300",
-      "saby-units": "git+https://github.com/saby/Units.git#rc-19.300",
-      "sbis3-ws": "git+https://git.sbis.ru/sbis/ws.git#rc-19.300"
-   }
+   "dependencies": {
+     "@types/node": "^11.9.4",
+     "@types/requirejs": "^2.1.31"
+   },
+  "devDependencies": {
+    "rmi": "git+https://git.sbis.ru/sbis/rmi.git#rc-19.300",
+    "saby-typescript": "git+https://github.com/saby/TypeScript.git#rc-19.300",
+    "saby-units": "git+https://github.com/saby/Units.git#rc-19.300",
+    "sbis3-ws": "git+https://git.sbis.ru/sbis/ws.git#rc-19.300"
+  }
 }
