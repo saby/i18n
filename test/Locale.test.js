@@ -1,16 +1,15 @@
 /* global define, describe, context, beforeEach, afterEach, it, assert */
-window = {};
-
 define(['I18n/_i18n/Locale', 'I18n/locales/en-US', 'I18n/_i18n/RkString'], function(Locale, config, RkString) {
    describe('Locale', function() {
       describe('rk',function() {
-         const i18n = new Locale.default(config.default);
+         var i18n = new Locale.default(config.default);
          Locale.default.setDictionary({
             'Английский': 'English',
             'TEST@@Русский': 'Russian',
             'plural#Язык': 'language|languages',
             'TEST@@plural#Ступня': 'foot|foots'
          }, 'TEST/Dictionary', 'en-US');
+
 
          it('empty translate' , function() {
             assert.equal(i18n.rk('Английский'), 'English');
@@ -41,10 +40,10 @@ define(['I18n/_i18n/Locale', 'I18n/locales/en-US', 'I18n/_i18n/RkString'], funct
       it('setDictionary',function() {
          Locale.default.setDictionary({
             'Словарь': 'Dictionary'
-         }, 'TEST/setDictionary', 'en-US');
+         }, 'TEST/setDictionaryTest', 'en-US');
 
 
-         assert.equal(Locale.default.hasDictionary('TEST/setDictionary', 'en-US'), true);
+         assert.equal(Locale.default.hasDictionary('TEST/setDictionaryTest', 'en-US'), true);
       });
 
       it('hasDictionary',function() {

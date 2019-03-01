@@ -117,6 +117,13 @@ class Locale {
          dictionary[locale] = Object.assign(dictionary[locale] || {}, dict);
       }
    }
+
+   /**
+    * Возврашает все установленные словари.
+    */
+   get settedDictionaries() {
+      return dictionaryNames;
+   }
 }
 
 export default Locale;

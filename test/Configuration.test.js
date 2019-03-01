@@ -1,15 +1,9 @@
 /* global define, describe, context, beforeEach, afterEach, it, assert */
 
-define(['I18n/_i18n/Configuration'], function(Configuration) {
+define(['I18n/_i18n/Configuration', 'Env/Env'], function(Configuration, env) {
    describe('Configuration', function() {
 
-      process = process || {};
-      process.domain = process.domain || {};
-      process.domain.req = process.domain.req || {};
-      process.domain.req.cookies = process.domain.req.cookies || {};
-      const cookies = process.domain.req.cookies || {};
-
-      const request = {
+      var request = {
          query: {
             lang: 'en-US'
          },
@@ -18,31 +12,42 @@ define(['I18n/_i18n/Configuration'], function(Configuration) {
          }
       };
 
+      var stub;
+
+      beforeEach(function() {
+         stub = sinon.stub(env.cookie, 'get');
+         stub.returns('en-US');
+      });
+
+      afterEach(function() {
+         stub.restore();
+         stub = undefined;
+      });
+
       it('load', function() {
          assert.equal(Configuration.default.load(request), 'en-US');
-         assert.equal(Configuration.default.load({}), null);
 
-         cookies.lang = 'ru-RU';
-         assert.equal(Configuration.default.load({}), 'ru-RU');
+         assert.equal(Configuration.default.load({}), 'en-US');
+
+         stub.returns(null);
+         assert.equal(Configuration.default.load({}), null);
       });
 
       it('isSet', function() {
-         cookies.lang = null;
          assert.equal(Configuration.default.isSet(request), true);
-         assert.equal(Configuration.default.isSet({}), false);
-
-         cookies.lang = 'ru-RU';
          assert.equal(Configuration.default.isSet(), true);
+
+         stub.returns(null);
+         assert.equal(Configuration.default.isSet(), false);
       });
 
       it('validate', function() {
-         cookies.lang = 'en-US';
          assert.equal(Configuration.default.validate(request), true);
 
-         cookies.lang = 'ru-RU';
+         stub.returns('ru-RU');
          assert.equal(Configuration.default.validate(request), false);
 
-         cookies.lang = null;
+         stub.returns(null);
          assert.equal(Configuration.default.validate(request), false);
       });
 
