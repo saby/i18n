@@ -2,7 +2,7 @@
 
 define(['I18n/_i18n/Loader'], function(Loader) {
    describe('Loader', function() {
-      const loader = function(name, callback, errback) {
+      var loader = function(name, callback, errback) {
         switch (name) {
            case 'good/.builder/module': {
               callback({
