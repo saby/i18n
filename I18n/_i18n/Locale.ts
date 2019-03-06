@@ -121,7 +121,7 @@ class Locale {
    /**
     * Возврашает все установленные словари.
     */
-   get settedDictionaries() {
+   static settedDictionaries() {
       return dictionaryNames;
    }
 }
