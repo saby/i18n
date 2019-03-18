@@ -5,6 +5,7 @@
   },
   "include": [
     "I18n/**/*.ts",
-    "node_modules/sbis3-ws/WS.Core/ws.d.ts"
+    "WS.Core/**/*.ts",
+    "Types/**/*.ts"
   ]
 }
