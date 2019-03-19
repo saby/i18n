@@ -1,10 +1,10 @@
 import RkString from './RkString';
 import IConfiguration from "./IConfiguration";
+import constants from 'Env/Constants'
 
 const PLURAL_PREFIX = 'plural#';
 const CONTEXT_SEPARATOR = '@@';
 const PLURAL_DELIMITER = '|';
-const IS_BROWSER = typeof window !== 'undefined';
 
 /** Все загруженные словари, где ключ - слово на языке оригинала */
 const dictionary = {};
@@ -44,7 +44,7 @@ class Locale {
     */
    rk(key: string, context?: string, pluralNumber?: number): any {
       if (typeof key === 'string') {
-         if (IS_BROWSER) {
+         if (constants.isBrowserPlatform) {
             return this._translate(key, context, pluralNumber)
          } else {
             return new RkString(key, (() => this._translate(key, context, pluralNumber)))
