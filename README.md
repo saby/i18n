@@ -6,7 +6,7 @@ Wasaby Internationalization and localization solution.
 
 1. Clone the repository in separated folder:
 
-        git clone git@github.com:saby/Types.git ./
+        git clone git@github.com:saby/i18n.git ./
 
 1. Install development dependencies:
 
