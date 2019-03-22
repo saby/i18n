@@ -3,6 +3,19 @@ import 'Core/polyfill';
 
 const EXPIRES_COOKIES = 2920;
 
+interface IRequest {
+   query: IQuery
+   headers: IHeaders
+}
+
+interface IQuery {
+   lang: string
+}
+
+interface IHeaders {
+   "accept-language" : string
+}
+
 class Configuration {
    static isSet(request: IRequest): boolean {
       return !!(cookie.get('lang') || request && request.query && request.query.lang) ;
