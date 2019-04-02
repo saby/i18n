@@ -39,23 +39,25 @@ class Locale {
     * Когда аргумент принимает число, то это трактуется как значение,
     * под которое нужно подобрать множественную форму перевода слова
     * @param {Number} pluralNumber Число, под которое нужно подобрать множественную форму перевода слова.
-    * @returns {String}
+    * @param {Function} getLocale - функция возвращающая код установленной локали.
+    * @returns {String | RkString}
     * @public
     */
-   rk(key: string, context?: string, pluralNumber?: number): any {
+   rk(key: string, context?: string | number, pluralNumber?: number, getLocale?: Function): any {
       if (typeof key === 'string') {
          if (constants.isBrowserPlatform) {
             return this._translate(key, context, pluralNumber)
          } else {
-            return new RkString(key, (() => this._translate(key, context, pluralNumber)))
+            return new RkString(key, (() => this._translate(key, context, pluralNumber, getLocale)))
          }
       } else {
          return key;
       }
    }
 
-   protected _translate(key: string, context?: string, pluralNumber?: number): string {
+   protected _translate(key: string, context?: string | number, pluralNumber?: number, getLocale?: Function): string {
       const index = key.indexOf(CONTEXT_SEPARATOR);
+      const localeCode = getLocale ? getLocale() : this.config.code;
 
       if (index > -1) {
          context = key.substr(0, index);
@@ -68,7 +70,7 @@ class Locale {
       }
 
       let result = key;
-      if (dictionary[this.config.code]) {
+      if (dictionary[localeCode]) {
          if (pluralNumber !== undefined) {
             const translatedKey = this._translateKey(PLURAL_PREFIX + key, context);
             result = translatedKey ? this._translatePlural(translatedKey, pluralNumber) : key;
