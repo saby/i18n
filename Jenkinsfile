@@ -4,7 +4,8 @@ def workspace = "/home/sbis/workspace/i18n_${version}/${BRANCH_NAME}"
     ws (workspace){
         deleteDir()
         checkout([$class: 'GitSCM',
-            branches: [[name: "rc-${version}"]],
+            //branches: [[name: "rc-${version}"]],
+            branches: [[name: "19.300/feature/refactor-i18n-tests"]],
             doGenerateSubmoduleConfigurations: false,
             extensions: [[
                 $class: 'RelativeTargetDirectory',
