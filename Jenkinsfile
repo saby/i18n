@@ -23,12 +23,12 @@ def workspace = "/home/sbis/workspace/i18n_${version}/${BRANCH_NAME}"
         run_unit = load "./jenkins_pipeline/platforma/branch/run_unit"
         timeout(time: 60, unit: 'MINUTES') {
 			LocalDateTime start_time = LocalDateTime.now();
-			echo "Время начала сборки: ${start_time}"
+			echo "Р’СЂРµРјСЏ РЅР°С‡Р°Р»Р° СЃР±РѕСЂРєРё: ${start_time}"
 			try {
 				start.start(version, workspace, helper)
 			} finally {
 				LocalDateTime end_time = LocalDateTime.now();
-				echo "Время конца сборки: ${end_time}"
+				echo "Р’СЂРµРјСЏ РєРѕРЅС†Р° СЃР±РѕСЂРєРё: ${end_time}"
 				Duration duration = Duration.between(end_time, start_time);
 				diff_time = Math.abs(duration.toMillis());
 				helper.time_stages(diff_time, "${BUILD_URL}", version, "i18n")
