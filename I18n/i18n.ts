@@ -8,4 +8,3 @@
 export {default as Locale} from './_i18n/Locale';
 export {default as Configuration} from './_i18n/Configuration';
 export {default as Loader} from './_i18n/Loader';
-

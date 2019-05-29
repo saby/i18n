@@ -1,6 +1,6 @@
 import RkString from './RkString';
-import IConfiguration from "./IConfiguration";
-import constants from 'Env/Constants'
+import IConfiguration from './IConfiguration';
+import constants from 'Env/Constants';
 
 const PLURAL_PREFIX = 'plural#';
 const CONTEXT_SEPARATOR = '@@';
@@ -12,9 +12,9 @@ const dictionary = {};
 /** Все загруженные словари, где ключ - имя словаря */
 const dictionaryNames = {};
 
-
 /**
- * I18n - поддержка интернационализации. Подробнее о механизме интернационализации читайте в разделе <a href="https://wi.sbis.ru/doc/platform/developmentapl/internalization/">Интернационализация и локализация</a>.
+ * I18n - поддержка интернационализации. Подробнее о механизме интернационализации читайте в разделе
+ * <a href="https://wi.sbis.ru/doc/platform/developmentapl/internalization/">Интернационализация и локализация</a>.
  * @class Core/i18n
  * @author Aleksey Maltsev.
  * @public
@@ -42,19 +42,19 @@ class Locale {
     * @returns {String}
     * @public
     */
-   rk(key: string, context?: string, pluralNumber?: number): any {
+   rk(key: string, context?: string | number, pluralNumber?: number): any {
       if (typeof key === 'string') {
          if (constants.isBrowserPlatform) {
-            return this._translate(key, context, pluralNumber)
+            return this._translate(key, context, pluralNumber);
          } else {
-            return new RkString(key, (() => this._translate(key, context, pluralNumber)))
+            return new RkString(key, (() => this._translate(key, context, pluralNumber)));
          }
       } else {
          return key;
       }
    }
 
-   protected _translate(key: string, context?: string, pluralNumber?: number): string {
+   protected _translate(key: string, context?: string | number, pluralNumber?: number): string {
       const index = key.indexOf(CONTEXT_SEPARATOR);
 
       if (index > -1) {
@@ -80,7 +80,7 @@ class Locale {
       return result;
    }
 
-   protected _translateKey(key: string, context): string {
+   protected _translateKey(key: string, context?: string): string {
       const translatedKey = dictionary[this.config.code][context ? `${context}${CONTEXT_SEPARATOR}${key}` : `${key}`];
 
       return translatedKey !== undefined ? translatedKey : '';
@@ -114,14 +114,14 @@ class Locale {
             dictionaryNames[locale][name] = true;
          }
 
-         dictionary[locale] = Object.assign(dictionary[locale] || {}, dict);
+         dictionary[locale] = {...dictionary[locale] || {}, dict};
       }
    }
 
    /**
     * Возврашает все установленные словари.
     */
-   static settedDictionaries() {
+   static settedDictionaries(): object {
       return dictionaryNames;
    }
 }

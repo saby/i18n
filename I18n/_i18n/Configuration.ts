@@ -4,21 +4,21 @@ import 'Core/polyfill';
 const EXPIRES_COOKIES = 2920;
 
 interface IRequest {
-   query: IQuery
-   headers: IHeaders
+   query: IQuery;
+   headers: IHeaders;
 }
 
 interface IQuery {
-   lang: string
+   lang: string;
 }
 
 interface IHeaders {
-   "accept-language" : string
+   'accept-language': string;
 }
 
 class Configuration {
    static isSet(request: IRequest): boolean {
-      return !!(cookie.get('lang') || request && request.query && request.query.lang) ;
+      return !!(cookie.get('lang') || request && request.query && request.query.lang);
    }
 
    static save(locale: string): void {
@@ -42,7 +42,7 @@ class Configuration {
          && request.headers['accept-language'].split(',');
 
       if (acceptLocale) {
-         acceptLocale.some(localeHeader => {
+         acceptLocale.some((localeHeader) => {
             const locale = localeHeader.split(';')[0];
 
             if (locale.includes('-') && locale in availableLocales) {
