@@ -1,21 +1,21 @@
 // Используем Deferred для работоспособности плагина i18n.
 // @ts-ignore
 import Deferred = require('Core/Deferred');
-import {IoC} from "../../Env/Env";
-import IConfiguration from "./IConfiguration";
+import {IoC} from '../../Env/Env';
+import IConfiguration from './IConfiguration';
 
 interface IModuleInfo {
-   dict: []
+   dict: [];
 }
 
 /** Вся загруженная информация о локализации интерфейсных модулей */
 const modulesInfo = {};
 
 class Loader {
-   static locale(locale: string): Promise<IConfiguration> {
+   static async locale(locale: string): Promise<IConfiguration> {
       return import(`I18n/locales/${locale}`).then(
-         settingLocal => settingLocal,
-         err => {
+         (settingLocal) => settingLocal,
+         (err) => {
             IoC.resolve('ILogger').error('Localization', `Для локали ${locale} не смог загрузить настройки.`);
          });
    }
@@ -52,10 +52,10 @@ class Loader {
     * @param loader - имя интерфейсного модуля.
     * @returns {Deferred}
     */
-   protected static loadMetaInfo(nameModule: string, loader: Function=require): Deferred<IModuleInfo> {
+   protected static loadMetaInfo(nameModule: string, loader: Function = require): Deferred<IModuleInfo> {
       const def = new Deferred();
 
-      loader([nameModule + "/.builder/module"], info => {
+      loader([nameModule + '/.builder/module'], (info) => {
          const infoDict = {};
 
          if (info.dict) {
@@ -63,12 +63,12 @@ class Loader {
                const langAndExtDict = nameDict.split('.');
 
                infoDict[langAndExtDict[0]] = infoDict[langAndExtDict[0]] || [];
-               infoDict[langAndExtDict[0]].push(langAndExtDict[1] ? langAndExtDict[1]: 'json');
+               infoDict[langAndExtDict[0]].push(langAndExtDict[1] ? langAndExtDict[1] : 'json');
             }
          }
 
          def.callback(infoDict);
-      }, err => {
+      }, (err) => {
          def.errback(err);
       });
 

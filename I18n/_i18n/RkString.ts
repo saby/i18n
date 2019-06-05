@@ -8,7 +8,7 @@ const RkString = function RkString(value: string, resolver: Function): void {
       },
       length: {
          enumerable: true,
-         get() : number {
+         get(): number {
             return this.translatedValue.length;
          }
       }
@@ -17,7 +17,7 @@ const RkString = function RkString(value: string, resolver: Function): void {
 
 RkString.prototype = Object.create(String.prototype);
 
-RkString.prototype.toString = RkString.prototype.toJSON = RkString.prototype.valueOf = function (): string {
+RkString.prototype.toString = RkString.prototype.toJSON = RkString.prototype.valueOf = function(): string {
    return this.translatedValue;
 };
 
