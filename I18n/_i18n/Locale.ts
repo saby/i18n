@@ -114,7 +114,7 @@ class Locale {
             dictionaryNames[locale][name] = true;
          }
 
-         dictionary[locale] = {...dictionary[locale] || {}, dict};
+         dictionary[locale] = {...dictionary[locale], ...dict};
       }
    }
 
