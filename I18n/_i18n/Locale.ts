@@ -1,7 +1,6 @@
 import RkString from './RkString';
 import IConfiguration from './IConfiguration';
 import {constants, IoC} from 'Env/Env';
-import {IoC} from "../../Env/Env";
 
 const PLURAL_PREFIX = 'plural#';
 const CONTEXT_SEPARATOR = '@@';
