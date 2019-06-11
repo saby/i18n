@@ -1,6 +1,7 @@
 import RkString from './RkString';
 import IConfiguration from './IConfiguration';
-import constants from 'Env/Constants';
+import {constants, IoC} from 'Env/Env';
+import {IoC} from "../../Env/Env";
 
 const PLURAL_PREFIX = 'plural#';
 const CONTEXT_SEPARATOR = '@@';
@@ -72,12 +73,19 @@ class Locale {
          if (pluralNumber !== undefined) {
             const translatedKey = this._translateKey(PLURAL_PREFIX + key, context);
             result = translatedKey ? this._translatePlural(translatedKey, pluralNumber) : key;
+
+            if (!result) {
+               IoC.resolve('ILogger').error(
+                  'Localization',
+                  `Для ключа ${key} нет плюральной формы числа ${pluralNumber} в локали ${this.config.code}.`
+               );
+            }
          } else {
             result = this._translateKey(key, context) || key;
          }
       }
 
-      return result;
+      return result || key;
    }
 
    protected _translateKey(key: string, context?: string): string {
