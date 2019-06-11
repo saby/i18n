@@ -19,8 +19,9 @@ define(['I18n/_i18n/Locale', 'I18n/locales/en-US', 'I18n/_i18n/RkString', 'Env/C
                Locale.default.setDictionary({
                   'Английский': 'English',
                   'TEST@@Русский': 'Russian',
-                  'plural#Язык': 'language|languages',
-                  'TEST@@plural#Ступня': 'foot|foots'
+                  'plural#язык': 'language|languages',
+                  'plural#Пустота': 'Empty',
+                  'TEST@@plural#ступня': 'foot|foots'
                }, 'TEST/Dictionary', 'en-US');
 
 
@@ -33,16 +34,21 @@ define(['I18n/_i18n/Locale', 'I18n/locales/en-US', 'I18n/_i18n/RkString', 'Env/C
                   assert.equal(i18n.rk('Русский'), 'Русский');
                });
 
+               it('not have plural form', function () {
+                  assert.equal(i18n.rk('Пустота', 1), 'Empty');
+                  assert.equal(i18n.rk('Пустота', 2), 'Пустота');
+               });
+
                it('plural translate', function () {
-                  assert.equal(i18n.rk('Язык', 1), 'language');
-                  assert.equal(i18n.rk('Язык', 2), 'languages');
+                  assert.equal(i18n.rk('язык', 1), 'language');
+                  assert.equal(i18n.rk('язык', 2), 'languages');
                });
 
                it('plural and context translate', function () {
-                  assert.equal(i18n.rk('Ступня', 'TEST', 1), 'foot');
-                  assert.equal(i18n.rk('Ступня', 'TEST', 2), 'foots');
-                  assert.equal(i18n.rk('Ступня', 2), 'Ступня');
-                  assert.equal(i18n.rk('Ступня', 'TEST'), 'Ступня');
+                  assert.equal(i18n.rk('ступня', 'TEST', 1), 'foot');
+                  assert.equal(i18n.rk('ступня', 'TEST', 2), 'foots');
+                  assert.equal(i18n.rk('ступня', 2), 'ступня');
+                  assert.equal(i18n.rk('ступня', 'TEST'), 'ступня');
                });
 
                it('not translate', function () {
