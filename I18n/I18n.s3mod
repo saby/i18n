@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ui_module id="832cda0a-e19c-4ffc-a1d1-47edbb6b7501" name="I18n" responsible="Мальцев А." required="1" version="1.00">
+<ui_module id="832cda0a-e19c-4ffc-a1d1-47edbb6b7501" name="I18n" package="Платформа" responsible="Мальцев А." required="1" version="1.00">
 
   <description/>
 
