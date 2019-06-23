@@ -11,25 +11,19 @@
    "scripts": {
       "build": "npm run build:typescript && npm run build:compile",
       "build:typescript": "saby-typescript --install --tsconfig=tsconfig.base.json",
-      "build:compile": "saby-units --install && tsc -b --verbose",
+      "build:compile": "saby-units --install && npm run builder",
       "start": "node node_modules/saby-units/cli/server",
       "test": "saby-units %NODE_DEBUG_OPTION% --isolated",
       "test:node": "saby-units --isolated --report",
       "test:node-coverage": "saby-units --isolated --report --coverage",
       "test:browser": "saby-units --browser --report",
-      "test:browser-coverage": "saby-units --browser --report --coverage"
+      "test:browser-coverage": "saby-units --browser --report --coverage",
+      "builder": "node node_modules/gulp/bin/gulp.js --gulpfile=node_modules/sbis3-builder/gulpfile.js build --config=../../builderConfig.json --log-level=warning -LLLL"
    },
    "saby-units": {
       "moduleType": "amd",
       "tests": "test",
-      "links": {
-         "node_modules/rmi/src/client/Browser": "Browser",
-         "node_modules/rmi/src/client/Env": "Env",
-         "node_modules/sbis3-ws/WS.Core": "WS.Core",
-         "node_modules/sbis3-ws/Inferno": "Inferno",
-         "node_modules/sbis3-ws/View": "View",
-         "node_modules/saby-types/Types": "Types"
-      },
+      "root": "application",
       "url": {
          "port": 1025
       }
@@ -45,6 +39,8 @@
       "saby-typescript": "git+https://github.com/saby/TypeScript.git#rc-19.410",
       "saby-units": "git+https://github.com/saby/Units.git#rc-19.410",
       "saby-types": "git+https://github.com/saby/Types.git#rc-19.410",
-      "sbis3-ws": "git+https://git.sbis.ru/sbis/ws.git#rc-19.410"
+      "sbis3-ws": "git+https://git.sbis.ru/sbis/ws.git#rc-19.410",
+      "sbis3-builder": "git+https://github.com/saby/Builder.git#rc-19.410",
+      "wasaby-app": "git+https://github.com/saby/wasaby-app.git#rc-19.410"
    }
 }
