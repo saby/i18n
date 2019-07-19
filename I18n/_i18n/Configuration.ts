@@ -4,12 +4,7 @@ import 'Core/polyfill';
 const EXPIRES_COOKIES = 2920;
 
 interface IRequest {
-   query: IQuery;
    headers: IHeaders;
-}
-
-interface IQuery {
-   lang: string;
 }
 
 interface IHeaders {
@@ -17,8 +12,8 @@ interface IHeaders {
 }
 
 class Configuration {
-   static isSet(request: IRequest): boolean {
-      return !!(cookie.get('lang') || request && request.query && request.query.lang);
+   static isSet(): boolean {
+      return !!(cookie.get('lang'));
    }
 
    static save(locale: string): void {
@@ -28,12 +23,8 @@ class Configuration {
       });
    }
 
-   static load(request: IRequest): string {
-      return (request && request.query && request.query.lang) || cookie.get('lang') || null;
-   }
-
-   static validate(request: IRequest): boolean {
-      return !(request && request.query && request.query.lang && request.query.lang !== cookie.get('lang'));
+   static load(): string {
+      return cookie.get('lang') || null;
    }
 
    static detect(request: IRequest, availableLocales: object): string {
