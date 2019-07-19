@@ -4,9 +4,6 @@ define(['I18n/_i18n/Configuration', 'Env/Env'], function(Configuration, env) {
    describe('Configuration', function() {
 
       var request = {
-         query: {
-            lang: 'en-US'
-         },
          headers: {
             'accept-language': 'en-US,en;q=0.9,ru;q=0.8,ru-RU;q=0.7'
          }
@@ -25,30 +22,17 @@ define(['I18n/_i18n/Configuration', 'Env/Env'], function(Configuration, env) {
       });
 
       it('load', function() {
-         assert.equal(Configuration.default.load(request), 'en-US');
-
-         assert.equal(Configuration.default.load({}), 'en-US');
+         assert.equal(Configuration.default.load(), 'en-US');
 
          stub.returns(null);
-         assert.equal(Configuration.default.load({}), null);
+         assert.equal(Configuration.default.load(), null);
       });
 
       it('isSet', function() {
-         assert.equal(Configuration.default.isSet(request), true);
          assert.equal(Configuration.default.isSet(), true);
 
          stub.returns(null);
          assert.equal(Configuration.default.isSet(), false);
-      });
-
-      it('validate', function() {
-         assert.equal(Configuration.default.validate(request), true);
-
-         stub.returns('ru-RU');
-         assert.equal(Configuration.default.validate(request), false);
-
-         stub.returns(null);
-         assert.equal(Configuration.default.validate(request), false);
       });
 
       it('detect', function() {
