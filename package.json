@@ -22,7 +22,7 @@
    },
    "saby-units": {
       "moduleType": "amd",
-      "tests": "test",
+      "tests": "I18nTest",
       "root": "application",
       "url": {
          "port": 1025
