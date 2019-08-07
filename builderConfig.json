@@ -62,8 +62,8 @@
          "required": true
       },
       {
-         "name": "test",
-         "path": "./test"
+         "name": "I18nTest",
+         "path": "./I18nTest"
       }
    ]
 }
