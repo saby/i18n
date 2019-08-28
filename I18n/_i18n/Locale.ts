@@ -13,12 +13,10 @@ const dictionary = {};
 const dictionaryNames = {};
 
 /**
- * I18n - поддержка интернационализации. Подробнее о механизме интернационализации читайте в разделе
- * <a href="https://wi.sbis.ru/doc/platform/developmentapl/internalization/">Интернационализация и локализация</a>.
- * @class Core/i18n
- * @author Aleksey Maltsev.
+ * Класс локали.
+ * @class I18n/_i18n/Locale
+ * @author Кудрявцев И.С.
  * @public
- * @singleton
  */
 
 class Locale {
