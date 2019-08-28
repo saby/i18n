@@ -11,6 +11,12 @@ interface IHeaders {
    'accept-language': string;
 }
 
+/**
+ * Статический класс для работы с конфигурацией интернационализации.
+ * class I18n/_i18n/Configuration
+ * @public
+ * @author Кудрявцев И.С.
+ */
 class Configuration {
    static isSet(): boolean {
       return !!(cookie.get('lang'));
