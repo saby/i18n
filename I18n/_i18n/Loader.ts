@@ -11,6 +11,12 @@ interface IModuleInfo {
 /** Вся загруженная информация о локализации интерфейсных модулей */
 const modulesInfo = {};
 
+/**
+ * Статический класс для загрузки мета данных и конфигураций локалей.
+ * class I18n/_i18n/Loader
+ * @public
+ * @author Кудрявцев И.С.
+ */
 class Loader {
    static async locale(locale: string): Promise<IConfiguration> {
       return import(`I18n/locales/${locale}`).then(
