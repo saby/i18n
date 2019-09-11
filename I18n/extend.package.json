@@ -2,5 +2,5 @@
   "include": [
     "I18n/i18n"
   ],
-  "extendsTo": "vdom-superbundle.package.js"
+  "extendsTo": "main-core-superbundle.package.js"
 }
