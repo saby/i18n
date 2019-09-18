@@ -74,8 +74,8 @@ class Loader {
          }
 
          def.callback(infoDict);
-      }, (err) => {
-         def.errback(err);
+      }, () => {
+         def.callback({});
       });
 
       return def;
