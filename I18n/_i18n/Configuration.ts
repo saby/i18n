@@ -1,4 +1,4 @@
-import {cookie} from 'Env/Env';
+import { cookie, constants } from 'Env/Env';
 import 'Core/polyfill';
 
 const EXPIRES_COOKIES = 2920;
@@ -23,14 +23,14 @@ class Configuration {
    }
 
    static save(locale: string): void {
-      cookie.set('lang', locale || null, {
+      cookie.set('lang', locale || constants.defaultLanguage, {
          expires: EXPIRES_COOKIES,
          path: '/'
       });
    }
 
    static load(): string {
-      return cookie.get('lang') || null;
+      return cookie.get('lang') || constants.defaultLanguage;
    }
 
    static detect(request: IRequest, availableLocales: object): string {
