@@ -25,7 +25,7 @@ define(['I18n/_i18n/Configuration', 'Env/Env'], function(Configuration, env) {
          assert.equal(Configuration.default.load(), 'en-US');
 
          stub.returns(null);
-         assert.equal(Configuration.default.load(), 'ru-RU');
+         assert.equal(Configuration.default.load(), 'ru');
       });
 
       it('isSet', function() {

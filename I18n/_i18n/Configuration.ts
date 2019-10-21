@@ -23,14 +23,14 @@ class Configuration {
    }
 
    static save(locale: string): void {
-      cookie.set('lang', locale || constants.defaultLanguage || 'ru-RU', {
+      cookie.set('lang', locale || constants.defaultLanguage || 'ru', {
          expires: EXPIRES_COOKIES,
          path: '/'
       });
    }
 
    static load(): string {
-      return cookie.get('lang') || constants.defaultLanguage || 'ru-RU';
+      return cookie.get('lang') || constants.defaultLanguage || 'ru';
    }
 
    static detect(request: IRequest, availableLocales: object): string {
