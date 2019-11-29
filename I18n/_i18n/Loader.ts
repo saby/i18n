@@ -14,6 +14,8 @@ interface IModuleInfo {
    dict: [];
 }
 
+/** Deferred-ы с загрузками информация о локализации интерфейсных модулей */
+const deferredModulesInfo = {};
 /** Вся загруженная информация о локализации интерфейсных модулей */
 const modulesInfo = {};
 
@@ -43,14 +45,24 @@ class Loader {
     */
    static loadModule(nameModule: string, loader?: Function): Deferred<IModuleInfo> {
       if (Loader.isLoadedModule(nameModule)) {
-         return modulesInfo[nameModule];
+         return deferredModulesInfo[nameModule].addcallbak(function() {
+            return modulesInfo[nameModule];
+         });
       }
 
-      modulesInfo[nameModule] = Loader.loadMetaInfo(nameModule, loader);
+      deferredModulesInfo[nameModule] = Loader.loadMetaInfo(nameModule, loader).addCallback(function(info) {
+         modulesInfo[nameModule] = info;
+         return modulesInfo[nameModule];
+      });
 
-      return modulesInfo[nameModule];
+      return deferredModulesInfo[nameModule];
    }
 
+   /**
+    * Загрузка конфигурации для локали.
+    * @param {String} locale - код локали.
+    * @returns {Promise<IConfiguration>}
+    */
    static loadConfiguration(locale: string): Promise<IConfiguration> {
       return new Promise((resolve, reject) => {
          const [language, country] = locale.split('-');
@@ -62,13 +74,15 @@ class Loader {
             if (country && AVAILABLE_COUNTRY.includes(country)) {
                configurations.push(import(`I18n/locales/format/${country}`));
             } else {
-               configurations.push(import(`I18n/locales/format/${DEFAULT_COUNTRY[country]}`));
+               configurations.push(import(`I18n/locales/format/${DEFAULT_COUNTRY[language]}`));
             }
          }
 
          Promise.all(configurations).then((result) => {
             if (result.length !== 0) {
-               resolve({...result[0].default, ...result[1].default});
+               const code = `${result[0].default.code}${result[1] ? '-' + result[1].default.code : ''}`;
+
+               resolve({...result[0].default, ...result[1].default, code});
             } else {
                reject(`Language ${language} is not supported`);
             }

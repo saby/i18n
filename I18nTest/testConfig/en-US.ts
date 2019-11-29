@@ -1,21 +1,5 @@
 export default {
-   code: 'en',
-   /**
-    * Для английской локали
-    * @param pluralNumber число
-    * @param word1 слово для 1
-    * @param word2 слово для нескольких
-    * @returns {String}
-    * @private
-    */
-   plural: (pluralNumber: number, word1: string, word2: string): string => {
-
-      if (pluralNumber > 1 || pluralNumber === 0) {
-         return word2;
-      }
-
-      return word1;
-   },
+   code: 'en-US',
    pluralConstructor: {
       variable: ['pluralNumber', 'word1', 'word2'],
       body: `if (pluralNumber > 1 || pluralNumber === 0) {
@@ -65,5 +49,30 @@ export default {
    shortQuarter: '$digit$s$ qtr',
    longQuarter: '$digit$s$ quarter',
    quarters: ['I', 'II', 'III', 'IV'],
-   longQuarters: ['I quarter', 'II quarter', 'III quarter', 'IV quarter']
-}
+   longQuarters: ['I quarter', 'II quarter', 'III quarter', 'IV quarter'],
+   fullDateDayOfWeekFormat: 'dddd, DD MMMM\'YY',
+   fullDateFormat: 'DD.MM.YY',
+   fullDateFullMonthFormat: 'DD MMMM\'YY',
+   fullDateFullMonthFullYearFormat: 'DD MMMM, YYYY',
+   fullDateFullYearFormat: 'DD.MM.YYYY',
+   fullDateShortMonthFormat: 'DD MMM\'YY',
+   fullDateShortMonthFullYearFormat: 'DD MMM YYYY',
+   fullHalfYearFormat: 'YYYYhr \'YY',
+   fullMonthFormat: 'MMMM\'YY',
+   fullQuarterFormat: 'QQQQr \'YY',
+   fullTimeFormat: 'HH:mm:ss',
+   shortDateDayOfWeekFormat: 'dddd, DD MMMM',
+   shortDateFormat: 'DD.MM',
+   shortDateFullMonthFormat: 'DD MMMM',
+   shortDateShortMonthFormat: 'DD MMM',
+   shortHalfYearFormat: 'YYhr \'YY',
+   shortMonthFormat: 'MMM\'YY',
+   shortQuarterFormat: 'QQQr \'YY',
+   shortTimeFormat: 'HH:mm',
+   masks: {
+      date: '%m/%d/%y',
+      min: '%I:%M %p',
+      sec: '%I:%M:%S %p',
+      msec: '%I:%M:%S.%J %p'
+   }
+};

@@ -1,4 +1,5 @@
 export default {
+   code: 'RU',
    fullDateDayOfWeekFormat: 'DD MMMMlo\'YY, ddddl',
    fullDateFormat: 'DD.MM.YY',
    fullDateFullMonthFormat: 'DD MMMMlo\'YY',

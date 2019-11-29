@@ -1,4 +1,5 @@
 export default {
+   code: 'ru',
    /**
     * Для русской локали
     * @param pluralNumber число
