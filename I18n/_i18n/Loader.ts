@@ -1,8 +1,14 @@
 // Используем Deferred для работоспособности плагина i18n.
 // @ts-ignore
 import Deferred = require('Core/Deferred');
-import {IoC} from '../../Env/Env';
 import IConfiguration from './IConfiguration';
+
+const AVAILABLE_LANGUAGE = ['en', 'ru'];
+const AVAILABLE_COUNTRY = ['US', 'RU'];
+const DEFAULT_COUNTRY = {
+  en: 'US',
+  ru: 'RU'
+};
 
 interface IModuleInfo {
    dict: [];
@@ -18,13 +24,6 @@ const modulesInfo = {};
  * @author Кудрявцев И.С.
  */
 class Loader {
-   static async locale(locale: string): Promise<IConfiguration> {
-      return import(`I18n/locales/${locale}`).then(
-         (settingLocal) => settingLocal,
-         (err) => {
-            IoC.resolve('ILogger').error('Localization', `Для локали ${locale} не смог загрузить настройки.`);
-         });
-   }
 
    /**
     * Функция проверяет, что интерфейсный модуль грузится.
@@ -50,6 +49,33 @@ class Loader {
       modulesInfo[nameModule] = Loader.loadMetaInfo(nameModule, loader);
 
       return modulesInfo[nameModule];
+   }
+
+   static loadConfiguration(locale: string): Promise<IConfiguration> {
+      return new Promise((resolve, reject) => {
+         const [language, country] = locale.split('-');
+         const configurations = [];
+
+         if (language && AVAILABLE_LANGUAGE.includes(language)) {
+            configurations.push(import(`I18n/locales/language/${language}`));
+
+            if (country && AVAILABLE_COUNTRY.includes(country)) {
+               configurations.push(import(`I18n/locales/format/${country}`));
+            } else {
+               configurations.push(import(`I18n/locales/format/${DEFAULT_COUNTRY[country]}`));
+            }
+         }
+
+         Promise.all(configurations).then((result) => {
+            if (result.length !== 0) {
+               resolve({...result[0].default, ...result[1].default});
+            } else {
+               reject(`Language ${language} is not supported`);
+            }
+         }, (err) => {
+            reject(err.message);
+         });
+      });
    }
 
    /**

@@ -15,6 +15,14 @@ export default {
 
       return word1;
    },
+   pluralConstructor: {
+      variable: ['pluralNumber', 'word1', 'word2'],
+      body: `if (pluralNumber > 1 || pluralNumber === 0) {
+         return word2;
+      }
+
+      return word1;`
+   },
    minDays: ['Su', 'Mo', 'To', 'We', 'Th', 'Fr', 'Sa'],
    shortDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
    longDays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
