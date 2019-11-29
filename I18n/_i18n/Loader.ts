@@ -33,7 +33,7 @@ class Loader {
     * @returns {Boolean}
     */
    static isLoadedModule(nameModule: string): boolean {
-      return modulesInfo.hasOwnProperty(nameModule);
+      return deferredModulesInfo.hasOwnProperty(nameModule);
    }
 
    /**
