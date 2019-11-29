@@ -45,7 +45,7 @@ class Loader {
     */
    static loadModule(nameModule: string, loader?: Function): Deferred<IModuleInfo> {
       if (Loader.isLoadedModule(nameModule)) {
-         return deferredModulesInfo[nameModule].addcallbak(function() {
+         return deferredModulesInfo[nameModule].addCallback(function() {
             return modulesInfo[nameModule];
          });
       }
