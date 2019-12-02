@@ -1,9 +1,9 @@
 /* global define, describe, context, beforeEach, afterEach, it, assert */
 
-define(['I18n/_i18n/Loader'], function(Loader) {
+define(['I18n/_i18n/Loader', 'I18nTest/testConfig/en-US', 'I18nTest/testConfig/en-RU'], function(Loader, enUS, enRU) {
    describe('Loader', function() {
-      var loader = function(name, callback, errback) {
-        switch (name) {
+      const loaderInfo = function(name, callback, errback) {
+        switch (name[0]) {
            case 'good/.builder/module': {
               callback({
                  dict: [
@@ -22,29 +22,57 @@ define(['I18n/_i18n/Loader'], function(Loader) {
         }
       };
 
+      describe('loadConfiguration', function() {
+         if (!window) {
+            it ('en-US',  function() {
+               return Loader.default.loadConfiguration('en-US').then(function(result) {
+                  delete result.plural;
+                  assert.deepEqual(result, enUS.default);
+               })
+            });
+
+            it ('en-RU',  function() {
+               return Loader.default.loadConfiguration('en-RU').then(function(result) {
+                  delete result.plural;
+                  assert.deepEqual(result, enRU.default);
+               })
+            });
+
+            it ('en',  function() {
+               return Loader.default.loadConfiguration('en').then(function(result) {
+                  delete result.plural;
+                  assert.deepEqual(result, enUS.default);
+               })
+            });
+
+            it ('not support locale',  function() {
+               return Loader.default.loadConfiguration('fr-FR').then(function(result) {
+                  delete result.plural;
+                  assert.deepEqual(result, enUS.default);
+               }, function(err) {
+                  assert.equal(err,`Language fr is not supported`);
+               });
+            });
+         }
+      });
+
       describe('loadModule', function() {
-         it('load', function() {
-            Loader.default.loadModule('good', loader).addCallback(function(info) {
-               assert.equal(info['en-US'], true);
-               assert.equal(info['ru-RU'], true);
-               assert.equal(info['ru-RU'].include('json'), true);
-               assert.equal(info['en-US'].include('json'), true);
-               assert.equal(info['en-US'].include('css'), true);
+         it('first load', function () {
+            Loader.default.loadModule('good', loaderInfo).addCallback(function(info) {
+               assert.deepEqual(info['en-US'], ['json', 'css']);
+               assert.deepEqual(info['ru-RU'], ['json']);
             });
          });
 
-         it('second call', function() {
-            Loader.default.loadModule('good', loader).addCallback(function(info) {
-               assert.equal(info['en-US'], true);
-               assert.equal(info['ru-RU'], true);
-               assert.equal(info['ru-RU'].include('json'), true);
-               assert.equal(info['en-US'].include('json'), true);
-               assert.equal(info['en-US'].include('css'), true);
+         it('second load', function () {
+            Loader.default.loadModule('good', loaderInfo).addCallback(function (info) {
+               assert.deepEqual(info['en-US'], ['json', 'css']);
+               assert.deepEqual(info['ru-RU'], ['json']);
             });
          });
 
          it('error', function() {
-            Loader.default.loadModule('bed', loader).addErrback(function(err) {
+            Loader.default.loadModule('bed', loaderInfo).addErrback(function(err) {
                assert.equal(err, 'Error');
             });
          });

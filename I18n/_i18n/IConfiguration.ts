@@ -1,6 +1,12 @@
+interface IPluralConstructor {
+   body: string,
+   variable: Array<string>
+}
+
 export default interface IConfiguration {
    code: string;
    plural: Function;
+   pluralConstructor: IPluralConstructor;
    minDays: [];
    shortDays: [];
    longDays: [];
