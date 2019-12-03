@@ -99,7 +99,7 @@ class Loader {
     * @returns {Deferred}
     */
    protected static loadMetaInfo(nameModule: string, loader: Function = require): Deferred<IModuleInfo> {
-      const def = new Deferred();
+      const def = new Deferred<IModuleInfo>();
 
       loader([nameModule + '/.builder/module'], (info) => {
          const infoDict = {};
