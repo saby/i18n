@@ -1,7 +1,8 @@
 {
   "extends": "./tsconfig.base",
   "compilerOptions": {
-    "types" : ["requirejs"]
+    "baseUrl": "./application",
+    "outDir": "./application"
   },
   "include": [
     "I18n/**/*.ts",
