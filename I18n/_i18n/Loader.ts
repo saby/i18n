@@ -61,35 +61,37 @@ class Loader {
    /**
     * Загрузка конфигурации для локали.
     * @param {String} locale - код локали.
-    * @returns {Promise<IConfiguration>}
+    * @param {Function} loader - имя интерфейсного модуля.
+    * @returns {Deferred<IConfiguration>}
     */
-   static loadConfiguration(locale: string): Promise<IConfiguration> {
-      return new Promise((resolve, reject) => {
-         const [language, country] = locale.split('-');
-         const configurations = [];
+   static loadConfiguration(locale: string, loader: Function = require): Deferred<IConfiguration> {
+      const result = new Deferred<IConfiguration>();
+      const [language, country] = locale.split('-');
+      const configurations = [];
 
-         if (language && AVAILABLE_LANGUAGE.includes(language)) {
-            configurations.push(import(`I18n/locales/language/${language}`));
+      if (language && AVAILABLE_LANGUAGE.includes(language)) {
+         configurations.push(`I18n/locales/language/${language}`);
 
-            if (country && AVAILABLE_COUNTRY.includes(country)) {
-               configurations.push(import(`I18n/locales/format/${country}`));
-            } else {
-               configurations.push(import(`I18n/locales/format/${DEFAULT_COUNTRY[language]}`));
-            }
+         if (country && AVAILABLE_COUNTRY.includes(country)) {
+            configurations.push(`I18n/locales/format/${country}`);
+         } else {
+            configurations.push(`I18n/locales/format/${DEFAULT_COUNTRY[language]}`);
          }
+      }
 
-         Promise.all(configurations).then((result) => {
-            if (result.length !== 0) {
-               const code = `${result[0].default.code}${result[1] ? '-' + result[1].default.code : ''}`;
+      loader(configurations, (base, additional) => {
+         if (base) {
+            const code = `${base.default.code}${additional ? '-' + additional.default.code : ''}`;
 
-               resolve({...result[0].default, ...result[1].default, code});
-            } else {
-               reject(`Language ${language} is not supported`);
-            }
-         }, (err) => {
-            reject(err.message);
-         });
+            result.callback({...base.default, ...additional.default, code});
+         } else {
+            result.errback(`Language ${language} is not supported`);
+         }
+      }, (err) => {
+         result.errback(err);
       });
+
+      return result;
    }
 
    /**

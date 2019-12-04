@@ -24,33 +24,38 @@ define(['I18n/_i18n/Loader', 'I18nTest/testConfig/en-US', 'I18nTest/testConfig/e
 
       describe('loadConfiguration', function() {
          if (!window) {
-            it ('en-US',  function() {
-               return Loader.default.loadConfiguration('en-US').then(function(result) {
+            it ('en-US',  function(done) {
+               Loader.default.loadConfiguration('en-US').addCallback(function(result) {
                   delete result.plural;
                   assert.deepEqual(result, enUS.default);
+                  done();
                })
             });
 
-            it ('en-RU',  function() {
-               return Loader.default.loadConfiguration('en-RU').then(function(result) {
+            it ('en-RU',  function(done) {
+               Loader.default.loadConfiguration('en-RU').addCallback(function(result) {
                   delete result.plural;
                   assert.deepEqual(result, enRU.default);
+                  done();
                })
             });
 
-            it ('en',  function() {
-               return Loader.default.loadConfiguration('en').then(function(result) {
+            it ('en',  function(done) {
+               Loader.default.loadConfiguration('en').addCallback(function(result) {
                   delete result.plural;
                   assert.deepEqual(result, enUS.default);
+                  done();
                })
             });
 
-            it ('not support locale',  function() {
-               return Loader.default.loadConfiguration('fr-FR').then(function(result) {
+            it ('not support locale',  function(done) {
+               Loader.default.loadConfiguration('fr-FR').addCallbacks(function(result) {
                   delete result.plural;
                   assert.deepEqual(result, enUS.default);
+                  done();
                }, function(err) {
-                  assert.equal(err,`Language fr is not supported`);
+                  assert.equal(err.message,`Language fr is not supported`);
+                  done();
                });
             });
          }
