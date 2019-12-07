@@ -1,10 +1,7 @@
 import RkString from './RkString';
 import IConfiguration from './IConfiguration';
-import {constants, IoC} from 'Env/Env';
-
-const PLURAL_PREFIX = 'plural#';
-const CONTEXT_SEPARATOR = '@@';
-const PLURAL_DELIMITER = '|';
+import {IoC} from 'Env/Env';
+import constants from './Const';
 
 /** Все загруженные словари, где ключ - слово на языке оригинала */
 const dictionary = {};
@@ -42,7 +39,7 @@ class Locale {
     */
    rk(key: string, context?: string | number, pluralNumber?: number): any {
       if (typeof key === 'string') {
-         if (constants.isBrowserPlatform) {
+         if (constants.isBrowser) {
             return this._translate(key, context, pluralNumber);
          } else {
             return new RkString(key, (() => this._translate(key, context, pluralNumber)));
@@ -53,11 +50,11 @@ class Locale {
    }
 
    protected _translate(key: string, context?: string | number, pluralNumber?: number): string {
-      const index = key.indexOf(CONTEXT_SEPARATOR);
+      const index = key.indexOf(constants.contextSeparator);
 
       if (index > -1) {
          context = key.substr(0, index);
-         key = key.substr(index + CONTEXT_SEPARATOR.length);
+         key = key.substr(index + constants.contextSeparator.length);
       }
 
       if (typeof context === 'number') {
@@ -68,7 +65,7 @@ class Locale {
       let result = key;
       if (dictionary[this.config.code]) {
          if (pluralNumber !== undefined) {
-            const translatedKey = this._translateKey(PLURAL_PREFIX + key, context);
+            const translatedKey = this._translateKey( constants.pluralPrefix + key, context);
             result = translatedKey ? this._translatePlural(translatedKey, pluralNumber) : key;
 
             if (!result) {
@@ -86,13 +83,14 @@ class Locale {
    }
 
    protected _translateKey(key: string, context?: string): string {
-      const translatedKey = dictionary[this.config.code][context ? `${context}${CONTEXT_SEPARATOR}${key}` : `${key}`];
+      const contextKey = context ? `${context}${constants.contextSeparator}${key}` : `${key}`;
+      const translatedKey = dictionary[this.config.code][contextKey];
 
       return translatedKey !== undefined ? translatedKey : '';
    }
 
    protected _translatePlural(key: string, pluralNumber: number): string {
-      return this.config.plural(Math.abs(pluralNumber), ...key.split(PLURAL_DELIMITER));
+      return this.config.plural(Math.abs(pluralNumber), ...key.split(constants.pluralDelimiter));
    }
 
    /**
