@@ -3,6 +3,13 @@
 define(['I18n/_i18n/Configuration', 'Env/Env'], function(Configuration, env) {
    describe('Configuration', function() {
 
+      var getRequest = function(acceptLanguage) {
+         return {
+            headers: {
+               'accept-language': acceptLanguage
+            }
+         }
+      }
       var request = {
          headers: {
             'accept-language': 'en-US,en;q=0.9,ru;q=0.8,ru-RU;q=0.7'
@@ -35,9 +42,38 @@ define(['I18n/_i18n/Configuration', 'Env/Env'], function(Configuration, env) {
          assert.equal(Configuration.default.isSet(), false);
       });
 
-      it('detect', function() {
-         assert.equal(Configuration.default.detect(request, {'en-US': 'FFF', 'ru-RU': 'hhh'}), 'en-US');
-         assert.equal(Configuration.default.detect(request, {'ru-RU': 'hhh'}), 'ru-RU');
+      describe('detect', function() {
+         var fullAvailableLang = {
+            'en-US': 'FFF',
+            'en-GB': 'FFF',
+            'ru-RU': 'hhh',
+            'en': 'FFF',
+            'ru': 'hhh'
+         };
+         var AvailableLangRU = {
+            'ru-RU': 'hhh',
+            'ru': 'hhh'
+         };
+
+         it('accept-language do have a priority locale', function() {
+            var request = getRequest('en-US,en;q=0.9,ru;q=0.8,ru-RU;q=0.7');
+
+            assert.equal(Configuration.default.detect(request, fullAvailableLang), 'en-US');
+            assert.equal(Configuration.default.detect(request, AvailableLangRU), 'ru-RU');
+         });
+
+         it('accept-language do have a priority lang', function() {
+            var request = getRequest('en,ru;q=0.9,en-US;q=0.8,ru-RU;q=0.7');
+
+            assert.equal(Configuration.default.detect(request, fullAvailableLang), 'en-US');
+            assert.equal(Configuration.default.detect(request, AvailableLangRU), 'ru-RU');
+         });
+
+         it('accept-language do not have available language', function() {
+            var request = getRequest('fr,fr-FR;q=0.9');
+
+            assert.equal(Configuration.default.detect(request, fullAvailableLang), '');
+         });
       });
    });
 });

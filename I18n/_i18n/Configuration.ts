@@ -1,7 +1,5 @@
 import { cookie } from 'Env/Env';
-import 'Core/polyfill';
-
-const EXPIRES_COOKIES = 2920;
+import constants from './Const';
 
 interface IRequest {
    headers: IHeaders;
@@ -24,7 +22,7 @@ class Configuration {
 
    static save(locale: string): void {
       cookie.set('lang', locale, {
-         expires: EXPIRES_COOKIES,
+         expires: constants.expiresCookies,
          path: '/'
       });
    }
@@ -38,7 +36,7 @@ class Configuration {
       const acceptLocale = request && request.headers && request.headers['accept-language']
          && request.headers['accept-language'].split(',');
 
-      if (acceptLocale) {
+      if (acceptLocale && Object.keys(availableLocales).length !== 0) {
          acceptLocale.some((localeHeader) => {
             const locale = localeHeader.split(';')[0];
 
@@ -54,6 +52,10 @@ class Configuration {
                }
             }
          });
+      }
+
+      if (detectedLocale.length === 2 && constants.defaultCountry[detectedLocale]) {
+         detectedLocale = `${detectedLocale}-${constants.defaultCountry[detectedLocale]}`;
       }
 
       return detectedLocale;

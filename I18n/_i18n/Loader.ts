@@ -2,13 +2,7 @@
 // @ts-ignore
 import Deferred = require('Core/Deferred');
 import IConfiguration from './IConfiguration';
-
-const AVAILABLE_LANGUAGE = ['en', 'ru'];
-const AVAILABLE_COUNTRY = ['US', 'RU'];
-const DEFAULT_COUNTRY = {
-  en: 'US',
-  ru: 'RU'
-};
+import constants from './Const';
 
 interface IModuleInfo {
    dict: [];
@@ -69,13 +63,13 @@ class Loader {
       const [language, country] = locale.split('-');
       const configurations = [];
 
-      if (language && AVAILABLE_LANGUAGE.includes(language)) {
+      if (language && constants.availableLang.includes(language)) {
          configurations.push(`I18n/locales/language/${language}`);
 
-         if (country && AVAILABLE_COUNTRY.includes(country)) {
+         if (country && constants.availableCountry.includes(country)) {
             configurations.push(`I18n/locales/format/${country}`);
          } else {
-            configurations.push(`I18n/locales/format/${DEFAULT_COUNTRY[language]}`);
+            configurations.push(`I18n/locales/format/${constants.defaultCountry[language]}`);
          }
       }
 
