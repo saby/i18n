@@ -28,7 +28,17 @@ class Configuration {
    }
 
    static load(): string {
-      return cookie.get('lang') || '';
+      const code = cookie.get('lang');
+
+      if (code) {
+         if (code.length === 2 && constants.defaultCountry[code]) {
+            return `${code}-${constants.defaultCountry[code]}`;
+         } else {
+            return code;
+         }
+      }
+
+      return '';
    }
 
    static detect(request: IRequest, availableLocales: object): string {
