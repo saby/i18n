@@ -2,6 +2,7 @@ import RkString from './RkString';
 import IConfiguration from './IConfiguration';
 import {IoC} from 'Env/Env';
 import constants from './Const';
+import{constants as envConst} from 'Env/Env';
 
 /** Все загруженные словари, где ключ - слово на языке оригинала */
 const dictionary = {};
@@ -39,7 +40,7 @@ class Locale {
     */
    rk(key: string, context?: string | number, pluralNumber?: number): any {
       if (typeof key === 'string') {
-         if (constants.isBrowser) {
+         if (envConst.isBrowserPlatform) {
             return this._translate(key, context, pluralNumber);
          } else {
             return new RkString(key, (() => this._translate(key, context, pluralNumber)));
