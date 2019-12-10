@@ -31,7 +31,7 @@ class Configuration {
       const code = cookie.get('lang');
 
       if (code) {
-         if (code.length === 2 && constants.defaultCountry[code]) {
+         if (code.length === constants.lengthOfLangCode && constants.defaultCountry[code]) {
             return `${code}-${constants.defaultCountry[code]}`;
          } else {
             return code;
@@ -64,7 +64,7 @@ class Configuration {
          });
       }
 
-      if (detectedLocale.length === 2 && constants.defaultCountry[detectedLocale]) {
+      if (detectedLocale.length === constants.lengthOfLangCode && constants.defaultCountry[detectedLocale]) {
          detectedLocale = `${detectedLocale}-${constants.defaultCountry[detectedLocale]}`;
       }
 

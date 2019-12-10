@@ -9,5 +9,6 @@ export default {
    pluralPrefix: 'plural#',
    contextSeparator: '@@',
    pluralDelimiter: '|',
-   isBrowser: window !== undefined
+   isBrowser: window !== undefined,
+   lengthOfLangCode: 2
 }
