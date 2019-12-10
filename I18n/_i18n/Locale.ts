@@ -2,7 +2,7 @@ import RkString from './RkString';
 import IConfiguration from './IConfiguration';
 import {IoC} from 'Env/Env';
 import constants from './Const';
-import{constants as envConst} from 'Env/Env';
+import {constants as envConst} from 'Env/Env';
 
 /** Все загруженные словари, где ключ - слово на языке оригинала */
 const dictionary = {};
