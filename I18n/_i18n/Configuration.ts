@@ -28,7 +28,17 @@ class Configuration {
    }
 
    static load(): string {
-      return cookie.get('lang') || '';
+      const code = cookie.get('lang');
+
+      if (code) {
+         if (code.length === constants.lengthOfLangCode && constants.defaultCountry[code]) {
+            return `${code}-${constants.defaultCountry[code]}`;
+         } else {
+            return code;
+         }
+      }
+
+      return '';
    }
 
    static detect(request: IRequest, availableLocales: object): string {
@@ -54,7 +64,7 @@ class Configuration {
          });
       }
 
-      if (detectedLocale.length === 2 && constants.defaultCountry[detectedLocale]) {
+      if (detectedLocale.length === constants.lengthOfLangCode && constants.defaultCountry[detectedLocale]) {
          detectedLocale = `${detectedLocale}-${constants.defaultCountry[detectedLocale]}`;
       }
 
