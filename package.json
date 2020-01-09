@@ -1,6 +1,6 @@
 {
    "name": "saby-i18n",
-   "version": "20.1100.0",
+   "version": "20.1000.0",
    "repository": {
       "type": "git",
       "url": "git@github.com:saby/i18n.git"
@@ -47,12 +47,12 @@
    "devDependencies": {
       "@tensor-corp/eslint-config": "^2.0.7",
       "eslint": "^5.13.0",
-      "rmi": "git+https://git.sbis.ru/sbis/rmi.git#rc-20.1100",
-      "saby-typescript": "git+https://github.com/saby/TypeScript.git#rc-20.1100",
-      "saby-units": "git+https://github.com/saby/Units.git#rc-20.1100",
-      "saby-types": "git+https://github.com/saby/Types.git#rc-20.1100",
-      "sbis3-ws": "git+https://git.sbis.ru/sbis/ws.git#rc-20.1100",
-      "sbis3-builder": "git+https://github.com/saby/Builder.git#rc-20.1100",
-      "wasaby-app": "git+https://github.com/saby/wasaby-app.git#rc-20.1100"
+      "rmi": "git+https://git.sbis.ru/sbis/rmi.git#rc-20.1000",
+      "saby-typescript": "git+https://github.com/saby/TypeScript.git#rc-20.1000",
+      "saby-units": "git+https://github.com/saby/Units.git#rc-20.1000",
+      "saby-types": "git+https://github.com/saby/Types.git#rc-20.1000",
+      "sbis3-ws": "git+https://git.sbis.ru/sbis/ws.git#rc-20.1000",
+      "sbis3-builder": "git+https://github.com/saby/Builder.git#rc-20.1000",
+      "wasaby-app": "git+https://github.com/saby/wasaby-app.git#rc-20.1000"
    }
 }
