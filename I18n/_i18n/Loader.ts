@@ -97,10 +97,10 @@ class Loader {
    protected static loadMetaInfo(nameModule: string, loader: Function = require): Deferred<IModuleInfo> {
       const def = new Deferred<IModuleInfo>();
 
-      loader([nameModule + '/.builder/module'], (info) => {
+      loader(['optional!' + nameModule + '/.builder/module'], (info) => {
          const infoDict = {};
 
-         if (info.dict) {
+         if (info instanceof Object && info.dict) {
             for (const nameDict of info.dict) {
                const langAndExtDict = nameDict.split('.');
 
