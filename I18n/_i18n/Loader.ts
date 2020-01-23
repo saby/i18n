@@ -97,6 +97,11 @@ class Loader {
    protected static loadMetaInfo(nameModule: string, loader: Function = require): Deferred<IModuleInfo> {
       const def = new Deferred<IModuleInfo>();
 
+      /*
+      Если модуль внешний и он не поддерживает локализацию, то билдер не создаёт в нём инфо-модуль .builder/module,
+      в результате require выводит 404 ошибку в консоль, единственный вариант заглушить ошибку,
+      использовать плагин optional.
+       */
       loader(['optional!' + nameModule + '/.builder/module'], (info) => {
          const infoDict = {};
 
