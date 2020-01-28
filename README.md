@@ -25,3 +25,4 @@ Wasaby Internationalization and localization solution.
 - Start local HTTP server and check [unit tests in browser](http://localhost:1025/):
 
         npm start
+
