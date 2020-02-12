@@ -3,7 +3,8 @@ const RkString = function RkString(value: string, resolver: Function): void {
       translatedValue: {
          enumerable: true,
          get(): string {
-            return String(resolver(value) || value);
+            const translateResult = resolver(value);
+            return String(translateResult !== undefined ? translateResult : value);
          }
       },
       length: {

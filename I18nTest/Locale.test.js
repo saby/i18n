@@ -21,12 +21,17 @@ define(['I18n/_i18n/Locale', 'I18n/locales/en-US', 'I18n/_i18n/RkString', 'Env/C
                   'TEST@@Русский': 'Russian',
                   'plural#язык': 'language|languages',
                   'plural#Пустота': 'Empty',
-                  'TEST@@plural#ступня': 'foot|foots'
+                  'TEST@@plural#ступня': 'foot|foots',
+                  'у': ''
                }, 'TEST/Dictionary', 'en-US');
 
 
                it('empty translate', function () {
                   assert.equal(i18n.rk('Английский'), 'English');
+               });
+
+               it('word translated to an empty string', function () {
+                  assert.equal(i18n.rk('у'), '');
                });
 
                it('context translate', function () {
