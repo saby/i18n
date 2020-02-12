@@ -67,7 +67,12 @@ class Locale {
       if (dictionary[this.config.code]) {
          if (pluralNumber !== undefined) {
             const translatedKey = this._translateKey( constants.pluralPrefix + key, context);
-            result = translatedKey ? this._translatePlural(translatedKey, pluralNumber) : key;
+            if (translatedKey) {
+               const translateForPluralForm = this._translatePlural(translatedKey, pluralNumber);
+               if (translateForPluralForm) {
+                  result = translateForPluralForm;
+               }
+            }
 
             if (!result) {
                IoC.resolve('ILogger').error(
@@ -76,18 +81,27 @@ class Locale {
                );
             }
          } else {
-            result = this._translateKey(key, context) || key;
+            /**
+             * In some rare cases there can be an empty translate for some of Russian's prepositions:
+             * F.e. Russian sentence "У контакта изменен номер" can be translated in 2 ways:
+             * 1) Changed contact number
+             * 2) Contact number changed
+             */
+            const translatedKey = this._translateKey(key, context);
+            if (translatedKey !== undefined) {
+                result = translatedKey;
+            }
          }
       }
 
-      return result || key;
+      return result;
    }
 
    protected _translateKey(key: string, context?: string): string {
       const contextKey = context ? `${context}${constants.contextSeparator}${key}` : `${key}`;
       const translatedKey = dictionary[this.config.code][contextKey];
 
-      return translatedKey !== undefined ? translatedKey : '';
+      return translatedKey;
    }
 
    protected _translatePlural(key: string, pluralNumber: number): string {
