@@ -3,14 +3,19 @@
 import Deferred = require('Core/Deferred');
 import IConfiguration from './IConfiguration';
 import constants from './Const';
+import {constants as envConst} from 'Env/Env';
 
 interface IModuleInfo {
    dict: [];
 }
 
+interface IContents {
+   modules: object[];
+}
+
 /** Deferred-ы с загрузками информация о локализации интерфейсных модулей */
 const deferredModulesInfo = {};
-/** Вся загруженная информация о локализации интерфейсных модулей */
+/** Список загруженная информация о локализации интерфейсных модулей */
 const modulesInfo = {};
 
 /**
@@ -23,11 +28,96 @@ class Loader {
 
    /**
     * Функция проверяет, что интерфейсный модуль грузится.
-    * @param nameModule - имя интерфейсного модуля.
+    * @param moduleName - имя интерфейсного модуля.
     * @returns {Boolean}
     */
-   static isLoadedModule(nameModule: string): boolean {
-      return deferredModulesInfo.hasOwnProperty(nameModule);
+   static isLoadedModule(moduleName: string): boolean {
+      return deferredModulesInfo.hasOwnProperty(moduleName);
+   }
+
+   /**
+    * Метод возвращает список словарей поддерживаемых интерфейсным модулем.
+    * @param {String} moduleName - имя интерфейсного модуля
+    * @param {Function|String|Object} loader - Функция загрузки словарей, либо url на контентс, либо сам contents
+    * @returns {Deferred}
+    * @see isLoadedModule
+    */
+   static getAvailableDictionary(moduleName: string, loader?: Function | string | IContents): Deferred<string[]> {
+      if (Loader.isLoadedModule(moduleName)) {
+         return deferredModulesInfo[moduleName].addCallback(function() {
+            return modulesInfo[moduleName];
+         });
+      }
+
+      if (typeof loader === 'string') {
+         deferredModulesInfo[moduleName] = Loader.loadContents(loader, moduleName).addCallback(function(info) {
+            modulesInfo[moduleName] = info;
+            return modulesInfo[moduleName];
+         });
+      }
+
+      if (typeof loader === 'function') {
+         deferredModulesInfo[moduleName] = new Deferred<string[]>();
+         const result = loader();
+
+         if (result instanceof Promise) {
+            result.then((info) => {
+               modulesInfo[moduleName] = info;
+               deferredModulesInfo[moduleName].callback(modulesInfo[moduleName]);
+            });
+         }
+
+         if (result instanceof Array) {
+            modulesInfo[moduleName] = result;
+            deferredModulesInfo[moduleName].callback(modulesInfo[moduleName]);
+         }
+      }
+
+      if (typeof loader === 'object') {
+         deferredModulesInfo[moduleName] = new Deferred<string[]>();
+         modulesInfo[moduleName] = Loader.extractAvailableDictionaries(moduleName, loader);
+         deferredModulesInfo[moduleName].callback(modulesInfo[moduleName]);
+      }
+
+      return deferredModulesInfo[moduleName];
+   }
+
+   protected static loadContents(url: string, moduleName: string): Deferred<string[]> {
+      const result = new Deferred<string[]>();
+
+      if (envConst.isBrowserPlatform) {
+         fetch(url, {
+            credentials: 'include'
+         }).then((response) => {
+            if (response.ok) {
+               response.json().then((contents) => {
+                  result.callback(Loader.extractAvailableDictionaries(moduleName, contents));
+               }, (err) => {
+                  result.errback(err);
+               });
+            } else {
+               result.errback(response.status);
+            }
+         }, (err) => {
+            result.errback(err);
+         });
+      } else {
+         import(url).then((contents) => {
+            result.callback(Loader.extractAvailableDictionaries(moduleName, contents));
+         }, (err) => {
+            result.errback(err);
+         });
+      }
+
+      return result;
+   }
+
+   protected static extractAvailableDictionaries(moduleName: string, contents: IContents): string[] {
+      if (contents.modules && contents.modules[moduleName] && contents.modules[moduleName].dict) {
+         return contents.modules[moduleName].dict;
+      }
+
+      return [];
    }
 
    /**

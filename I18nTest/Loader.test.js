@@ -1,6 +1,16 @@
 /* global define, describe, context, beforeEach, afterEach, it, assert */
 
-define(['I18n/_i18n/Loader', 'I18nTest/testConfig/en-US', 'I18nTest/testConfig/en-RU'], function(Loader, enUS, enRU) {
+define([
+   'I18n/_i18n/Loader',
+   'I18nTest/testConfig/en-US',
+   'I18nTest/testConfig/en-RU',
+   'Env/Env'
+], function(
+   Loader,
+   enUS,
+   enRU,
+   Env
+) {
    describe('Loader', function() {
       const loaderInfo = function(name, callback, errback) {
         switch (name[0]) {
@@ -21,6 +31,97 @@ define(['I18n/_i18n/Loader', 'I18nTest/testConfig/en-US', 'I18nTest/testConfig/e
            }
         }
       };
+
+      describe('getAvailableDictionary', function() {
+         var global = (function() {return this || (0, eval)('this');}());
+
+         var dict = [
+            'en',
+            'ru'
+         ];
+
+         var contents1 = {
+            modules: {
+               LocalizedModule1: {
+                  dict: dict
+               },
+               LocalizedModule2: {
+                  dict: dict
+               },
+               LocalizedModule3: {
+                  dict: dict
+               }
+            }
+         };
+
+         var loader = function() {
+           return [
+              'en',
+              'ru'
+           ];
+         };
+
+         var goodResponse = {
+            ok: true,
+            json: function() {
+               return new Promise(function(resolve) {
+                  resolve(contents1);
+               });
+            }
+         };
+
+         var fakeFetch = function(url) {
+            return new Promise(function(resolve, reject) {
+               if (url === '/service/contents.json') {
+                  resolve(goodResponse);
+               }
+            });
+         };
+
+         var originalFetch = global.fetch;
+         var stubConstants;
+
+         beforeEach('', function () {
+            global.fetch = fakeFetch;
+            stubConstants = sinon.stub(Env.constants, 'isBrowserPlatform');
+            stubConstants.get(function() {
+               return true;
+            });
+         });
+
+         afterEach('', function() {
+            global.fetch = originalFetch;
+            stubConstants.restore();
+            stubConstants = undefined;
+         });
+
+         it ('from contents', function(done) {
+            var def = Loader.default.getAvailableDictionary('LocalizedModule1', contents1);
+
+            def.addCallback(function(result) {
+               assert.deepEqual(result, ['en', 'ru']);
+               done();
+            });
+         });
+
+         it ('from custom loader', function(done) {
+            var def = Loader.default.getAvailableDictionary('LocalizedModule2', loader);
+
+            def.addCallback(function(result) {
+               assert.deepEqual(result, ['en', 'ru']);
+               done();
+            });
+         });
+
+         it ('from load by url', function(done) {
+            var def = Loader.default.getAvailableDictionary('LocalizedModule3',  '/service/contents.json');
+
+            def.addCallback(function(result) {
+               assert.deepEqual(result, ['en', 'ru']);
+               done();
+            });
+         });
+      });
 
       describe('loadConfiguration', function() {
          if (!window) {

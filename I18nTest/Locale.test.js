@@ -1,6 +1,6 @@
 /* global define, describe, context, beforeEach, afterEach, it, assert */
 
-define(['I18n/_i18n/Locale', 'I18n/locales/en-US', 'I18n/_i18n/RkString', 'Env/Constants'], function(Locale, config, RkString, Constants) {
+define(['I18n/_i18n/Locale', 'I18n/locales/language/en', 'I18n/locales/format/US', 'I18n/_i18n/RkString', 'Env/Constants'], function(Locale, configLang, configFormat, RkString, Constants) {
    const constants = Constants.constants;
    describe('Locale', function() {
       ['browser', 'node'].forEach(function (env) {
@@ -15,7 +15,9 @@ define(['I18n/_i18n/Locale', 'I18n/locales/en-US', 'I18n/_i18n/RkString', 'Env/C
                stub.restore();
             });
             describe('rk', function () {
-               var i18n = new Locale.default(config.default);
+               var config = Object.assign({}, configLang.default, configFormat.default);
+               config.code = 'en-US';
+               var i18n = new Locale.default(config);
                Locale.default.setDictionary({
                   'Английский': 'English',
                   'TEST@@Русский': 'Russian',
