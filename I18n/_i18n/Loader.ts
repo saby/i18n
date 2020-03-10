@@ -102,7 +102,7 @@ class Loader {
             result.errback(err);
          });
       } else {
-         import(url).then((contents) => {
+         import(`json!${url}`).then((contents) => {
             result.callback(Loader.extractAvailableDictionaries(moduleName, contents));
          }, (err) => {
             result.errback(err);
