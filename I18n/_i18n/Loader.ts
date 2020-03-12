@@ -6,7 +6,7 @@ import constants from './Const';
 import {constants as envConst} from 'Env/Env';
 
 interface IModuleInfo {
-   dict: [];
+   dict?: [];
 }
 
 interface IContents {
