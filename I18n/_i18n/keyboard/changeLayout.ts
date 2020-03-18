@@ -27,26 +27,28 @@ function _detectKBLayout(text: string, exclude: string = ''): string {
    return result;
 }
 
-function reverseKeyboardLayout(text: string, requiredKeyboardLayout: string, currentKBLayout?: string): string {
-   currentKBLayout = currentKBLayout || _detectKBLayout(text, requiredKeyboardLayout);
+function changeLayout(text: string, requiredKeyboardLayout: string, currentKBLayout?: string): Promise<string> {
+   return new Promise<string>((resolve) => {
+      currentKBLayout = currentKBLayout || _detectKBLayout(text, requiredKeyboardLayout);
 
-   if (!(currentKBLayout && layouts.hasOwnProperty(currentKBLayout))) {
-      return text;
-   }
-
-   let result = '';
-
-   for (const chart of text) {
-      const indexChart = layouts[currentKBLayout].indexOf(chart);
-
-      if (indexChart !== -1) {
-         result += layouts[requiredKeyboardLayout][indexChart];
-      } else {
-         result += chart;
+      if (!(currentKBLayout && layouts.hasOwnProperty(currentKBLayout))) {
+         resolve(text);
       }
-   }
 
-   return result;
+      let result = '';
+
+      for (const chart of text) {
+         const indexChart = layouts[currentKBLayout].indexOf(chart);
+
+         if (indexChart !== -1) {
+            result += layouts[requiredKeyboardLayout][indexChart];
+         } else {
+            result += chart;
+         }
+      }
+
+      resolve(result);
+   });
 }
 
-export default reverseKeyboardLayout;
+export default changeLayout;
