@@ -5,12 +5,8 @@ import IConfiguration from './IConfiguration';
 import constants from './Const';
 import {constants as envConst} from 'Env/Env';
 
-interface IModuleInfo {
-   dict?: [];
-}
-
 interface IContents {
-   modules: object[];
+   modules: object;
 }
 
 /** Deferred-ы с загрузками информация о локализации интерфейсных модулей */
@@ -121,28 +117,6 @@ class Loader {
    }
 
    /**
-    * Метод возвращает информацию о словарях поддерживаемых интерфейсным модулем.
-    * @param nameModule - имя интерфейсного модуля
-    * @param loader - имя интерфейсного модуля
-    * @returns {Deferred}
-    * @see isProcessedModule
-    */
-   static loadModule(nameModule: string, loader?: Function): Deferred<IModuleInfo> {
-      if (Loader.isLoadedModule(nameModule)) {
-         return deferredModulesInfo[nameModule].addCallback(function() {
-            return modulesInfo[nameModule];
-         });
-      }
-
-      deferredModulesInfo[nameModule] = Loader.loadMetaInfo(nameModule, loader).addCallback(function(info) {
-         modulesInfo[nameModule] = info;
-         return modulesInfo[nameModule];
-      });
-
-      return deferredModulesInfo[nameModule];
-   }
-
-   /**
     * Загрузка конфигурации для локали.
     * @param {String} locale - код локали.
     * @param {Function} loader - имя интерфейсного модуля.
@@ -176,40 +150,6 @@ class Loader {
       });
 
       return result;
-   }
-
-   /**
-    * Функция грузит модуль с мета-информацией интерфейсного модуля.
-    * @param nameModule - имя интерфейсного модуля.
-    * @param loader - имя интерфейсного модуля.
-    * @returns {Deferred}
-    */
-   protected static loadMetaInfo(nameModule: string, loader: Function = require): Deferred<IModuleInfo> {
-      const def = new Deferred<IModuleInfo>();
-
-      /*
-      Если модуль внешний и он не поддерживает локализацию, то билдер не создаёт в нём инфо-модуль .builder/module,
-      в результате require выводит 404 ошибку в консоль, единственный вариант заглушить ошибку,
-      использовать плагин optional.
-       */
-      loader(['optional!' + nameModule + '/.builder/module'], (info) => {
-         const infoDict = {};
-
-         if (info instanceof Object && info.dict) {
-            for (const nameDict of info.dict) {
-               const langAndExtDict = nameDict.split('.');
-
-               infoDict[langAndExtDict[0]] = infoDict[langAndExtDict[0]] || [];
-               infoDict[langAndExtDict[0]].push(langAndExtDict[1] ? langAndExtDict[1] : 'json');
-            }
-         }
-
-         def.callback(infoDict);
-      }, () => {
-         def.callback({});
-      });
-
-      return def;
    }
 }
 
