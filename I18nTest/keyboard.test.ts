@@ -4,15 +4,15 @@ import {assert} from 'chai';
 describe('keyboard', () => {
     describe('reverseKeyboardLayout', () => {
         it('detect current layout', async () => {
-            assert.strictEqual(await keyboard.changeLayout('rjhjyjdbhec', 'ru'), 'короновирус');
+            assert.strictEqual(await keyboard.changeLayout('rjhjyfdbhec', 'ru'), 'коронавирус');
         });
 
         it('current layout be given in arguments', async () => {
-            assert.strictEqual(await keyboard.changeLayout('rjhjyjdbhec', 'ru', 'en'), 'короновирус');
+            assert.strictEqual(await keyboard.changeLayout('rjhjyfdbhec', 'ru', 'en'), 'коронавирус');
         });
 
         it('current layout be not supported', async () => {
-            assert.strictEqual(await keyboard.changeLayout('rjhjyjdbhec', 'ru', 'fr'), 'rjhjyjdbhec');
+            assert.strictEqual(await keyboard.changeLayout('rjhjyfdbhec', 'ru', 'fr'), 'rjhjyfdbhec');
         });
     });
 });
