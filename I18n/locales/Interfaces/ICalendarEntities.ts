@@ -1,5 +1,5 @@
 export default interface ICalendarEntities {
-   plural: Function;
+   plural: (pluralNumber: number, ...words: string[]) => string;
    minDays: string[];
    shortDays: string[];
    longDays: string[];
