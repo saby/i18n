@@ -1,6 +1,7 @@
 import DateAspect from './_aspects/Date/Europe';
 import NumberAspect from './_aspects/Number/Europe';
 import CalendarEntitiesAspect from './_aspects/CalendarEntities/Russian';
+import pluralFunction from './_aspects/Plural/Russian';
 
 import ILocale from './Interfaces/ILocale';
 import IDate from './Interfaces/IDate';
@@ -23,6 +24,7 @@ class RURU implements ILocale {
     date: IDate = new EuropeRuDate();
     number: INumber = new NumberAspect();
     calendarEntities: ICalendarEntities = new CalendarEntitiesAspect();
+    plural: (pluralNumber: number, ...words: string[]) => string = pluralFunction;
 }
 
 export default new RURU();

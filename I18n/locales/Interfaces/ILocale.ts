@@ -7,4 +7,5 @@ export default interface ILocale {
     date: IDate;
     number: INumber;
     calendarEntities: ICalendarEntities;
+    plural: (pluralNumber: number, ...words: string[]) => string;
 }

@@ -43,13 +43,4 @@ export default class English implements ICalendarEntities {
     longQuarter: string  = '$digit$s$ quarter';
     quarters: string[] = ['I', 'II', 'III', 'IV'];
     longQuarters: string[] = ['I quarter', 'II quarter', 'III quarter', 'IV quarter'];
-
-    plural(pluralNumber: number, word1: string, word2: string): string {
-
-        if (pluralNumber > 1 || pluralNumber === 0) {
-            return word2;
-        }
-
-        return word1;
-    }
 }
