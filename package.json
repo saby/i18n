@@ -25,6 +25,6 @@
    "devDependencies": {
       "@tensor-corp/eslint-config": "^2.0.7",
       "eslint": "^5.13.0",
-      "wasaby-cli": "git+https://github.com/saby/wasaby-cli.git#rc-20.4000"
+      "wasaby-cli": "git+https://platform-git.sbis.ru/saby/wasaby-cli.git#rc-20.4000"
    }
 }
