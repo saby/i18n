@@ -48,11 +48,11 @@
       "@tensor-corp/eslint-config": "^2.0.7",
       "eslint": "^5.13.0",
       "rmi": "git+https://git.sbis.ru/sbis/rmi.git#rc-20.3000",
-      "saby-typescript": "git+https://github.com/saby/TypeScript.git#rc-20.3000",
-      "saby-units": "git+https://github.com/saby/Units.git#rc-20.3000",
-      "saby-types": "git+https://github.com/saby/Types.git#rc-20.3000",
+      "saby-typescript": "git+https://platform-git.sbis.ru/saby/TypeScript.git#rc-20.3000",
+      "saby-units": "git+https://platform-git.sbis.ru/saby/Units.git#rc-20.3000",
+      "saby-types": "git+https://platform-git.sbis.ru/saby/Types.git#rc-20.3000",
       "sbis3-ws": "git+https://git.sbis.ru/sbis/ws.git#rc-20.3000",
-      "sbis3-builder": "git+https://github.com/saby/Builder.git#rc-20.3000",
-      "wasaby-app": "git+https://github.com/saby/wasaby-app.git#rc-20.3000"
+      "sbis3-builder": "git+https://platform-git.sbis.ru/saby/Builder.git#rc-20.3000",
+      "wasaby-app": "git+https://platform-git.sbis.ru/saby/wasaby-app.git#rc-20.3000"
    }
 }
