@@ -1,5 +1,7 @@
 .idea
 /application
+/build-ui
+/builderConfig.json
 /node_modules
 /package-lock.json
 /tsconfig.json
