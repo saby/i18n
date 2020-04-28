@@ -12,9 +12,7 @@
       "build": "wasaby-cli --tasks=build",
       "start": "wasaby-cli --tasks=startTest --server",
       "test": "wasaby-cli --tasks=startTest --node --report=console",
-      "test:node": "wasaby-cli --tasks=startTest --node",
-      "test:node-coverage": "wasaby-cli --tasks=startTest --node --coverage",
-      "test:browser": "wasaby-cli --tasks=startTest --browser",
+      "test:coverage": "wasaby-cli --tasks=startTest --node --coverage",
       "update-cli-store": "wasaby-cli --tasks=initStore",
       "prepare": "npm run update-cli-store"
    },
