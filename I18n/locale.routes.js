@@ -1,6 +1,5 @@
 const EXPIRES_COOKIES = 2920;
 
-// @ts-ignore
 module.exports = function() {
    return {
       '/locale': function(req, res) {

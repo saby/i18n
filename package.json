@@ -9,22 +9,16 @@
       "I18n/*"
    ],
    "scripts": {
-      "build": "wasaby-cli --tasks=build",
+      "prepare": "npm run build:init && npm run build:typescript",
+      "build:init": "wasaby-cli --tasks=initStore",
+      "build:typescript": "saby-typescript --install --mode=development",
+      "build:app": "wasaby-cli --tasks=build",
+      "compile": "saby-typescript --compiler",
       "start": "wasaby-cli --tasks=startTest --server",
       "test": "wasaby-cli --tasks=startTest --node --report=console",
-      "test:node": "wasaby-cli --tasks=startTest --node",
-      "test:node-coverage": "wasaby-cli --tasks=startTest --node --coverage",
-      "test:browser": "wasaby-cli --tasks=startTest --browser",
-      "update-cli-store": "wasaby-cli --tasks=initStore",
-      "prepare": "npm run update-cli-store"
-   },
-   "dependencies": {
-      "@types/node": "^11.9.4",
-      "@types/requirejs": "^2.1.31"
+      "test:coverage": "wasaby-cli --tasks=startTest --node --coverage"
    },
    "devDependencies": {
-      "@tensor-corp/eslint-config": "^2.0.7",
-      "eslint": "^5.13.0",
       "wasaby-cli": "git+https://platform-git.sbis.ru/saby/wasaby-cli.git#rc-20.4000"
    }
 }
