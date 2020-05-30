@@ -1,5 +1,4 @@
 import {constants} from 'Env/Env';
-import TranslatableString from './TranslatableString';
 import RkString from './RkString';
 import ITranslator from './interfaces/ITranslator';
 import IController from './interfaces/IController';
