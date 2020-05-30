@@ -1,6 +1,6 @@
 import {constants} from 'Env/Env';
 import TranslatableString from './TranslatableString';
-
+import RkString from './RkString';
 import ITranslator from './interfaces/ITranslator';
 import IController from './interfaces/IController';
 import ILocale from '../locales/Interfaces/ILocale';
@@ -30,9 +30,9 @@ class Translator implements ITranslator {
             if (constants.isBrowserPlatform) {
                 return this.translateKey(value, contextValue as string, pluralValue);
             } else {
-                return new TranslatableString(
+                return new RkString(
                     value,
-                    () => this.translateKey(value, contextValue as string, pluralValue)
+                    (() => this.translateKey(value, contextValue as string, pluralValue))
                 );
             }
         } else {
