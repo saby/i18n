@@ -1,7 +1,7 @@
 import Controller, {IConfigController} from './Controller';
 import Translator from './Translator';
 import {IGlobal} from './interfaces/declaration';
-import {cookie} from 'Env/Env';
+import {constants, cookie} from 'Env/Env';
 import 'text';
 import 'native-css';
 
@@ -68,7 +68,9 @@ function getConfig(): IConfigController {
 
     if (global.contents) {
         const availableLanguage = global.contents.availableLanguage;
-        setLocalizationBL(availableLanguage);
+        if (constants.isBrowserPlatform) {
+            setLocalizationBL(availableLanguage);
+        }
 
         return {
             availableLocales: availableLanguage && prepareAvailableLanguage(availableLanguage),
