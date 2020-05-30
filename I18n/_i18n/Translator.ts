@@ -27,13 +27,13 @@ class Translator implements ITranslator {
                 contextValue = '';
             }
 
-            if (constants.isServerSide) {
+            if (constants.isBrowserPlatform) {
+                return this.translateKey(value, contextValue as string, pluralValue);
+            } else {
                 return new TranslatableString(
                     value,
                     () => this.translateKey(value, contextValue as string, pluralValue)
                 );
-            } else {
-                return this.translateKey(value, contextValue as string, pluralValue);
             }
         } else {
             return key;
