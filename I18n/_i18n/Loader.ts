@@ -5,7 +5,7 @@ import IConfiguration from './IConfiguration';
 import constants from './Const';
 import {constants as envConst} from 'Env/Env';
 import ILocale from '../locales/Interfaces/ILocale';
-import ILoader from './interfaces/ILoader';
+import ILoader, {ILoadingsHistory} from './interfaces/ILoader';
 import IContext, {IDictionary} from './interfaces/IContext';
 import {IContents, IModule} from './interfaces/declaration';
 
@@ -26,10 +26,25 @@ interface IRequiredResources {
  * @author Кудрявцев И.С.
  */
 class Loader implements ILoader {
+   history: ILoadingsHistory = {
+      dictionaries: [],
+      styles: [],
+      locales: [],
+      contents: []
+   };
+
    constructor(private availableContexts: {[contextName: string]: IModule}) {}
 
-   locale(localeCode: string): Promise<ILocale> {
-      return import(`I18n/locales/${localeCode}`);
+   load(path: string): Promise<unknown> {
+      return import(path);
+   }
+
+   locale(localeCode: string, load: Function = this.load): Promise<ILocale> {
+      const url = `I18n/locales/${localeCode}`;
+
+      this.history.locales.push(url);
+
+      return load(url);
    }
 
    context(contextName: string, requiredLocale: string[]): Promise<IContext> {
@@ -67,28 +82,38 @@ class Loader implements ILoader {
       });
    }
 
-   dictionary(contextName: string, localeCode: string): Promise<[string, IDictionary]> {
+   dictionary(contextName: string, localeCode: string, load: Function = this.load): Promise<[string, IDictionary]> {
       const langCode = localeCode.split('-')[0];
+      const url = `${contextName}/lang/${langCode}/${localeCode}.json`;
 
-      return import(`${contextName}/lang/${langCode}/${localeCode}.json`).then((dictionary: IDictionary) => {
+      this.history.dictionaries.push(url);
+
+      return load(url).then((dictionary: IDictionary) => {
          return [localeCode, dictionary];
       });
    }
 
-   css(contextName: string, localeCode: string): Promise<void> {
-      const langCode = localeCode.split('-');
+   css(contextName: string, localeCode: string, load: Function = this.load): Promise<void> {
+      const langCode = localeCode.split('-')[0];
 
-      return import(`native-css!${contextName}/lang/${langCode}/${localeCode}`);
+      const url = `${contextName}/lang/${langCode}/${localeCode}`;
+
+      this.history.styles.push(url);
+
+      return load(`native-css!${url}`);
    }
 
-   contents(contextName: string): Promise<IContents> {
+   contents(contextName: string, load?: Function): Promise<IContents> {
       return new Promise((resolve, reject) => {
          const context = this.availableContexts[contextName];
-
          const url = `${context.path.startsWith('/') ? '' : '/'}${context.path}/contents.json`;
 
+         this.history.contents.push(url);
+
          if (envConst.isBrowserPlatform) {
-            fetch(url, {
+            const cacheNumber = context.buildnumber ? `?x_module=${context.buildnumber}` : '' ;
+
+            (load || fetch)(url + cacheNumber, {
                credentials: 'include'
             }).then((response) => {
                if (response.ok) {
@@ -104,7 +129,7 @@ class Loader implements ILoader {
                reject(err);
             });
          } else {
-            import(`json!${url}`).then((contents) => {
+            (load || this.load)(`json!${url}`).then((contents) => {
                resolve(contents);
             }, (err) => {
                reject(err);
@@ -137,17 +162,13 @@ class Loader implements ILoader {
 
             if (availableResources.includes(localeCode)) {
                resources.dictionary.push(localeCode);
-
-               continue;
-            } else if (availableResources.includes(langCode)) {
+            } else if (!resources.dictionary.includes(langCode) && availableResources.includes(langCode)) {
                resources.dictionary.push(langCode);
-
-               continue;
             }
 
             if (availableResources.includes(`${localeCode}.css`)) {
                resources.css.push(localeCode);
-            } else if (availableResources.includes(`${langCode}.css`)) {
+            } else if (!resources.css.includes(langCode) && availableResources.includes(`${langCode}.css`)) {
                resources.css.push(langCode);
             }
          }
@@ -161,7 +182,7 @@ class Loader implements ILoader {
 
       if (context) {
          if (context.path) {
-            this.contents(contextName).then((contents: IContents): string[] => {
+            return this.contents(contextName).then((contents: IContents): string[] => {
                if (contents.modules[contextName] && contents.modules[contextName].dict) {
                   return contents.modules[contextName].dict;
                }

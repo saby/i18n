@@ -5,7 +5,7 @@ import Store from './Store';
 import Translator from './Translator';
 
 import IContext from './interfaces/IContext';
-import ILoader from './interfaces/ILoader';
+import ILoader, {ILoadingsHistory} from './interfaces/ILoader';
 import IController from './interfaces/IController';
 import ILocale from '../locales/Interfaces/ILocale';
 import {IModule} from './interfaces/declaration';
@@ -23,6 +23,12 @@ export interface IConfigController {
     contextSeparator?: string;
     pluralPrefix?: string;
     pluralDelimiter?: string;
+}
+
+interface IRequest {
+    headers: {
+        'accept-language': string;
+    };
 }
 
 class Controller implements IController {
@@ -71,12 +77,30 @@ class Controller implements IController {
         }
     }
 
+    get loadingsHistory(): ILoadingsHistory {
+        return this.loader.history;
+    }
+
     get requiredLocales(): string[] {
         return constants.isServerSide ? this.availableLocales : [this.currentLocale];
     }
 
     get currentLocaleConfig(): ILocale {
         return this.localesStore.get(this.currentLocale, true) as ILocale;
+    }
+
+    isReady(): Promise<Boolean> {
+        return new Promise((resolve, reject) => {
+            const locales = [];
+
+            for (const localesCode of this.requiredLocales) {
+                locales.push(this.localesStore.get(localesCode));
+            }
+
+            Promise.all(locales).then(() => {
+                resolve();
+            }).catch(reject);
+        });
     }
 
     getTranslator(contextName: string): Promise<ITranslator> {
@@ -89,14 +113,9 @@ class Controller implements IController {
             this.loadableTranslator[contextName] = new Promise((resolve, reject) => {
                 this.contextStore.set(contextName);
 
-                const locales = [];
                 const context = this.contextStore.get(contextName);
 
-                for (const localesCode of this.requiredLocales) {
-                    locales.push(this.localesStore.get(localesCode));
-                }
-
-                Promise.all([context, ...locales]).then(([contextContent]) => {
+                Promise.all([context, this.isReady()]).then(([contextContent]) => {
                     this.translators[contextName] = new Translator(contextContent, this);
 
                     resolve(this.translators[contextName]);
@@ -105,6 +124,14 @@ class Controller implements IController {
         }
 
         return this.loadableTranslator[contextName];
+    }
+
+    addContext(contextName: string, context?: IContext): void {
+        this.contextStore.set(contextName, context);
+    }
+
+    addLocale(localeCode: string, locale?: ILocale): void {
+        this.localesStore.set(localeCode, locale);
     }
 
     protected readConfig(config: IConfigController): void {
@@ -141,7 +168,7 @@ class Controller implements IController {
             return codeFromCookie;
         }
 
-        const detectedCode = this._detectCodeFromAcceptLanguage(Controller._getAcceptLanguage());
+        const detectedCode = this._detectCodeFromAcceptLanguage(Controller.getAcceptLanguage());
 
         if (detectedCode) {
             cookie.set('lang', detectedCode, {
@@ -160,11 +187,11 @@ class Controller implements IController {
             for (const pieceHeader of acceptLanguage) {
                 const code = pieceHeader.split(';')[0];
 
-                if (Controller.isLangCode(code) && this.availableLocales.includes(code)) {
+                if (Controller.isLocaleCode(code) && this.availableLocales.includes(code)) {
                     return code;
                 }
 
-                if (Controller.isLocaleCode(code) && this.defaultLocalesFromLang.hasOwnProperty(code)) {
+                if (Controller.isLangCode(code) && this.defaultLocalesFromLang.hasOwnProperty(code)) {
                     return this.defaultLocalesFromLang[code];
                 }
             }
@@ -191,10 +218,10 @@ class Controller implements IController {
         return '';
     }
 
-    private static _getAcceptLanguage(): string[] {
+    static getAcceptLanguage(request?: IRequest): string[] {
         // @ts-ignore
-        const request = process && process.domain && process.domain.req;
-        const acceptLanguage = request && request.headers && request.headers['accept-language'];
+        const req = request || process && process.domain && process.domain.req;
+        const acceptLanguage = req && req.headers && req.headers['accept-language'];
 
         return acceptLanguage ? acceptLanguage.split(',') : [];
     }

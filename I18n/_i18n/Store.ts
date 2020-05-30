@@ -39,8 +39,6 @@ class Store <T> {
 
         this.loadableElements[key].then((configuration) => {
             this.elements[key] = configuration;
-        }).catch((err) => {
-            throw err;
         });
     }
 }

@@ -3,8 +3,8 @@ import ITranslatableString from './interfaces/ITranslatableString';
 
 interface ITranslatableValue {
     key: string;
-    contextValue: string;
-    pluralValue: number;
+    contextValue?: string;
+    pluralValue?: number;
 }
 
 class TranslatableString extends String implements ITranslatableString {
@@ -16,12 +16,12 @@ class TranslatableString extends String implements ITranslatableString {
         return this.translatedValue.length;
     }
 
-    get translatedValue(): string {
+    protected get translatedValue(): string {
         const translateResult = this.translator.translateKey(
             this.value.key,
             this.value.contextValue,
-            this.value.pluralValue)
-        ;
+            this.value.pluralValue
+        );
 
         return String(translateResult !== undefined ? translateResult : this.value.key);
     }

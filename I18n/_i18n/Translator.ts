@@ -28,11 +28,7 @@ class Translator implements ITranslator {
             }
 
             if (constants.isServerSide) {
-                return new TranslatableString({
-                    key,
-                    pluralValue,
-                    contextValue: contextValue as string
-                }, this);
+                return new TranslatableString(() => this.translateKey(value, contextValue, pluralNumber));
             } else {
                 return this.translateKey(value, contextValue as string, pluralValue);
             }
