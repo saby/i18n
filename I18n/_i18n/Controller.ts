@@ -86,7 +86,7 @@ class Controller implements IController {
     }
 
     get currentLocaleConfig(): ILocale {
-        return this.localesStore.get(this.currentLocale, true) as ILocale;
+        return this.localesStore.get(this.currentLocale, true) as ILocale || {} as ILocale;
     }
 
     isReady(): Promise<Boolean> {
