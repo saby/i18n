@@ -1,14 +1,7 @@
-import ITranslator from './interfaces/ITranslator';
 import ITranslatableString from './interfaces/ITranslatableString';
 
-interface ITranslatableValue {
-    key: string;
-    contextValue?: string;
-    pluralValue?: number;
-}
-
 class TranslatableString extends String implements ITranslatableString {
-    constructor(private value: ITranslatableValue, private translator: ITranslator) {
+    constructor(private value: string, private translate: Function) {
         super();
     }
 
@@ -17,13 +10,9 @@ class TranslatableString extends String implements ITranslatableString {
     }
 
     protected get translatedValue(): string {
-        const translateResult = this.translator.translateKey(
-            this.value.key,
-            this.value.contextValue,
-            this.value.pluralValue
-        );
+        const translateResult = this.translate();
 
-        return String(translateResult !== undefined ? translateResult : this.value.key);
+        return String(translateResult !== undefined ? translateResult : this.value);
     }
 
     toString(): string {

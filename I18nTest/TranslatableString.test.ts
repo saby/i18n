@@ -23,9 +23,7 @@ describe('TranslatableString', () => {
 
     const controller = new Controller({});
     const translator = new Translator(context, controller);
-    const translatableString = new TranslatableString({
-        key: 'Замок'
-    }, translator);
+    const translatableString = new TranslatableString('Замок', () => translator.translateKey('Замок'));
 
     let stubCurrentLocaleConfig;
 
