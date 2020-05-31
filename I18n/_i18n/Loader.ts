@@ -40,11 +40,15 @@ class Loader implements ILoader {
    }
 
    locale(localeCode: string, load: Function = this.load): Promise<ILocale> {
-      const url = `I18n/locales/${localeCode}`;
+      return new Promise<ILocale>((resolve, reject) => {
+         const url = `I18n/locales/${localeCode}`;
 
-      this.history.locales.push(url);
+         this.history.locales.push(url);
 
-      return load(url);
+         load(url).then((locale) => {
+            resolve(locale.default);
+         }).catch(reject);
+      });
    }
 
    context(contextName: string, requiredLocale: string[]): Promise<IContext> {
