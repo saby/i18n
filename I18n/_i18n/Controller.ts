@@ -140,7 +140,9 @@ class Controller implements IController {
 
     protected readConfig(config: IConfigController): void {
         for (const nameOption of Object.keys(config)) {
-            this[nameOption] = config[nameOption];
+            if (config[nameOption] !== undefined) {
+                this[nameOption] = config[nameOption];
+            }
         }
     }
 
