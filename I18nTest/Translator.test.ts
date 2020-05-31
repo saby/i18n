@@ -27,7 +27,10 @@ describe('Translator', () => {
         }
     };
 
-    const controller = new Controller({});
+    const controller = new Controller({
+        availableLocales: ['en-US'],
+        defaultLocale: 'en-US'
+    });
     const translator = new Translator(context, controller);
 
     let stubIsServerSide;

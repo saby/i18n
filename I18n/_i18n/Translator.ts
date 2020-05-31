@@ -1,5 +1,5 @@
 import {constants} from 'Env/Env';
-import RkString from './RkString';
+import TranslatableString from './TranslatableString';
 import ITranslator from './interfaces/ITranslator';
 import IController from './interfaces/IController';
 import ILocale from '../locales/Interfaces/ILocale';
@@ -9,7 +9,7 @@ import ITranslatableString from './interfaces/ITranslatableString';
 class Translator implements ITranslator {
     constructor(private dictionaries: IContext, private controller: IController) {}
 
-    translate(key: string, context?: string | number, pluralNumber?: number): string | ITranslatableString {
+    translate(key: string, context?: string | number, pluralNumber?: number): string | ITranslatableString | String {
         if (typeof key === 'string') {
             let value = key;
             let contextValue = context;
@@ -26,13 +26,17 @@ class Translator implements ITranslator {
                 contextValue = '';
             }
 
-            if (constants.isBrowserPlatform) {
-                return this.translateKey(value, contextValue as string, pluralValue);
-            } else {
-                return new RkString(
+            if (!this.controller.isEnabled) {
+                return constants.isServerSide ? TranslatableString.getNativeString(value) : value;
+            }
+
+            if (constants.isServerSide) {
+                return new TranslatableString(
                     value,
                     (() => this.translateKey(value, contextValue as string, pluralValue))
                 );
+            } else {
+                return this.translateKey(value, contextValue as string, pluralValue);
             }
         } else {
             return key;

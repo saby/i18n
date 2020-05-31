@@ -6,6 +6,21 @@ import {assert} from 'chai';
 import * as sinon from 'sinon';
 
 describe('Controller', () => {
+    it('isEnabled return false', () => {
+        const controller = new Controller({});
+
+        assert.isFalse(controller.isEnabled);
+    });
+
+    it('isEnabled return true', () => {
+        const controller = new Controller({
+            availableLocales: ['en-GB', 'en-US', 'ru-RU'],
+            defaultLocale: 'en-GB'
+        });
+
+        assert.isTrue(controller.isEnabled);
+    });
+
     it('defaultLang should return en', () => {
         const controller = new Controller({
             availableLocales: ['en-GB', 'en-US', 'ru-RU'],

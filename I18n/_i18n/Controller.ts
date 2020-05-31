@@ -89,7 +89,11 @@ class Controller implements IController {
         return this.localesStore.get(this.currentLocale, true) as ILocale || {} as ILocale;
     }
 
-    isReady(): Promise<Boolean> {
+    get isEnabled(): boolean {
+        return this.availableLocales.length !== 0;
+    }
+
+    isReady(): Promise<boolean> {
         return new Promise((resolve, reject) => {
             const locales = [];
 

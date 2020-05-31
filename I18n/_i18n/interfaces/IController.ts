@@ -8,4 +8,6 @@ export default interface IController {
     pluralPrefix: string;
     pluralDelimiter: string;
     currentLocaleConfig: ILocale;
+    isEnabled: boolean;
+    isReady(): Promise<boolean>;
 }

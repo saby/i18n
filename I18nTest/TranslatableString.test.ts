@@ -39,6 +39,10 @@ describe('TranslatableString', () => {
         stubCurrentLocaleConfig = undefined;
     });
 
+    it('should return instance String', () => {
+        assert.instanceOf(TranslatableString.getNativeString('Замок'), String);
+    });
+
     it('should translated key from en-US', () => {
         assert.equal(translatableString.toString(), 'Castle');
     });
