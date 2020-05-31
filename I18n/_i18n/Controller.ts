@@ -17,7 +17,7 @@ const EXPIRES_COOKIES = 365;
 
 export interface IConfigController {
     availableLocales?: string[];
-    defaultLocale?: string;
+    defaultLocale: string;
     availableContexts?: {[contextName: string]: IModule};
     loader?: ILoader;
     contextSeparator?: string;
@@ -50,10 +50,6 @@ class Controller implements IController {
     constructor(config: IConfigController) {
         this.readConfig(config);
 
-        if (this.defaultLocale && !this.availableLocales.includes(this.defaultLocale)) {
-            throw new Error('Default locale was not specified in available locales');
-        }
-
         this.buildMapOfDefaultLocales();
 
         this.loader = this.loader || new Loader(this.availableContexts);
@@ -66,6 +62,10 @@ class Controller implements IController {
     }
 
     get currentLocale(): string {
+        if (!this.isEnabled) {
+            return this.defaultLocale;
+        }
+
         if (constants.isBrowserPlatform) {
             if (!this.currentCodeLocale) {
                 this.currentCodeLocale = this._calculateCodeLocale();
@@ -77,11 +77,19 @@ class Controller implements IController {
         }
     }
 
+    get currentLang(): string {
+        return this.currentLocale.split('-')[0];
+    }
+
     get loadingsHistory(): ILoadingsHistory {
         return this.loader.history;
     }
 
     get requiredLocales(): string[] {
+        if (!this.isEnabled) {
+            return [this.defaultLocale];
+        }
+
         return constants.isServerSide ? this.availableLocales : [this.currentLocale];
     }
 
@@ -115,9 +123,14 @@ class Controller implements IController {
 
         if (!this.loadableTranslator.hasOwnProperty(contextName)) {
             this.loadableTranslator[contextName] = new Promise((resolve, reject) => {
-                this.contextStore.set(contextName);
+                let context;
 
-                const context = this.contextStore.get(contextName);
+                if (this.isEnabled) {
+                    this.contextStore.set(contextName);
+                    context = this.contextStore.get(contextName);
+                } else {
+                    context = Promise.resolve({});
+                }
 
                 Promise.all([context, this.isReady()]).then(([contextContent]) => {
                     this.translators[contextName] = new Translator(contextContent, this);

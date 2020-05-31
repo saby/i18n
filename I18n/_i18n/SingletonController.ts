@@ -66,6 +66,10 @@ function getConfig(): IConfigController {
         return this || (0, eval)('this');
     })();
 
+    const config = {
+        defaultLocale: 'ru-RU'
+    };
+
     if (global.contents) {
         const availableLanguage = global.contents.availableLanguage;
         if (constants.isBrowserPlatform) {
@@ -79,7 +83,7 @@ function getConfig(): IConfigController {
         };
     }
 
-    return {};
+    return config;
 }
 
 /* Диспетчер выставляет единую куки lang по всем приложениям персоны, но есть приложения,

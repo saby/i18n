@@ -7,7 +7,9 @@ import * as sinon from 'sinon';
 
 describe('Controller', () => {
     it('isEnabled return false', () => {
-        const controller = new Controller({});
+        const controller = new Controller({
+            defaultLocale: 'en-US'
+        });
 
         assert.isFalse(controller.isEnabled);
     });

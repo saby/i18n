@@ -21,7 +21,9 @@ describe('TranslatableString', () => {
         code: 'fr-FR'
     };
 
-    const controller = new Controller({});
+    const controller = new Controller({
+        defaultLocale: 'en-US'
+    });
     const translator = new Translator(context, controller);
     const translatableString = new TranslatableString('Замок', () => translator.translateKey('Замок'));
 
