@@ -88,7 +88,7 @@ class Loader implements ILoader {
 
    dictionary(contextName: string, localeCode: string, load: Function = this.load): Promise<[string, IDictionary]> {
       const langCode = localeCode.split('-')[0];
-      const url = `${contextName}/lang/${langCode}/${localeCode}.json`;
+      const url = `${this.normalizeContextName(contextName)}/lang/${langCode}/${localeCode}.json`;
 
       this.history.dictionaries.push(url);
 
@@ -100,7 +100,7 @@ class Loader implements ILoader {
    css(contextName: string, localeCode: string, load: Function = this.load): Promise<void> {
       const langCode = localeCode.split('-')[0];
 
-      const url = `${contextName}/lang/${langCode}/${localeCode}`;
+      const url = `${this.normalizeContextName(contextName)}/lang/${langCode}/${localeCode}`;
 
       this.history.styles.push(url);
 
@@ -140,6 +140,14 @@ class Loader implements ILoader {
             });
          }
       });
+   }
+
+   private normalizeContextName(contextName: string): string {
+      if (contextName === 'WS.Deprecated') {
+         return 'Deprecated';
+      }
+
+      return contextName;
    }
 
    private normalizeContext(context: IContext, requiredLocales: string[]): void {
