@@ -70,7 +70,7 @@ class Loader implements ILoader {
                   const context = {};
 
                   for (const dictionary of resource[0]) {
-                     context[dictionary[0]] = dictionary[1];
+                     context[dictionary[0]] = dictionary[1] || {};
                   }
 
                   this.normalizeContext(context, requiredLocale);

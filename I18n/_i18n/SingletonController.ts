@@ -7,7 +7,7 @@ import 'native-css';
 
 const alias = {
     Core: 'WS.Core',
-    Deprecated: 'WS.Deprecated',
+    'WS.Deprecated': 'Deprecated',
     Lib: 'WS.Core',
     Transport: 'WS.Core'
 };
