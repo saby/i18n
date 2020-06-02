@@ -33,8 +33,10 @@ export function load(name: string, require: Require, onLoad: Function): void {
         return;
     }
 
-    if (configController.availableLocales && configController.availableLocales.length === 0) {
-        onLoad(defaultTranslator);
+    if (!controller.isEnabled) {
+        controller.isReady().then(() => {
+            onLoad(defaultTranslator);
+        });
 
         return;
     }
