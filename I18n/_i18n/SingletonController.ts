@@ -72,13 +72,14 @@ function getConfig(): IConfigController {
 
     if (global.contents) {
         const availableLanguage = global.contents.availableLanguage;
+
         if (constants.isBrowserPlatform) {
             setLocalizationBL(availableLanguage);
         }
 
         return {
             availableLocales: availableLanguage && prepareAvailableLanguage(availableLanguage),
-            defaultLocale: global.contents.defaultLanguage,
+            defaultLocale: global.contents.defaultLanguage || config.defaultLocale,
             availableContexts: global.contents.modules
         };
     }
