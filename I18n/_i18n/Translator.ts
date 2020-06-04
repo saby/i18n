@@ -43,6 +43,10 @@ class Translator implements ITranslator {
         }
     }
 
+    setDictionaries(dictionaries: IContext): void {
+        this.dictionaries = dictionaries;
+    }
+
     translateKey(key: string, context?: string, pluralNumber?: number): string {
         const currentLocale = this.controller.currentLocaleConfig;
         let translatedKey;

@@ -48,24 +48,14 @@ export function load(name: string, require: Require, onLoad: Function): void {
     }
 
     if (constants.isServerSide) {
-        let translate = defaultTranslator;
+        const translator = controller.getTranslator(contextName, true);
 
-        controller.getTranslator(contextName).then((translator) => {
-            translate = translator.translate.bind(translator);
-        }).catch((err) => {
-            translate = defaultTranslator;
-        });
-
-        onLoad((key: string,
-                context?: string | number,
-                pluralNumber?: number) => {
-            return translate(key, context, pluralNumber);
-        });
+        onLoad((translator as Translator).translate.bind(translator));
 
         return;
     }
 
-    controller.getTranslator(contextName).then((translator) => {
+    (controller.getTranslator(contextName) as Promise<Translator>).then((translator) => {
         onLoad(translator.translate.bind(translator));
     }).catch((err) => {
         onLoad(defaultTranslator);
