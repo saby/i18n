@@ -33,7 +33,7 @@ export function load(name: string, require: Require, onLoad: Function): void {
         return;
     }
 
-    if (configController.availableLocales && configController.availableLocales.length === 0) {
+    if (controller.isEnabled) {
         onLoad(defaultTranslator);
 
         return;
@@ -43,6 +43,24 @@ export function load(name: string, require: Require, onLoad: Function): void {
 
     if (!contextName) {
         onLoad(defaultTranslator);
+
+        return;
+    }
+
+    if (constants.isServerSide) {
+        let translate = defaultTranslator;
+
+        controller.getTranslator(contextName).then((translator) => {
+            translate = translator.translate.bind(translator);
+        }).catch((err) => {
+            translate = defaultTranslator;
+        });
+
+        onLoad((key: string,
+                context?: string | number,
+                pluralNumber?: number) => {
+            return translate(key, context, pluralNumber);
+        });
 
         return;
     }
