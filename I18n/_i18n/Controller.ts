@@ -115,24 +115,30 @@ class Controller implements IController {
         });
     }
 
-    getTranslator(contextName: string): Promise<ITranslator> {
+    getTranslator(contextName: string, sync: boolean = false): Promise<ITranslator> | ITranslator {
         if (this.translators.hasOwnProperty(contextName)) {
             delete this.loadableTranslator[contextName];
-            return Promise.resolve(this.translators[contextName]);
+
+            return sync ? this.translators[contextName] : Promise.resolve(this.translators[contextName]);
+        }
+
+        if (sync) {
+            this.translators[contextName] = new Translator({}, this);
+
+            if (!this.loadableTranslator.hasOwnProperty(contextName)) {
+                this.loadableTranslator[contextName] = new Promise((resolve, reject) => {
+                    this._getContext(contextName).then((contextContent) => {
+                        this.translators[contextName].setDictionaries(contextContent);
+                    }).catch(reject);
+                });
+            }
+
+            return this.translators[contextName];
         }
 
         if (!this.loadableTranslator.hasOwnProperty(contextName)) {
             this.loadableTranslator[contextName] = new Promise((resolve, reject) => {
-                let context;
-
-                if (this.isEnabled) {
-                    this.contextStore.set(contextName);
-                    context = this.contextStore.get(contextName);
-                } else {
-                    context = Promise.resolve({});
-                }
-
-                Promise.all([context, this.isReady()]).then(([contextContent]) => {
+                this._getContext(contextName).then((contextContent) => {
                     this.translators[contextName] = new Translator(contextContent, this);
 
                     resolve(this.translators[contextName]);
@@ -141,6 +147,23 @@ class Controller implements IController {
         }
 
         return this.loadableTranslator[contextName];
+    }
+
+    private _getContext(contextName: string): Promise<IContext> {
+        return new Promise((resolve, reject) => {
+            let context;
+
+            if (this.isEnabled) {
+                this.contextStore.set(contextName);
+                context = this.contextStore.get(contextName);
+            } else {
+                context = Promise.resolve({});
+            }
+
+            Promise.all([context, this.isReady()]).then(([contextContent]) => {
+                resolve(contextContent);
+            }).catch(reject);
+        });
     }
 
     addContext(contextName: string, context?: IContext): void {
