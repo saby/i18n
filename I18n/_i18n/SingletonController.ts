@@ -33,7 +33,7 @@ export function load(name: string, require: Require, onLoad: Function): void {
         return;
     }
 
-    if (controller.isEnabled) {
+    if (!controller.isEnabled) {
         onLoad(defaultTranslator);
 
         return;
