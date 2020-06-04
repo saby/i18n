@@ -51,6 +51,8 @@ export function load(name: string, require: Require, onLoad: Function): void {
         const translator = controller.getTranslator(contextName, true);
 
         onLoad((translator as Translator).translate.bind(translator));
+
+        return;
     }
 
     (controller.getTranslator(contextName) as Promise<Translator>).then((translator) => {
