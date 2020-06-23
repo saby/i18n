@@ -109,15 +109,12 @@ class Loader implements ILoader {
 
    contents(contextName: string, load?: Function): Promise<IContents> {
       return new Promise((resolve, reject) => {
-         const context = this.availableContexts[contextName];
-         const url = `${context.path.startsWith('/') ? '' : '/'}${context.path}/contents.json`;
+         const url = this.getUrlForContents(contextName);
 
          this.history.contents.push(url);
 
          if (envConst.isBrowserPlatform) {
-            const cacheNumber = context.buildnumber ? `?x_module=${context.buildnumber}` : '' ;
-
-            (load || fetch)(url + cacheNumber, {
+            (load || fetch)(url, {
                credentials: 'include'
             }).then((response) => {
                if (response.ok) {
@@ -133,13 +130,24 @@ class Loader implements ILoader {
                reject(err);
             });
          } else {
-            (load || this.load)(`json!${url}`).then((contents) => {
+            (load || this.load)(url).then((contents) => {
                resolve(contents);
             }, (err) => {
                reject(err);
             });
          }
       });
+   }
+
+   private getUrlForContents(contextName: string): string {
+      if (envConst.isBrowserPlatform) {
+         const context = this.availableContexts[contextName];
+         const cacheNumber = context.buildnumber ? `?x_module=${context.buildnumber}` : '';
+
+         return `${context.path.startsWith('/') ? '' : '/'}${context.path}/contents.json${cacheNumber}`;
+      }
+
+      return `json!${contextName}/contents.json`;
    }
 
    private normalizeContextName(contextName: string): string {
@@ -287,7 +295,7 @@ class Loader implements ILoader {
             result.errback(err);
          });
       } else {
-         import(`json!${url}`).then((contents) => {
+         import(`json!'${moduleName}/contents.json`).then((contents) => {
             result.callback(Loader.extractAvailableDictionaries(moduleName, contents));
          }, (err) => {
             result.errback(err);
