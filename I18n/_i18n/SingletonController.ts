@@ -26,8 +26,14 @@ export default controller;
 
 export function load(name: string, require: Require, onLoad: Function): void {
     if (name.includes('controller?')) {
+        if (constants.isServerSide) {
+            onLoad(controller);
+
+            return;
+        }
+
         controller.isReady().then(() => {
-           onLoad(controller);
+            onLoad(controller);
         });
 
         return;
