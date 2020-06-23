@@ -178,7 +178,7 @@ describe('Loader', () => {
             stubIsBrowser.get(() => false);
 
             const fakeLoader = (url) => new Promise((resolve) => {
-                assert.strictEqual(url, 'json!/service/path/externalContext/contents.json');
+                assert.strictEqual(url, 'json!externalContext/contents.json');
                 resolve(externalContents);
             });
 
