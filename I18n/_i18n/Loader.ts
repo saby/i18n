@@ -295,7 +295,7 @@ class Loader implements ILoader {
             result.errback(err);
          });
       } else {
-         import(`json!'${moduleName}/contents.json`).then((contents) => {
+         import(`json!${moduleName}/contents.json`).then((contents) => {
             result.callback(Loader.extractAvailableDictionaries(moduleName, contents));
          }, (err) => {
             result.errback(err);
