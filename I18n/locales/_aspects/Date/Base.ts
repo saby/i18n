@@ -5,4 +5,6 @@ export default class Base {
     shortHalfYearFormat: string = 'YYhr \'YY';
     shortQuarterFormat: string = 'QQQr \'YY';
     shortTimeFormat: string = 'HH:mm';
+    shortMonthFormat: string = 'MMM\'YY';
+    shortDateShortMonthFormat: string = 'DD MMM';
 }

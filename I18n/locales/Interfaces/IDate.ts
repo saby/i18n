@@ -13,6 +13,9 @@ export default interface IDate {
     fullDateFullMonthFormat: string;
     fullDateFullMonthFullYearFormat: string;
     fullDateShortMonthFormat: string;
+    shortDateShortMonthFormat: string;
     fullDateShortMonthFullYearFormat: string;
     fullMonthFormat: string;
+    shortMonthFormat: string;
+    shortDateFullMonthFormat: string;
 }

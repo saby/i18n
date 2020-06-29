@@ -27,13 +27,20 @@ interface IRequiredResources {
  */
 class Loader implements ILoader {
    history: ILoadingsHistory = {
-      dictionaries: [],
-      styles: [],
+      context: {},
       locales: [],
       contents: []
    };
 
    constructor(private availableContexts: {[contextName: string]: IModule}) {}
+
+   addContextHistory(context: string, localeCode: string, type: string, url: string): void {
+      if (!this.history[context][localeCode]) {
+         this.history[context][localeCode] = {};
+      }
+
+      this.history[context][localeCode][type] = url;
+   }
 
    load(path: string): Promise<unknown> {
       return import(path);
@@ -90,7 +97,7 @@ class Loader implements ILoader {
       const langCode = localeCode.split('-')[0];
       const url = `${this.normalizeContextName(contextName)}/lang/${langCode}/${localeCode}.json`;
 
-      this.history.dictionaries.push(url);
+      this.addContextHistory(contextName, localeCode, 'dictionary', url);
 
       return load(url).then((dictionary: IDictionary) => {
          return [localeCode, dictionary];
@@ -99,10 +106,9 @@ class Loader implements ILoader {
 
    css(contextName: string, localeCode: string, load: Function = this.load): Promise<void> {
       const langCode = localeCode.split('-')[0];
-
       const url = `${this.normalizeContextName(contextName)}/lang/${langCode}/${localeCode}`;
 
-      this.history.styles.push(url);
+      this.addContextHistory(contextName, localeCode, 'style', url);
 
       return load(`native-css!${url}`);
    }
