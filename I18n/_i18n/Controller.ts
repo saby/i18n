@@ -101,6 +101,10 @@ class Controller implements IController {
         return this.availableLocales.length !== 0;
     }
 
+    isSupportedLocale(code: string): boolean {
+        return this._isSupportedCode(this._normalizeCode(code));
+    }
+
     isReady(): Promise<boolean> {
         return new Promise((resolve, reject) => {
             const locales = [];
@@ -206,7 +210,7 @@ class Controller implements IController {
     private _calculateCodeLocale(): string {
         const codeFromCookie = this._normalizeCode(cookie.get('lang'));
 
-        if (codeFromCookie && this._isSupportedLocale(codeFromCookie)) {
+        if (codeFromCookie && this._isSupportedCode(codeFromCookie)) {
             return codeFromCookie;
         }
 
@@ -242,7 +246,7 @@ class Controller implements IController {
         return '';
     }
 
-    private _isSupportedLocale(code: string): boolean {
+    private _isSupportedCode(code: string): boolean {
         return this.availableLocales.includes(code);
     }
 

@@ -18,6 +18,7 @@ class EuropeRuDate extends DateAspect {
     fullDateShortMonthFullYearFormat: string = 'DD MMMl YYYY';
     fullMonthFormat: string = 'MMMM\'YY';
     shortDateShortMonthFormat: string = 'DD MMMl';
+    shortDateFullMonthFormat: string = 'DD MMMMlo';
 }
 
 class RURU implements ILocale {

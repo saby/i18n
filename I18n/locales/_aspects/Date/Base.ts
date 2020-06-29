@@ -7,4 +7,5 @@ export default class Base {
     shortTimeFormat: string = 'HH:mm';
     shortMonthFormat: string = 'MMM\'YY';
     shortDateShortMonthFormat: string = 'DD MMM';
+    shortDateFullMonthFormat: string = 'DD MMMM';
 }
