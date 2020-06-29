@@ -4,8 +4,8 @@ import IContext from './IContext';
 export interface ILoadingsHistory {
     context: {
         [localeCode: string]: {
-            dictionary: string,
-            css: string
+            dictionary: string;
+            css: string;
         }
     };
     locales: string[];
