@@ -26,8 +26,22 @@ export default controller;
 
 export function load(name: string, require: Require, onLoad: Function): void {
     if (name.includes('controller?')) {
+
+        //TODO https://online.sbis.ru/opendoc.html?guid=76970b4f-e3bd-49ea-b898-a25f166e58d8
+        /*
+          На сервисе представления мнимая асинхроность, которая костыльными путями преврашается в синхроность,
+          и попытка использвоать честный асинхронный промис ломает загрузку файлов.
+          Приходиться грузить все локали вручную require-ом и добавлять в контроллер.
+          Жду решения по данной задаче. https://online.sbis.ru/opendoc.html?guid=76970b4f-e3bd-49ea-b898-a25f166e58d8
+         */
         if (constants.isServerSide) {
-            onLoad(controller);
+            require(['I18n/locales/en-US', 'I18n/locales/en-GB', 'I18n/locales/ru-RU'], (enUS, enGB, ruUR) => {
+                controller.addLocale('en-US', enUS.default);
+                controller.addLocale('en-GB', enGB.default);
+                controller.addLocale('ru-RU', ruUR.default);
+
+                onLoad(controller);
+            });
 
             return;
         }
