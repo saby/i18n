@@ -36,9 +36,9 @@ export function load(name: string, require: Require, onLoad: Function): void {
          */
         if (constants.isServerSide) {
             require(['I18n/locales/en-US', 'I18n/locales/en-GB', 'I18n/locales/ru-RU'], (enUS, enGB, ruUR) => {
-                controller.addLocale('en-US', enUS);
-                controller.addLocale('en-GB', enGB);
-                controller.addLocale('ru-RU', ruUR);
+                controller.addLocale('en-US', enUS.default);
+                controller.addLocale('en-GB', enGB.default);
+                controller.addLocale('ru-RU', ruUR.default);
 
                 onLoad(controller);
             });
