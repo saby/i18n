@@ -101,6 +101,10 @@ class Controller implements IController {
         return this.availableLocales.length !== 0;
     }
 
+    isSupportedLocale(code: string): boolean {
+        return this._isSupportedLocale(this._normalizeCode(code));
+    }
+
     isReady(): Promise<boolean> {
         return new Promise((resolve, reject) => {
             const locales = [];
