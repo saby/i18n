@@ -1,9 +1,3 @@
-import RkString from './RkString';
-import IConfiguration from './IConfiguration';
-import {IoC} from 'Env/Env';
-import constants from './Const';
-import {constants as envConst} from 'Env/Env';
-
 /** Все загруженные словари, где ключ - слово на языке оригинала */
 const dictionary = {};
 
@@ -18,96 +12,6 @@ const dictionaryNames = {};
  */
 
 class Locale {
-
-   /** Конфигурация локали */
-   private config: IConfiguration = null;
-
-   constructor(config: IConfiguration) {
-
-      /** Конфигурация локали */
-      this.config = config;
-   }
-
-   /**
-    * Возвращает переведенное значение ключа.
-    * @param {String} key Ключ локализации.
-    * @param {String|Number} context Контекст перевода.
-    * Когда аргумент принимает число, то это трактуется как значение,
-    * под которое нужно подобрать множественную форму перевода слова
-    * @param {Number} pluralNumber Число, под которое нужно подобрать множественную форму перевода слова.
-    * @returns {String}
-    * @public
-    */
-   rk(key: string, context?: string | number, pluralNumber?: number): any {
-      if (typeof key === 'string') {
-         if (envConst.isBrowserPlatform) {
-            return this._translate(key, context, pluralNumber);
-         } else {
-            return new RkString(key, (() => this._translate(key, context, pluralNumber)));
-         }
-      } else {
-         return key;
-      }
-   }
-
-   protected _translate(key: string, context?: string | number, pluralNumber?: number): string {
-      const index = key.indexOf(constants.contextSeparator);
-
-      if (index > -1) {
-         context = key.substr(0, index);
-         key = key.substr(index + constants.contextSeparator.length);
-      }
-
-      if (typeof context === 'number') {
-         pluralNumber = context;
-         context = '';
-      }
-
-      let result = key;
-      if (dictionary[this.config.code]) {
-         if (pluralNumber !== undefined) {
-            const translatedKey = this._translateKey( constants.pluralPrefix + key, context);
-            if (translatedKey) {
-               const translateForPluralForm = this._translatePlural(translatedKey, pluralNumber);
-               if (translateForPluralForm) {
-                  result = translateForPluralForm;
-               }
-            }
-
-            if (!result) {
-               IoC.resolve('ILogger').error(
-                  'Localization',
-                  `Для ключа ${key} нет плюральной формы числа ${pluralNumber} в локали ${this.config.code}.`
-               );
-            }
-         } else {
-            /**
-             * In some rare cases there can be an empty translate for some of Russian's prepositions:
-             * F.e. Russian sentence "У контакта изменен номер" can be translated in 2 ways:
-             * 1) Changed contact number
-             * 2) Contact number changed
-             */
-            const translatedKey = this._translateKey(key, context);
-            if (translatedKey !== undefined) {
-                result = translatedKey;
-            }
-         }
-      }
-
-      return result;
-   }
-
-   protected _translateKey(key: string, context?: string): string {
-      const contextKey = context ? `${context}${constants.contextSeparator}${key}` : `${key}`;
-      const translatedKey = dictionary[this.config.code][contextKey];
-
-      return translatedKey;
-   }
-
-   protected _translatePlural(key: string, pluralNumber: number): string {
-      return this.config.plural(Math.abs(pluralNumber), ...key.split(constants.pluralDelimiter));
-   }
-
    /**
     * Проверят наличие словаря по его имени.
     * @param {String} dictName Имя словаря.

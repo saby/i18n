@@ -101,6 +101,19 @@ class Controller implements IController {
         return this.availableLocales.length !== 0;
     }
 
+    setLocale(code: string, expires: number = EXPIRES_COOKIES): void {
+        const fullCode = this._normalizeCode(code);
+
+        if (fullCode && this._isSupportedLocale(fullCode)) {
+            cookie.set('lang', fullCode, {
+                expires,
+                path: '/'
+            });
+        }
+
+        this.currentCodeLocale = fullCode;
+    }
+
     isSupportedLocale(code: string): boolean {
         return this._isSupportedLocale(this._normalizeCode(code));
     }
@@ -153,23 +166,6 @@ class Controller implements IController {
         return this.loadableTranslator[contextName];
     }
 
-    private _getContext(contextName: string): Promise<IContext> {
-        return new Promise((resolve, reject) => {
-            let context;
-
-            if (this.isEnabled) {
-                this.contextStore.set(contextName);
-                context = this.contextStore.get(contextName);
-            } else {
-                context = Promise.resolve({});
-            }
-
-            Promise.all([context, this.isReady()]).then(([contextContent]) => {
-                resolve(contextContent);
-            }).catch(reject);
-        });
-    }
-
     addContext(contextName: string, context?: IContext): void {
         this.contextStore.set(contextName, context);
     }
@@ -207,6 +203,23 @@ class Controller implements IController {
         }
     }
 
+    private _getContext(contextName: string): Promise<IContext> {
+        return new Promise((resolve, reject) => {
+            let context;
+
+            if (this.isEnabled) {
+                this.contextStore.set(contextName);
+                context = this.contextStore.get(contextName);
+            } else {
+                context = Promise.resolve({});
+            }
+
+            Promise.all([context, this.isReady()]).then(([contextContent]) => {
+                resolve(contextContent);
+            }).catch(reject);
+        });
+    }
+
     private _calculateCodeLocale(): string {
         const codeFromCookie = this._normalizeCode(cookie.get('lang'));
 
@@ -217,10 +230,7 @@ class Controller implements IController {
         const detectedCode = this._detectCodeFromAcceptLanguage(Controller.getAcceptLanguage());
 
         if (detectedCode) {
-            cookie.set('lang', detectedCode, {
-                expires: EXPIRES_COOKIES,
-                path: '/'
-            });
+            this.setLocale(detectedCode);
 
             return detectedCode;
         }
@@ -233,7 +243,7 @@ class Controller implements IController {
             for (const pieceHeader of acceptLanguage) {
                 const code = pieceHeader.split(';')[0];
 
-                if (Controller.isLocaleCode(code) && this.availableLocales.includes(code)) {
+                if (Controller.isLocaleCode(code) && this._isSupportedLocale(code)) {
                     return code;
                 }
 
