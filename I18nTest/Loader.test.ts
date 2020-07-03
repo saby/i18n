@@ -36,6 +36,44 @@ describe('Loader', () => {
         }
     });
 
+    describe('history', () => {
+        it('should add contents in history', () => {
+            loader.contents('contentsHistory', () => {
+                return Promise.resolve({});
+            });
+
+            assert.isTrue(loader.history.contents.includes('json!contentsHistory/contents.json'));
+        });
+
+        it('should add locale in history', () => {
+            loader.locale('en-US', () => {
+                return Promise.resolve({});
+            });
+
+            assert.isTrue(loader.history.locales.includes('I18n/locales/en-US'));
+        });
+
+        it('should add style in history', () => {
+            loader.style('styleHistory', 'en-US', () => {
+                return Promise.resolve({});
+            });
+
+            assert.strictEqual(loader.history.contexts.styleHistory['en-US'].style, 'styleHistory/lang/en/en-US');
+        });
+
+
+        it('should add dictionary in history', () => {
+            loader.dictionary('dictHistory', 'en-US', () => {
+                return Promise.resolve({});
+            });
+
+            assert.strictEqual(
+                loader.history.contexts.dictHistory['en-US'].dictionary,
+                'dictHistory/lang/en/en-US.json'
+            );
+        });
+    });
+
     describe('dictionary', () => {
         it('should load base dictionary', () => {
             const fareLoader = (path) => {
@@ -62,7 +100,7 @@ describe('Loader', () => {
         });
     });
 
-    describe('css', () => {
+    describe('style', () => {
         it('should load base css', () => {
             const fareLoader = (path) => {
                 assert.strictEqual(path, 'native-css!context/lang/en/en');
@@ -70,7 +108,7 @@ describe('Loader', () => {
                 return Promise.resolve();
             };
 
-            return loader.css('context', 'en', fareLoader);
+            return loader.style('context', 'en', fareLoader);
         });
 
         it('should load advanced css', () => {
@@ -80,7 +118,7 @@ describe('Loader', () => {
                 return Promise.resolve();
             };
 
-            return loader.css('context', 'en-US', fareLoader);
+            return loader.style('context', 'en-US', fareLoader);
         });
     });
 
@@ -91,7 +129,7 @@ describe('Loader', () => {
 
         before(() => {
             stubLoaderDict = sinon.stub(loader, 'dictionary');
-            stubLoaderCss = sinon.stub(loader, 'css');
+            stubLoaderCss = sinon.stub(loader, 'style');
             stubContents = sinon.stub(loader, 'contents');
 
             stubLoaderDict.callsFake((context, key) => Promise.resolve([key, dictionary[key]]));

@@ -16,8 +16,7 @@ interface IRequiredResources {
  */
 class Loader implements ILoader {
    history: ILoadingsHistory = {
-      dictionaries: [],
-      styles: [],
+      contexts: {},
       locales: [],
       contents: []
    };
@@ -52,7 +51,7 @@ class Loader implements ILoader {
                }
 
                for (const css of requireResources.css) {
-                  loadableCss.push(this.css(contextName, css));
+                  loadableCss.push(this.style(contextName, css));
                }
 
                Promise.all([Promise.all(loadableDictionaries), Promise.all(loadableCss)]).then((resource) => {
@@ -79,19 +78,19 @@ class Loader implements ILoader {
       const langCode = localeCode.split('-')[0];
       const url = `${this.normalizeContextName(contextName)}/lang/${langCode}/${localeCode}.json`;
 
-      this.history.dictionaries.push(url);
+      this.addContextInHistory(url, contextName, localeCode, 'dictionary');
 
       return load(url).then((dictionary: IDictionary) => {
          return [localeCode, dictionary];
       });
    }
 
-   css(contextName: string, localeCode: string, load: Function = this.load): Promise<void> {
+   style(contextName: string, localeCode: string, load: Function = this.load): Promise<void> {
       const langCode = localeCode.split('-')[0];
 
       const url = `${this.normalizeContextName(contextName)}/lang/${langCode}/${localeCode}`;
 
-      this.history.styles.push(url);
+      this.addContextInHistory(url, contextName, localeCode, 'style');
 
       return load(`native-css!${url}`);
    }
@@ -108,6 +107,18 @@ class Loader implements ILoader {
             reject(err);
          });
       });
+   }
+
+   private addContextInHistory(value: string, contextName: string, localeCode: string, type: string): void {
+      if (!this.history.contexts[contextName]) {
+         this.history.contexts[contextName] = {};
+      }
+
+      if (!this.history.contexts[contextName][localeCode]) {
+         this.history.contexts[contextName][localeCode] = {};
+      }
+
+      this.history.contexts[contextName][localeCode][type] = value;
    }
 
    private normalizeContextName(contextName: string): string {
