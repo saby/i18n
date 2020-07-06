@@ -131,6 +131,16 @@ describe('Controller', () => {
             stubIsServerSide = undefined;
         });
 
+        it('if localization is disabled should return default locale', () => {
+            const emptyController = new Controller({
+                availableLocales: [],
+                defaultLocale: 'en-US'
+            });
+
+            assert.strictEqual(emptyController.currentLocale, 'en-US');
+            assert.strictEqual(emptyController.currentLang, 'en');
+        });
+
         describe('on client side', () => {
             it('should always return first read value from cookie', () => {
                 assert.equal(controller.currentLocale, 'en-US');
@@ -224,6 +234,52 @@ describe('Controller', () => {
             }).catch((err) => {
                 assert.fail(err.message);
             });
+        });
+
+        describe('if synchronous mode is enabled', () => {
+            let stubSetDict;
+
+            before(() => {
+                stubSetDict = sinon.stub(Translator.prototype, 'setDictionaries');
+            });
+
+            after(() => {
+                stubSetDict.restore();
+                stubSetDict = undefined;
+            });
+
+            it('should return instance Translator and when context was loaded added it in instance', (done) => {
+                stubSetDict.callsFake((context) => {
+                    assert.deepEqual(context, {
+                        'en-US': {
+                            Язык: 'Language'
+                        }
+                    });
+
+                    done();
+                });
+
+                assert.instanceOf(controller.getTranslator('context', true), Translator);
+            });
+        });
+    });
+
+    describe('isSupportLocale', () => {
+        const controller = new Controller({
+            availableLocales: ['en-GB', 'en-US', 'ru-RU'],
+            defaultLocale: 'en-GB'
+        });
+
+        it ('should return true from "en-US"', () => {
+            assert.isTrue(controller.isSupportedLocale('en-US'));
+        });
+
+        it ('should return true from "en"', () => {
+            assert.isTrue(controller.isSupportedLocale('en'));
+        });
+
+        it ('should return false from "fr"', () => {
+            assert.isFalse(controller.isSupportedLocale('fr'));
         });
     });
 });

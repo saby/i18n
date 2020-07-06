@@ -42,7 +42,6 @@ function _detectKBLayout(text: string, exclude: string = ''): string {
  *    await I18n.keyboard.changeLayout('ghbdtn, Фдуч!', 'ru') => 'привет, Фдуч!'
  *    await I18n.keyboard.changeLayout('привет, Alex!', 'ru') => 'привет, Фдуч!'
  * </pre>
-
  */
 function changeLayout(text: string, requiredKeyboardLayout: string, currentKBLayout?: string): Promise<string> {
    return new Promise<string>((resolve) => {

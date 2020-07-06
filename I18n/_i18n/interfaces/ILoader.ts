@@ -2,8 +2,14 @@ import ILocale from '../../locales/Interfaces/ILocale';
 import IContext from './IContext';
 
 export interface ILoadingsHistory {
-    dictionaries: string[];
-    styles: string[];
+    contexts: {
+        [name: string]: {
+            [localeCode: string]: {
+                dictionary?: string,
+                style?: string
+            }
+        }
+    };
     locales: string[];
     contents: string[];
 }

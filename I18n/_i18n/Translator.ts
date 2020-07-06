@@ -11,36 +11,29 @@ class Translator implements ITranslator {
 
     translate(key: string, context?: string | number, pluralNumber?: number): string | ITranslatableString | String {
         if (typeof key === 'string') {
-            let value = key;
             let contextValue = context;
             let pluralValue = pluralNumber;
-            const index = key.indexOf(this.controller.contextSeparator);
-
-            if (index > -1) {
-                contextValue = key.substr(0, index);
-                value = key.substr(index + this.controller.contextSeparator.length);
-            }
 
             if (typeof context === 'number') {
                 pluralValue = contextValue as number;
-                contextValue = '';
+                contextValue = undefined;
             }
 
             if (!this.controller.isEnabled) {
-                return constants.isServerSide ? TranslatableString.getNativeString(value) : value;
+                return constants.isServerSide ? TranslatableString.getNativeString(key) : key;
             }
 
             if (constants.isServerSide) {
                 return new TranslatableString(
-                    value,
-                    (() => this.translateKey(value, contextValue as string, pluralValue))
+                    key,
+                    (() => this.translateKey(key, contextValue as string, pluralValue))
                 );
             } else {
-                return this.translateKey(value, contextValue as string, pluralValue);
+                return this.translateKey(key, contextValue as string, pluralValue);
             }
-        } else {
-            return key;
         }
+
+        return key;
     }
 
     setDictionaries(dictionaries: IContext): void {

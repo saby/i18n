@@ -1,18 +1,7 @@
-// Используем Deferred для работоспособности плагина i18n.
-// @ts-ignore
-import Deferred = require('Core/Deferred');
-import IConfiguration from './IConfiguration';
-import constants from './Const';
-import {constants as envConst} from 'Env/Env';
 import ILocale from '../locales/Interfaces/ILocale';
 import ILoader, {ILoadingsHistory} from './interfaces/ILoader';
 import IContext, {IDictionary} from './interfaces/IContext';
 import {IContents, IModule} from './interfaces/declaration';
-
-/** Deferred-ы с загрузками информация о локализации интерфейсных модулей */
-const deferredModulesInfo = {};
-/** Список загруженная информация о локализации интерфейсных модулей */
-const modulesInfo = {};
 
 interface IRequiredResources {
    dictionary: string[];
@@ -27,8 +16,7 @@ interface IRequiredResources {
  */
 class Loader implements ILoader {
    history: ILoadingsHistory = {
-      dictionaries: [],
-      styles: [],
+      contexts: {},
       locales: [],
       contents: []
    };
@@ -63,7 +51,7 @@ class Loader implements ILoader {
                }
 
                for (const css of requireResources.css) {
-                  loadableCss.push(this.css(contextName, css));
+                  loadableCss.push(this.style(contextName, css));
                }
 
                Promise.all([Promise.all(loadableDictionaries), Promise.all(loadableCss)]).then((resource) => {
@@ -90,64 +78,47 @@ class Loader implements ILoader {
       const langCode = localeCode.split('-')[0];
       const url = `${this.normalizeContextName(contextName)}/lang/${langCode}/${localeCode}.json`;
 
-      this.history.dictionaries.push(url);
+      this.addContextInHistory(url, contextName, localeCode, 'dictionary');
 
       return load(url).then((dictionary: IDictionary) => {
          return [localeCode, dictionary];
       });
    }
 
-   css(contextName: string, localeCode: string, load: Function = this.load): Promise<void> {
+   style(contextName: string, localeCode: string, load: Function = this.load): Promise<void> {
       const langCode = localeCode.split('-')[0];
 
       const url = `${this.normalizeContextName(contextName)}/lang/${langCode}/${localeCode}`;
 
-      this.history.styles.push(url);
+      this.addContextInHistory(url, contextName, localeCode, 'style');
 
       return load(`native-css!${url}`);
    }
 
-   contents(contextName: string, load?: Function): Promise<IContents> {
+   contents(contextName: string, load: Function = this.load): Promise<IContents> {
       return new Promise((resolve, reject) => {
-         const url = this.getUrlForContents(contextName);
+         const url = `json!${contextName}/contents.json`;
 
          this.history.contents.push(url);
 
-         if (envConst.isBrowserPlatform) {
-            (load || fetch)(url, {
-               credentials: 'include'
-            }).then((response) => {
-               if (response.ok) {
-                  response.json().then((contents) => {
-                     resolve(contents);
-                  }, (err) => {
-                     reject(err);
-                  });
-               } else {
-                  reject(response.status);
-               }
-            }, (err) => {
-               reject(err);
-            });
-         } else {
-            (load || this.load)(url).then((contents) => {
-               resolve(contents);
-            }, (err) => {
-               reject(err);
-            });
-         }
+         load(url).then((contents) => {
+            resolve(contents);
+         }, (err) => {
+            reject(err);
+         });
       });
    }
 
-   private getUrlForContents(contextName: string): string {
-      if (envConst.isBrowserPlatform) {
-         const context = this.availableContexts[contextName];
-         const cacheNumber = context.buildnumber ? `?x_module=${context.buildnumber}` : '';
-
-         return `${context.path.startsWith('/') ? '' : '/'}${context.path}/contents.json${cacheNumber}`;
+   private addContextInHistory(value: string, contextName: string, localeCode: string, type: string): void {
+      if (!this.history.contexts[contextName]) {
+         this.history.contexts[contextName] = {};
       }
 
-      return `json!${contextName}/contents.json`;
+      if (!this.history.contexts[contextName][localeCode]) {
+         this.history.contexts[contextName][localeCode] = {};
+      }
+
+      this.history.contexts[contextName][localeCode][type] = value;
    }
 
    private normalizeContextName(contextName: string): string {
@@ -217,136 +188,6 @@ class Loader implements ILoader {
       }
 
       return Promise.resolve([]);
-   }
-
-   /**
-    * Функция проверяет, что интерфейсный модуль грузится.
-    * @param moduleName - имя интерфейсного модуля.
-    * @returns {Boolean}
-    */
-   static isLoadedModule(moduleName: string): boolean {
-      return deferredModulesInfo.hasOwnProperty(moduleName);
-   }
-
-   /**
-    * Метод возвращает список словарей поддерживаемых интерфейсным модулем.
-    * @param {String} moduleName - имя интерфейсного модуля
-    * @param {Function|String|Object} loader - Функция загрузки словарей, либо url на контентс, либо сам contents
-    * @returns {Deferred}
-    * @see isLoadedModule
-    */
-   static getAvailableDictionary(moduleName: string, loader?: Function | string | IContents): Deferred<string[]> {
-      if (Loader.isLoadedModule(moduleName)) {
-         return deferredModulesInfo[moduleName].addCallback(() => {
-            return modulesInfo[moduleName];
-         });
-      }
-
-      if (typeof loader === 'string') {
-         deferredModulesInfo[moduleName] = Loader.loadContents(loader, moduleName).addCallback((info) => {
-            modulesInfo[moduleName] = info;
-            return modulesInfo[moduleName];
-         });
-      }
-
-      if (typeof loader === 'function') {
-         deferredModulesInfo[moduleName] = new Deferred<string[]>();
-         const result = loader();
-
-         if (result instanceof Promise) {
-            result.then((info) => {
-               modulesInfo[moduleName] = info;
-               deferredModulesInfo[moduleName].callback(modulesInfo[moduleName]);
-            });
-         }
-
-         if (result instanceof Array) {
-            modulesInfo[moduleName] = result;
-            deferredModulesInfo[moduleName].callback(modulesInfo[moduleName]);
-         }
-      }
-
-      if (typeof loader === 'object') {
-         deferredModulesInfo[moduleName] = new Deferred<string[]>();
-         modulesInfo[moduleName] = Loader.extractAvailableDictionaries(moduleName, loader);
-         deferredModulesInfo[moduleName].callback(modulesInfo[moduleName]);
-      }
-
-      return deferredModulesInfo[moduleName];
-   }
-
-   protected static loadContents(url: string, moduleName: string): Deferred<string[]> {
-      const result = new Deferred<string[]>();
-
-      if (envConst.isBrowserPlatform) {
-         fetch(url, {
-            credentials: 'include'
-         }).then((response) => {
-            if (response.ok) {
-               response.json().then((contents) => {
-                  result.callback(Loader.extractAvailableDictionaries(moduleName, contents));
-               }, (err) => {
-                  result.errback(err);
-               });
-            } else {
-               result.errback(response.status);
-            }
-         }, (err) => {
-            result.errback(err);
-         });
-      } else {
-         import(`json!${moduleName}/contents.json`).then((contents) => {
-            result.callback(Loader.extractAvailableDictionaries(moduleName, contents));
-         }, (err) => {
-            result.errback(err);
-         });
-      }
-
-      return result;
-   }
-
-   protected static extractAvailableDictionaries(moduleName: string, contents: IContents): string[] {
-      if (contents.modules && contents.modules[moduleName] && contents.modules[moduleName].dict) {
-         return contents.modules[moduleName].dict;
-      }
-
-      return [];
-   }
-
-   /**
-    * Загрузка конфигурации для локали.
-    * @param {String} locale - код локали.
-    * @param {Function} loader - имя интерфейсного модуля.
-    * @returns {Deferred<IConfiguration>}
-    */
-   static loadConfiguration(locale: string, loader: Function = require): Deferred<IConfiguration> {
-      const result = new Deferred<IConfiguration>();
-      const [language, country]: string[] = locale.split('-');
-      const configurations = [];
-
-      if (language && constants.availableLang.includes(language)) {
-         configurations.push(`I18n/locales/language/${language}`);
-
-         if (country && constants.availableCountry.includes(country)) {
-            configurations.push(`I18n/locales/format/${country}`);
-         } else {
-            configurations.push(`I18n/locales/format/${constants.defaultCountry[language]}`);
-         }
-      }
-
-      loader(configurations, (base, additional) => {
-         if (base) {
-            const code = `${base.default.code}${additional ? '-' + additional.default.code : ''}`;
-
-            result.callback({...base.default, ...additional.default, code});
-         } else {
-            result.errback(`Language ${language} is not supported`);
-         }
-      }, (err) => {
-         result.errback(err);
-      });
-
-      return result;
    }
 }
 
