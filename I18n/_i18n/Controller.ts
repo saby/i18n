@@ -170,9 +170,12 @@ class Controller implements IController {
         this.contextStore.set(contextName, context);
     }
 
-    addLocale(localeCode: string, locale?: ILocale): void {
-        this.availableLocales.push(localeCode);
-        this.buildMapOfDefaultLocales();
+    addLocale(localeCode: string, locale?: ILocale, isAvailable: boolean = true): void {
+        if (isAvailable) {
+            this.availableLocales.push(localeCode);
+            this.buildMapOfDefaultLocales();
+        }
+
         this.localesStore.set(localeCode, locale);
     }
 
