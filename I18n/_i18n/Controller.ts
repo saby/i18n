@@ -109,9 +109,9 @@ class Controller implements IController {
                 expires,
                 path: '/'
             });
-        }
 
-        this.currentCodeLocale = fullCode;
+            this.currentCodeLocale = fullCode;
+        }
     }
 
     isSupportedLocale(code: string): boolean {
@@ -170,7 +170,12 @@ class Controller implements IController {
         this.contextStore.set(contextName, context);
     }
 
-    addLocale(localeCode: string, locale?: ILocale): void {
+    addLocale(localeCode: string, locale?: ILocale, isAvailable: boolean = true): void {
+        if (isAvailable) {
+            this.availableLocales.push(localeCode);
+            this.buildMapOfDefaultLocales();
+        }
+
         this.localesStore.set(localeCode, locale);
     }
 
@@ -221,10 +226,18 @@ class Controller implements IController {
     }
 
     private _calculateCodeLocale(): string {
-        const codeFromCookie = this._normalizeCode(cookie.get('lang'));
+        const langCookie = cookie.get('lang');
 
-        if (codeFromCookie && this._isSupportedLocale(codeFromCookie)) {
-            return codeFromCookie;
+        if (langCookie && this._isSupportedLocale(langCookie)) {
+            return langCookie;
+        }
+
+        const normalizedCodeFromCookie = this._normalizeCode(langCookie);
+
+        if (normalizedCodeFromCookie) {
+            this.setLocale(normalizedCodeFromCookie);
+
+            return normalizedCodeFromCookie;
         }
 
         const detectedCode = this._detectCodeFromAcceptLanguage(Controller.getAcceptLanguage());
