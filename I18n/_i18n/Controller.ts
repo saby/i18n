@@ -7,7 +7,7 @@ import Translator from './Translator';
 import IContext from './interfaces/IContext';
 import ILoader from './interfaces/ILoader';
 import IController from './interfaces/IController';
-import ILocale from '../locales/interfaces/ILocale';
+import ILocale from '../locales/Interfaces/ILocale';
 import ITranslator from './interfaces/ITranslator';
 import IStore from './interfaces/IStore';
 import ILoadingsHistory from './interfaces/ILoadingsHistory';
@@ -159,7 +159,7 @@ class Controller implements IController {
 
     /**
      * Конфигурация установленной локали прилолжения.
-     * @return {I18n/locales/interfaces/ILocale}
+     * @return {I18n/locales/Interfaces/ILocale}
      */
     get currentLocaleConfig(): ILocale {
         return this.localesStore.get(this.currentLocale, true) as ILocale || {} as ILocale;
@@ -272,7 +272,7 @@ class Controller implements IController {
     /**
      * Добавляет локаль в хранилище.
      * @param {String} localeCode Код локали.
-     * @param {I18n/locales/interfaces/ILocale} [locale] конфигурация локали.
+     * @param {I18n/locales/Interfaces/ILocale} [locale] конфигурация локали.
      * @param [isAvailable=true] Надо ли добавить локаль в доступные.
      * @return {Void}
      */

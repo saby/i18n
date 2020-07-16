@@ -1,4 +1,4 @@
-import ILocale from '../locales/interfaces/ILocale';
+import ILocale from '../locales/Interfaces/ILocale';
 import ILoader from './interfaces/ILoader';
 import IContext from './interfaces/IContext';
 import ILoadingsHistory from './interfaces/ILoadingsHistory';
@@ -44,7 +44,7 @@ class Loader implements ILoader {
     * Загружает конфигураци для локали.
     * @param {String} localeCode - код локали для которой надо загрузить конфигурацию.
     * @param {Function} [load] - функция загрузчик.
-    * @return {Promise<I18n/locales/interfaces/ILocale>}
+    * @return {Promise<I18n/locales/Interfaces/ILocale>}
     */
    locale(localeCode: string, load: Function = this.load): Promise<ILocale> {
       return new Promise<ILocale>((resolve, reject) => {

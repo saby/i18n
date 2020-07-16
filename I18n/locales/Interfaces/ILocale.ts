@@ -4,7 +4,7 @@ import IDate from './IDate';
 
 /**
  * Интерфейс конфигурации локали.
- * @interface I18n/locales/interfaces/ILocale
+ * @interface I18n/locales/Interfaces/ILocale
  * @public
  * @author Кудрявцев И.С.
  */

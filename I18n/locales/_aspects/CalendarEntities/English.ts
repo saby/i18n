@@ -1,4 +1,4 @@
-import ICalendarEntities from '../../interfaces/ICalendarEntities';
+import ICalendarEntities from '../../Interfaces/ICalendarEntities';
 
 export default class English implements ICalendarEntities {
     minDays: string[] = ['Su', 'Mo', 'To', 'We', 'Th', 'Fr', 'Sa'];

@@ -2,7 +2,7 @@ import {constants} from 'Env/Env';
 import TranslatableString from './TranslatableString';
 import ITranslator from './interfaces/ITranslator';
 import IController from './interfaces/IController';
-import ILocale from '../locales/interfaces/ILocale';
+import ILocale from '../locales/Interfaces/ILocale';
 import IContext from './interfaces/IContext';
 import ITranslatableString from './interfaces/ITranslatableString';
 

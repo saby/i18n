@@ -1,6 +1,6 @@
 /**
  * Интерфейс конфигурации для локализация числовых значений.
- * @interface I18n/locales/interfaces/INumber
+ * @interface I18n/locales/Interfaces/INumber
  * @public
  * @author Кудрявцев И.С.
  */

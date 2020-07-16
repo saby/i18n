@@ -1,4 +1,4 @@
-import ILocale from '../../locales/interfaces/ILocale';
+import ILocale from '../../locales/Interfaces/ILocale';
 
 /**
  * Интерфейс класса для взаимодействия с механизмом локализации.
