@@ -1,7 +1,10 @@
-import ILocale from '../locales/Interfaces/ILocale';
-import ILoader, {ILoadingsHistory} from './interfaces/ILoader';
-import IContext, {IDictionary} from './interfaces/IContext';
-import {IContents, IModule} from './interfaces/declaration';
+import ILocale from '../locales/interfaces/ILocale';
+import ILoader from './interfaces/ILoader';
+import IContext from './interfaces/IContext';
+import ILoadingsHistory from './interfaces/ILoadingsHistory';
+import IDictionary from './interfaces/IDictionary';
+import IModule from './interfaces/IModule';
+import IContents from './interfaces/IContents';
 
 interface IRequiredResources {
    dictionary: string[];
@@ -9,12 +12,17 @@ interface IRequiredResources {
 }
 
 /**
- * Класс загрузчика мета данных и конфигураций локалей.
- * class I18n/_i18n/Loader
+ * Загрузчик ресурсов локализации.
+ * @class I18n/_i18n/Loader
+ * @implements Ii18n/_i18n/interfaces/ILoader
  * @public
  * @author Кудрявцев И.С.
  */
 class Loader implements ILoader {
+
+   /**
+    * Объект c именами загруженных ресурсов.
+    */
    history: ILoadingsHistory = {
       contexts: {},
       locales: [],
@@ -23,10 +31,21 @@ class Loader implements ILoader {
 
    constructor(private availableContexts: {[contextName: string]: IModule}) {}
 
-   load(path: string): Promise<unknown> {
-      return import(path);
+   /**
+    * Стандартный загрузчик requirejs.
+    * @param {String} url - имя загружаемого ресурса.
+    * @return {Promise<unknown>}
+    */
+   load(url: string): Promise<unknown> {
+      return import(url);
    }
 
+   /**
+    * Загружает конфигураци для локали.
+    * @param {String} localeCode - код локали для которой надо загрузить конфигурацию.
+    * @param {Function} [load] - функция загрузчик.
+    * @return {Promise<I18n/locales/interfaces/ILocale>}
+    */
    locale(localeCode: string, load: Function = this.load): Promise<ILocale> {
       return new Promise<ILocale>((resolve, reject) => {
          const url = `I18n/locales/${localeCode}`;
@@ -39,6 +58,12 @@ class Loader implements ILoader {
       });
    }
 
+   /**
+    * Загружает необходимые ресурсы для интерфейсного модуля.
+    * @param {String} contextName - имя интрефесного модуля.
+    * @param {String[]} requiredLocale - список локалей, для которых надо загрузить ресурсы.
+    * @return {Promise<I18n/_i18n/interfaces/IContext>}
+    */
    context(contextName: string, requiredLocale: string[]): Promise<IContext> {
       return new Promise((resolve, reject) => {
          if (this.availableContexts.hasOwnProperty(contextName)) {
@@ -74,6 +99,13 @@ class Loader implements ILoader {
       });
    }
 
+   /**
+    * Загружает словарь интерфейсного модуля.
+    * @param {String} contextName - имя интрефесного модуля.
+    * @param {String} localeCode - локалm, для которых надо загрузить ресурс.
+    * @param {Function} [load] - функция загрузчик.
+    * @return {Promise<[string, I18n/_i18n/interfaces/IDictionary]>}
+    */
    dictionary(contextName: string, localeCode: string, load: Function = this.load): Promise<[string, IDictionary]> {
       const langCode = localeCode.split('-')[0];
       const url = `${this.normalizeContextName(contextName)}/lang/${langCode}/${localeCode}.json`;
@@ -85,6 +117,13 @@ class Loader implements ILoader {
       });
    }
 
+   /**
+    * Загружает локализуемые стили интерфейсного модуля.
+    * @param {String} contextName - имя интрефесного модуля.
+    * @param {String} localeCode - локаль, для которых надо загрузить ресурс.
+    * @param {Function} [load] - функция загрузчик.
+    * @return {Promise<void>}
+    */
    style(contextName: string, localeCode: string, load: Function = this.load): Promise<void> {
       const langCode = localeCode.split('-')[0];
 
@@ -95,6 +134,12 @@ class Loader implements ILoader {
       return load(`native-css!${url}`);
    }
 
+   /**
+    * Загружает информацию о доступных ресурсах для интерфейсного модуля.
+    * @param {String} contextName - имя интрефесного модуля.
+    * @param {Function} [load] - функция загрузчик.
+    * @return {Promise<I18n/_i18n/interfaces/IContents>}
+    */
    contents(contextName: string, load: Function = this.load): Promise<IContents> {
       return new Promise((resolve, reject) => {
          const url = `json!${contextName}/contents.json`;

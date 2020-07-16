@@ -1,5 +1,13 @@
 import ITranslatableString from './interfaces/ITranslatableString';
 
+/**
+ * Класс локализуемой строки.
+ * @class I18n/_i18n/TranslatableString
+ * @extends String
+ * @implements Ii18n/_i18n/interfaces/ITranslatableString
+ * @private
+ * @author Кудрявцев И.С.
+ */
 class TranslatableString extends String implements ITranslatableString {
     constructor(private value: string, private translate: Function) {
         super();

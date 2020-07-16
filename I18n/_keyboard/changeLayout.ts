@@ -32,8 +32,10 @@ function _detectKBLayout(text: string, exclude: string = ''): string {
  * Проецирует текст введенный в одной раскладке в другую раскладку.
  * @param {String} text - Строка, которую надо преобразовать.
  * @param {String} requiredKeyboardLayout - На какую раскладку надо переключить. Двухсимвольный код языка. Например 'ru' или 'en'.
- * @param {String} currentKBLayout - В какой раскладке строка передана. Двухсимвольный код языка. Например 'ru' или 'en'. Если не передан сработает автоопределение.
+ * @param {String} [currentKBLayout] - В какой раскладке строка передана. Двухсимвольный код языка. Например 'ru' или 'en'. Если не передан сработает автоопределение.
  * @returns {String}
+ * @public
+ * @author Кудрявцев И.С.
  * @example
  * <pre>
  *    await I18n.keyboard.changeLayout('ghbdtn, Fktrc!', 'ru', 'en') => 'привет, Алекс!'

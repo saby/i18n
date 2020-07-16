@@ -1,9 +1,16 @@
 import Controller, {IConfigController} from './Controller';
 import Translator from './Translator';
-import {IGlobal} from './interfaces/declaration';
 import {constants, cookie} from 'Env/Env';
+
+import IContents from './interfaces/IContents';
+
 import 'text';
 import 'native-css';
+
+export interface IGlobal {
+    requirejs: Require;
+    contents: IContents;
+}
 
 const alias = {
     Core: 'WS.Core',

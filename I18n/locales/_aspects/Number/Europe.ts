@@ -1,4 +1,4 @@
-import INumber from '../../Interfaces/INumber';
+import INumber from '../../interfaces/INumber';
 
 export default class Europe implements INumber  {
     fractionSeparator: string = ',';

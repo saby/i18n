@@ -1,4 +1,4 @@
-import IDate from '../../Interfaces/IDate';
+import IDate from '../../interfaces/IDate';
 import Base from './Base';
 
 export default class USA extends Base implements IDate {

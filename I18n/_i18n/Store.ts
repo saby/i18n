@@ -1,4 +1,13 @@
-class Store <T> {
+import IStore from './interfaces/IStore';
+
+/**
+ * Класс переводчика. Содержит API для локализации строковых значений.
+ * @class I18n/_i18n/Store
+ * @implements Ii18n/_i18n/interfaces/IStore
+ * @private
+ * @author Кудрявцев И.С.
+ */
+class Store <T> implements IStore<T> {
     private elements: {[key: string]: T} = {};
     private loadableElements: {[key: string]: Promise<T>} = {};
 

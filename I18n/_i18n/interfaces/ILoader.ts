@@ -1,19 +1,13 @@
-import ILocale from '../../locales/Interfaces/ILocale';
+import ILocale from '../../locales/interfaces/ILocale';
 import IContext from './IContext';
+import ILoadingsHistory from './ILoadingsHistory';
 
-export interface ILoadingsHistory {
-    contexts: {
-        [name: string]: {
-            [localeCode: string]: {
-                dictionary?: string,
-                style?: string
-            }
-        }
-    };
-    locales: string[];
-    contents: string[];
-}
-
+/**
+ * Интерфейс класса загрузчика для ресурсов локализации.
+ * @interface I18n/_i18n/interfaces/ILoader
+ * @public
+ * @author Кудрявцев И.С.
+ */
 export default interface ILoader {
     history: ILoadingsHistory;
     locale(localeCode: string): Promise<ILocale>;

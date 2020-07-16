@@ -1,4 +1,4 @@
-import ICalendarEntities from '../../Interfaces/ICalendarEntities';
+import ICalendarEntities from '../../interfaces/ICalendarEntities';
 
 export default class Russian implements ICalendarEntities {
     minDays: string[] = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
