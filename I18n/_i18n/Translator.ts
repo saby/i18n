@@ -6,9 +6,23 @@ import ILocale from '../locales/Interfaces/ILocale';
 import IContext from './interfaces/IContext';
 import ITranslatableString from './interfaces/ITranslatableString';
 
+/**
+ * Класс переводчика. Содержит API для локализации строковых значений.
+ * @class I18n/_i18n/Translator
+ * @implements Ii18n/_i18n/interfaces/ITranslator
+ * @public
+ * @author Кудрявцев И.С.
+ */
 class Translator implements ITranslator {
     constructor(private dictionaries: IContext, private controller: IController) {}
 
+    /**
+     * Функция перевода строкового значения в локализванный вариант.
+     * @param {String} key Значение которое надо локолизовать.
+     * @param {String | Number} [context] Контекст перевода или число для плюральной формы.
+     * @param {Number} [pluralNumber] Число для плюральной формы.
+     * @return {String | I18n/_i18n/interfaces/ITranslatableString}
+     */
     translate(key: string, context?: string | number, pluralNumber?: number): string | ITranslatableString | String {
         if (typeof key === 'string') {
             let contextValue = context;
@@ -36,6 +50,11 @@ class Translator implements ITranslator {
         return key;
     }
 
+    /**
+     * Выставляет словари для переводчика.
+     * @param {I18n/_i18n/interfaces/IContext} dictionaries - объект со словарями.
+     * @return {Void}
+     */
     setDictionaries(dictionaries: IContext): void {
         this.dictionaries = dictionaries;
     }
