@@ -21,6 +21,13 @@ class EuropeRuDate extends DateAspect {
     shortDateShortMonthFormat: string = 'DD MMMl';
 }
 
+/**
+ * Конфигурация для русской локали.
+ * @class I18n/locales/ru-RU
+ * @implements I18n/Interfaces/ILocale
+ * @public
+ * @author Кудрявцев И.С.
+ */
 class RURU implements ILocale {
     code: string = 'ru-RU';
     date: IDate = new EuropeRuDate();

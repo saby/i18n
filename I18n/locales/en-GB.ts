@@ -8,6 +8,13 @@ import IDate from './Interfaces/IDate';
 import INumber from './Interfaces/INumber';
 import ICalendarEntities from './Interfaces/ICalendarEntities';
 
+/**
+ * Конфигурация для англо-британской локали.
+ * @class I18n/locales/en-GB
+ * @implements I18n/Interfaces/ILocale
+ * @public
+ * @author Кудрявцев И.С.
+ */
 class ENGB implements ILocale {
     code: string = 'en-GB';
     date: IDate = new DateAspect();
