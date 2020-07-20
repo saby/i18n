@@ -1,4 +1,4 @@
-//TODO Когда будем переходить на аспекты, убрать хардкод и подключать нужные аспекты раскладки динамически.
+// TODO Когда будем переходить на аспекты, убрать хардкод и подключать нужные аспекты раскладки динамически.
 const layouts = {
    en: 'qwertyuiop[]asdfghjkl;\'zxcvbnm,./QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>?',
    ru: 'йцукенгшщзхъфывапролджэячсмитьбю.ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,'
@@ -47,16 +47,16 @@ function _detectKBLayout(text: string, exclude: string = ''): string {
  */
 function changeLayout(text: string, requiredKeyboardLayout: string, currentKBLayout?: string): Promise<string> {
    return new Promise<string>((resolve) => {
-      currentKBLayout = currentKBLayout || _detectKBLayout(text, requiredKeyboardLayout);
+      const detectedKBLayout = currentKBLayout || _detectKBLayout(text, requiredKeyboardLayout);
 
-      if (!(currentKBLayout && layouts.hasOwnProperty(currentKBLayout))) {
+      if (!(detectedKBLayout && layouts.hasOwnProperty(detectedKBLayout))) {
          resolve(text);
       }
 
       let result = '';
 
       for (const chart of text) {
-         const indexChart = layouts[currentKBLayout].indexOf(chart);
+         const indexChart = layouts[detectedKBLayout].indexOf(chart);
 
          if (indexChart !== -1) {
             result += layouts[requiredKeyboardLayout][indexChart];
