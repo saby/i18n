@@ -95,7 +95,7 @@ class Controller implements IController {
 
     /**
      * Код установленной локали приложения.
-     * Если не удалось определить код локали или выключенал локализация, вернёт дефолтную локаль.
+     * Если не удалось определить код локали или выключена локализация, вернёт дефолтную локаль.
      * @example
      * Приложение отображается в англо-амереканской локале.
      * <pre>
@@ -104,7 +104,7 @@ class Controller implements IController {
      * </pre>
      *
      * @example
-     * Локализауия выключена.
+     * Локализация выключена.
      * <pre>
      *    controller.currentLocale === 'ru-RU' // true
      * </pre>
@@ -129,7 +129,7 @@ class Controller implements IController {
 
     /**
      * Установленный язык приложения.
-     * Если не удалось определить код языка или выключенал локализация, вернёт дефолтный язык.
+     * Если не удалось определить код языка или выключена локализация, вернёт дефолтный язык.
      * @example
      * Приложение отображается в англо-амереканской локале.
      * <pre>
@@ -139,7 +139,7 @@ class Controller implements IController {
      * </pre>
      *
      * @example
-     * Локализауия выключена.
+     * Локализация выключена.
      * <pre>
      *    controller.currentLang === 'ru' // true
      * </pre>
@@ -173,6 +173,10 @@ class Controller implements IController {
         return this.availableLocales.length !== 0;
     }
 
+    hasTranslator(contextName: string): boolean {
+        return this.translators.hasOwnProperty(contextName);
+    }
+
     /**
      * Устанавливает код локали в куку lang.
      * @param {String} code Код локали.
@@ -193,7 +197,7 @@ class Controller implements IController {
     }
 
     /**
-     * Проверяет поддерижвается ли код локали или языка.
+     * Проверяет поддерживается ли код локали или языка.
      * @param {String} code Код локали.
      * @return {Boolean}
      */
@@ -226,10 +230,10 @@ class Controller implements IController {
      * @return {Promise<I18n/_i18n/interfaces/ITranslator> | I18n/_i18n/interfaces/ITranslator}
      */
     getTranslator(contextName: string, sync: boolean = false): Promise<ITranslator> | ITranslator {
-        if (this.translators.hasOwnProperty(contextName)) {
+        if (this.hasTranslator(contextName)) {
             delete this.loadableTranslator[contextName];
 
-            return sync ? this.translators[contextName] : Promise.resolve(this.translators[contextName]);
+            return sync ? this.getSyncTranslator(contextName) : Promise.resolve(this.getSyncTranslator(contextName));
         }
 
         if (sync) {
@@ -238,12 +242,12 @@ class Controller implements IController {
             if (!this.loadableTranslator.hasOwnProperty(contextName)) {
                 this.loadableTranslator[contextName] = new Promise((resolve, reject) => {
                     this._getContext(contextName).then((contextContent) => {
-                        this.translators[contextName].setDictionaries(contextContent);
+                        this.getSyncTranslator(contextName).setDictionaries(contextContent);
                     }).catch(reject);
                 });
             }
 
-            return this.translators[contextName];
+            return this.getSyncTranslator(contextName);
         }
 
         if (!this.loadableTranslator.hasOwnProperty(contextName)) {
@@ -251,7 +255,7 @@ class Controller implements IController {
                 this._getContext(contextName).then((contextContent) => {
                     this.translators[contextName] = new Translator(contextContent, this);
 
-                    resolve(this.translators[contextName]);
+                    resolve(this.getSyncTranslator(contextName));
                 }).catch(reject);
             });
         }
@@ -259,10 +263,14 @@ class Controller implements IController {
         return this.loadableTranslator[contextName];
     }
 
+    getSyncTranslator(contextName: string): ITranslator {
+        return this.translators[contextName];
+    }
+
     /**
      * Добавляет контекст в хранилище.
      * @param {String} contextName Имя контекста.
-     * @param {I18n/_i18n/interfaces/IContext} [context] Ресусры контекста.
+     * @param {I18n/_i18n/interfaces/IContext} [context] Ресурсы контекста.
      * @return {Void}
      */
     addContext(contextName: string, context?: IContext): void {
@@ -413,7 +421,7 @@ class Controller implements IController {
 
     /**
      * Проверяет явлется ли строка кодом языка.
-     * @param {String} code Проверяемы код.
+     * @param {String} code Проверяемый код.
      * @example
      * <pre>
      *    Controller.isLangCode('en-US') // false
@@ -428,7 +436,7 @@ class Controller implements IController {
 
     /**
      * Проверяет явлется ли строка кодом локали.
-     * @param {String} code Проверяемы код.
+     * @param {String} code Проверяемый код.
      * @example
      * <pre>
      *    Controller.isLocaleCode('en') // false

@@ -74,6 +74,13 @@ export function load(name: string, require: Require, onLoad: Function): void {
         return;
     }
 
+    if (controller.hasTranslator(contextName)) {
+        const translator = controller.getSyncTranslator(contextName);
+        onLoad(translator.translate.bind(translator));
+
+        return;
+    }
+
     if (constants.isServerSide) {
         const translator = controller.getTranslator(contextName, true);
 
