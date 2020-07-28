@@ -75,7 +75,8 @@ export function load(name: string, require: Require, onLoad: Function): void {
     }
 
     if (controller.hasTranslator(contextName)) {
-        onLoad(controller.getSyncTranslator(contextName));
+        const translator = controller.getSyncTranslator(contextName);
+        onLoad(translator.translate.bind(translator));
 
         return;
     }
