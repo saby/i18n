@@ -13,17 +13,16 @@ class TranslatableString extends String implements ITranslatableString {
         super();
     }
 
-    /*
-    Слой совместимости.
-    Функция возвращает объект String добавляя реализацию методов toJSON и valueOf.
-   */
-    static getNativeString(value: string): String {
-        // tslint:disable-next-line:no-construct
-        const res = new String(value);
+    toString(): string {
+        return this.translatedValue;
+    }
 
-        (res as any).toJSON = (res as any).valueOf = () => value;
+    toJSON(): string {
+        return this.translatedValue;
+    }
 
-        return res;
+    valueOf(): string {
+        return this.translatedValue;
     }
 
     get length(): number {
@@ -36,16 +35,17 @@ class TranslatableString extends String implements ITranslatableString {
         return String(translateResult !== undefined ? translateResult : this.value);
     }
 
-    toString(): string {
-        return this.translatedValue;
-    }
+    /*
+    Слой совместимости.
+    Функция возвращает объект String добавляя реализацию методов toJSON и valueOf.
+   */
+    static getNativeString(value: string): String {
+        // tslint:disable-next-line:no-construct
+        const res = new String(value);
 
-    toJSON(): string {
-        return this.translatedValue;
-    }
+        (res as ITranslatableString).toJSON = res.valueOf = () => value;
 
-    valueOf(): string {
-        return this.translatedValue;
+        return res;
     }
 }
 

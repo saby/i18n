@@ -412,6 +412,7 @@ class Controller implements IController {
      * @return {String[]}
      */
     static getAcceptLanguage(request?: IRequest): string[] {
+        // tslint:disable-next-line:ban-ts-ignore
         // @ts-ignore
         const req = request || process && process.domain && process.domain.req;
         const acceptLanguage = req && req.headers && req.headers['accept-language'];
