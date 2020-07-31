@@ -34,7 +34,7 @@ export default controller;
 export function load(name: string, require: Require, onLoad: Function): void {
     if (name.includes('controller?')) {
 
-        //TODO https://online.sbis.ru/opendoc.html?guid=76970b4f-e3bd-49ea-b898-a25f166e58d8
+        // TODO https://online.sbis.ru/opendoc.html?guid=76970b4f-e3bd-49ea-b898-a25f166e58d8
         /*
           На сервисе представления мнимая асинхроность, которая костыльными путями преврашается в синхроность,
           и попытка использвоать честный асинхронный промис ломает загрузку файлов.
