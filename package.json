@@ -1,6 +1,6 @@
 {
    "name": "saby-i18n",
-   "version": "20.6000.0",
+   "version": "20.7000.0",
    "repository": {
       "type": "git",
       "url": "git@github.com:saby/i18n.git"
@@ -19,6 +19,6 @@
       "test:coverage": "wasaby-cli --tasks=startTest --node --coverage"
    },
    "devDependencies": {
-      "wasaby-cli": "git+https://platform-git.sbis.ru/saby/wasaby-cli.git#rc-20.6000"
+      "wasaby-cli": "git+https://platform-git.sbis.ru/saby/wasaby-cli.git#rc-20.7000"
    }
 }
