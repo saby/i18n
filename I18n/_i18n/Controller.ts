@@ -348,7 +348,7 @@ class Controller implements IController {
 
         const normalizedCodeFromCookie = this._normalizeCode(langCookie);
 
-        if (normalizedCodeFromCookie) {
+        if (normalizedCodeFromCookie && this._isSupportedLocale(normalizedCodeFromCookie)) {
             this.setLocale(normalizedCodeFromCookie);
 
             return normalizedCodeFromCookie;
@@ -356,7 +356,7 @@ class Controller implements IController {
 
         const detectedCode = this._detectCodeFromAcceptLanguage(Controller.getAcceptLanguage());
 
-        if (detectedCode) {
+        if (detectedCode && this._isSupportedLocale(detectedCode)) {
             this.setLocale(detectedCode);
 
             return detectedCode;
