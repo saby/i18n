@@ -131,6 +131,15 @@ describe('Controller', () => {
             stubIsServerSide = undefined;
         });
 
+        it('if one locale is available controller should return it', () => {
+            const RuController = new Controller({
+                availableLocales: ['ru-RU'],
+                defaultLocale: 'ru-RU'
+            });
+
+            assert.strictEqual(RuController.currentLocale, 'ru-RU');
+        });
+
         it('if localization is disabled should return default locale', () => {
             const emptyController = new Controller({
                 availableLocales: [],
