@@ -13,6 +13,6 @@ export default interface ILoadingsHistory {
             }
         }
     };
-    locales: { [localeCode: string]: string};
+    locales: {[localeCode: string]: string};
     contents: string[];
 }

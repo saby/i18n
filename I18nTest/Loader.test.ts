@@ -50,7 +50,7 @@ describe('Loader', () => {
                 return Promise.resolve({});
             });
 
-            assert.isTrue(loader.history.locales.includes('I18n/locales/en-US'));
+            assert.isTrue(loader.history.locales.hasOwnProperty('en-US'));
         });
 
         it('should add style in history', () => {
@@ -60,7 +60,6 @@ describe('Loader', () => {
 
             assert.strictEqual(loader.history.contexts.styleHistory['en-US'].style, 'styleHistory/lang/en/en-US');
         });
-
 
         it('should add dictionary in history', () => {
             loader.dictionary('dictHistory', 'en-US', () => {
