@@ -25,7 +25,7 @@ class Loader implements ILoader {
     */
    history: ILoadingsHistory = {
       contexts: {},
-      locales: [],
+      locales: {},
       contents: []
    };
 
@@ -50,7 +50,7 @@ class Loader implements ILoader {
       return new Promise<ILocale>((resolve, reject) => {
          const url = `I18n/locales/${localeCode}`;
 
-         this.history.locales.push(url);
+         this.history.locales[localeCode] = url;
 
          load(url).then((locale) => {
             resolve(locale.default);
