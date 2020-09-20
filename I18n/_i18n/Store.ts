@@ -1,9 +1,9 @@
 import IStore from './interfaces/IStore';
 
 /**
- * Класс переводчика. Содержит API для локализации строковых значений.
+ * Класс хранилища загружаемых ресурсов.
  * @class I18n/_i18n/Store
- * @implements Ii18n/_i18n/interfaces/IStore
+ * @implements I18n/_i18n/interfaces/IStore
  * @private
  * @author Кудрявцев И.С.
  */

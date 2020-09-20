@@ -1,5 +1,11 @@
 import ICalendarEntities from '../../Interfaces/ICalendarEntities';
 
+/**
+ * Описание конастан каледнарных значений для русского языка.
+ * @class I18n/locales/_aspects/CalendarEntities/Russian
+ * @implements I18n/locales/Interfaces/ICalendarEntities
+ * @author Кудрявцев И.С.
+ */
 export default class Russian implements ICalendarEntities {
     minDays: string[] = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
     shortDays: string[] = ['Вск', 'Пнд', 'Втр', 'Срд', 'Чтв', 'Птн', 'Сбт'];

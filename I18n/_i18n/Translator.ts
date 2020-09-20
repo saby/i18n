@@ -9,7 +9,7 @@ import ITranslatableString from './interfaces/ITranslatableString';
 /**
  * Класс переводчика. Содержит API для локализации строковых значений.
  * @class I18n/_i18n/Translator
- * @implements Ii18n/_i18n/interfaces/ITranslator
+ * @implements I18n/_i18n/interfaces/ITranslator
  * @public
  * @author Кудрявцев И.С.
  */

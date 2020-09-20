@@ -24,7 +24,7 @@ class EuropeRuDate extends DateAspect {
 /**
  * Конфигурация для русской локали.
  * @class I18n/locales/ru-RU
- * @implements I18n/Interfaces/ILocale
+ * @implements I18n/locales/Interfaces/ILocale
  * @public
  * @author Кудрявцев И.С.
  */

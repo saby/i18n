@@ -1,26 +1,38 @@
-export default (pluralNumber: number, word1: string, word2: string, word3: string, word4: string): string => {
+const LAST_TWO_DIGITS = 100;
+const LAST_DIGIT = 10;
+const LEFT_BORDER_THIRD_FORM = 5;
 
-    // если есть дробная часть
-    if (pluralNumber % 1 > 0) {
+function isFraction(value: number): boolean {
+    return value % 1 > 0;
+}
+
+function isThirdForm(value: number): boolean {
+    const lastDigit = value % LAST_DIGIT;
+    const penultimateDigit = Math.floor((value % LAST_TWO_DIGITS) / LAST_DIGIT);
+
+    return penultimateDigit === 1 || lastDigit === 0 || lastDigit >= LEFT_BORDER_THIRD_FORM;
+}
+
+function isEndsInOne(value: number): boolean {
+    return value % LAST_DIGIT === 1;
+}
+
+/**
+ * Плюральная функция для русского языка.
+ * @author Кудрявцев И.С.
+ */
+export default (pluralNumber: number, word1: string, word2: string, word3: string, word4: string): string => {
+    if (isFraction(pluralNumber)) {
         return word4;
     }
 
-    // если две последние цифры 11 ... 19
-    pluralNumber = pluralNumber % 100;
-    if (pluralNumber >= 11 && pluralNumber <= 19) {
+    if (isThirdForm(pluralNumber)) {
         return word3;
     }
 
-    // все остальные случаи - по последней цифре
-    pluralNumber = pluralNumber % 10;
-
-    if (pluralNumber === 1) {
+    if (isEndsInOne(pluralNumber)) {
         return word1;
     }
 
-    if (pluralNumber === 2 || pluralNumber === 3 || pluralNumber === 4) {
-        return word2;
-    }
-
-    return word3;
+    return word2;
 };
