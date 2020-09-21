@@ -1,38 +1,33 @@
 import ICalendarEntities from '../../Interfaces/ICalendarEntities';
 
+const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+];
+
+/**
+ * Описание конастан каледнарных значений для англиского языка.
+ * @class I18n/locales/_aspects/CalendarEntities/English
+ * @implements I18n/locales/Interfaces/ICalendarEntities
+ * @author Кудрявцев И.С.
+ */
 export default class English implements ICalendarEntities {
     minDays: string[] = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
     shortDays: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     longDays: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     shortMonths: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    longMonths: string[] = [
-       'January',
-       'February',
-       'March',
-       'April',
-       'May',
-       'June',
-       'July',
-       'August',
-       'September',
-       'October',
-       'November',
-       'December'
-    ];
-    ordinalMonths: string[] = [
-       'January',
-       'February',
-       'March',
-       'April',
-       'May',
-       'June',
-       'July',
-       'August',
-       'September',
-       'October',
-       'November',
-       'December'
-    ];
+    longMonths: string[] = months;
+    ordinalMonths: string[] = months;
     shortOrdinalMonths: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     am: string  = 'am';
     pm: string  = 'pm';

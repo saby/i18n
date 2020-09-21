@@ -1,3 +1,8 @@
+/**
+ * Описание базовых форматов отоброжения дат.
+ * @class I18n/locales/_aspects/Date/Base
+ * @author Кудрявцев И.С.
+ */
 export default class Base {
     fullHalfYearFormat: string = 'YYYYhr \'YY';
     fullQuarterFormat: string = 'QQQQr \'YY';

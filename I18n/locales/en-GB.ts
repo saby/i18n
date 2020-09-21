@@ -11,7 +11,7 @@ import ICalendarEntities from './Interfaces/ICalendarEntities';
 /**
  * Конфигурация для англо-британской локали.
  * @class I18n/locales/en-GB
- * @implements I18n/Interfaces/ILocale
+ * @implements I18n/locales/Interfaces/ILocale
  * @public
  * @author Кудрявцев И.С.
  */

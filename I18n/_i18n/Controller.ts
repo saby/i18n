@@ -36,7 +36,7 @@ interface IRequest {
 /**
  * Контролер для работы и взаимодействия с механизмом локализации.
  * @class I18n/_i18n/Controller
- * @implements Ii18n/_i18n/interfaces/IController
+ * @implements I18n/_i18n/interfaces/IController
  * @public
  * @author Кудрявцев И.С.
  */

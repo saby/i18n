@@ -14,7 +14,7 @@ interface IRequiredResources {
 /**
  * Загрузчик ресурсов локализации.
  * @class I18n/_i18n/Loader
- * @implements Ii18n/_i18n/interfaces/ILoader
+ * @implements I18n/_i18n/interfaces/ILoader
  * @public
  * @author Кудрявцев И.С.
  */

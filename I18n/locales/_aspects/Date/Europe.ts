@@ -1,6 +1,13 @@
 import IDate from '../../Interfaces/IDate';
 import Base from './Base';
 
+/**
+ * Описание форматов отоброжения дат в европейской системе.
+ * @class I18n/locales/_aspects/Date/Europe
+ * @extends I18n/locales/_aspects/Date/Base
+ * @implements I18n/locales/Interfaces/IDate
+ * @author Кудрявцев И.С.
+ */
 export default class Europe extends Base implements IDate {
     fullDateFormat: string = 'DD.MM.YY';
     fullDateFullYearFormat: string = 'DD.MM.YYYY';
