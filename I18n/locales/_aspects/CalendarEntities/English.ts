@@ -1,7 +1,7 @@
 import ICalendarEntities from '../../Interfaces/ICalendarEntities';
 
 export default class English implements ICalendarEntities {
-    minDays: string[] = ['Su', 'Mo', 'To', 'We', 'Th', 'Fr', 'Sa'];
+    minDays: string[] = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
     shortDays: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     longDays: string[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     shortMonths: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
