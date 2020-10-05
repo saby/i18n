@@ -4,14 +4,14 @@ import Loader from './Loader';
 import Store from './Store';
 import Translator from './Translator';
 
-import IContext from './interfaces/IContext';
-import ILoader from './interfaces/ILoader';
-import IController from './interfaces/IController';
-import ILocale from '../locales/Interfaces/ILocale';
-import ITranslator from './interfaces/ITranslator';
-import IStore from './interfaces/IStore';
-import ILoadingsHistory from './interfaces/ILoadingsHistory';
-import IModule from './interfaces/IModule';
+import IContext from '../interfaces/IContext';
+import ILoader from '../interfaces/ILoader';
+import IController from '../interfaces/IController';
+import ILocale from '../interfaces/ILocale';
+import ITranslator from '../interfaces/ITranslator';
+import IStore from '../interfaces/IStore';
+import ILoadingsHistory from '../interfaces/ILoadingsHistory';
+import IModule from '../interfaces/IModule';
 
 const LENGTH_LANG_CODE = 2;
 const LENGTH_LOCALE_CODE = 5;
@@ -35,8 +35,6 @@ interface IRequest {
 
 /**
  * Контролер для работы и взаимодействия с механизмом локализации.
- * @class I18n/_i18n/Controller
- * @implements I18n/_i18n/interfaces/IController
  * @public
  * @author Кудрявцев И.С.
  */
@@ -45,16 +43,10 @@ class Controller implements IController {
     pluralPrefix: string = 'plural#';
     pluralDelimiter: string = '|';
 
-    /**
-     * Дефолтная локаль приложения.
-     * @type String
-     */
     readonly defaultLocale: string = '';
 
     /**
      * Загрузчик ресурсов локализации.
-     * @type I18n/_i18n/interfaces/ILoader
-     * @default {@link I18n/_i18n/Loader Loader}
      */
     readonly loader: ILoader;
 
@@ -85,32 +77,10 @@ class Controller implements IController {
         return constants.isServerSide ? this.availableLocales : [this.currentLocale];
     }
 
-    /**
-     * Дефолтный язык приложения.
-     * @return {String}
-     */
     get defaultLang(): string {
         return this.defaultLocale.split('-')[0];
     }
 
-    /**
-     * Код установленной локали приложения.
-     * Если не удалось определить код локали или выключена локализация, вернёт дефолтную локаль.
-     * @example
-     * Приложение отображается в англо-амереканской локале.
-     * <pre>
-     *    controller.currentLocale === 'ru-RU' // false
-     *    controller.currentLocale === 'en-US' // true
-     * </pre>
-     *
-     * @example
-     * Локализация выключена.
-     * <pre>
-     *    controller.currentLocale === 'ru-RU' // true
-     * </pre>
-     *
-     * @return {String}
-     */
     get currentLocale(): string {
         if (!this.isEnabled) {
             return this.defaultLocale;
@@ -127,48 +97,24 @@ class Controller implements IController {
         }
     }
 
-    /**
-     * Установленный язык приложения.
-     * Если не удалось определить код языка или выключена локализация, вернёт дефолтный язык.
-     * @example
-     * Приложение отображается в англо-амереканской локале.
-     * <pre>
-     *    controller.currentLang === 'ru' // false
-     *    controller.currentLang === 'en-US' // false
-     *    controller.currentLang === 'en' // true
-     * </pre>
-     *
-     * @example
-     * Локализация выключена.
-     * <pre>
-     *    controller.currentLang === 'ru' // true
-     * </pre>
-     * @return {String}
-     */
     get currentLang(): string {
         return this.currentLocale.split('-')[0];
     }
 
-    /**
-     * История загрузки ресурсов локализации.
-     * @return {I18n/_i18n/interfaces/ILoader:ILoadingsHistory}
-     */
     get loadingsHistory(): ILoadingsHistory {
         return this.loader.history;
     }
 
-    /**
-     * Конфигурация установленной локали прилолжения.
-     * @return {I18n/locales/Interfaces/ILocale}
-     */
     get currentLocaleConfig(): ILocale {
         return this.localesStore.get(this.currentLocale, true) as ILocale || {} as ILocale;
     }
 
-    /**
-     * Включена ли локализация.
-     * @return {Boolean}
-     */
+    getCurrentLocaleConfig(): Promise<ILocale> {
+        return this.isReady().then(() => {
+           return this.currentLocaleConfig;
+        });
+    }
+
     get isEnabled(): boolean {
         return this.availableLocales.length !== 0;
     }
@@ -179,9 +125,8 @@ class Controller implements IController {
 
     /**
      * Устанавливает код локали в куку lang.
-     * @param {String} code Код локали.
-     * @param {Number} [expires=365] Время жизни куки.
-     * @return {Void}
+     * @param code Код локали.
+     * @param expires Время жизни куки.
      */
     setLocale(code: string, expires: number = EXPIRES_COOKIES): void {
         const fullCode = this._normalizeCode(code);
@@ -198,17 +143,12 @@ class Controller implements IController {
 
     /**
      * Проверяет поддерживается ли код локали или языка.
-     * @param {String} code Код локали.
-     * @return {Boolean}
+     * @param code Код локали.
      */
     isSupportedLocale(code: string): boolean {
         return this._isSupportedLocale(this._normalizeCode(code));
     }
 
-    /**
-     * Сигнализирует о готовности контролера.
-     * @return {Promise<Boolean>}
-     */
     isReady(): Promise<boolean> {
         return new Promise((resolve, reject) => {
             const locales = [];
@@ -225,9 +165,8 @@ class Controller implements IController {
 
     /**
      * Возврашает переводчик для контекста.
-     * @param {String} contextName Имя контекста.
-     * @param {Boolean} [sync=false] Получить переводчик синхроно, если это первый запрос за ним, вернёт undefined.
-     * @return {Promise<I18n/_i18n/interfaces/ITranslator> | I18n/_i18n/interfaces/ITranslator}
+     * @param contextName Имя контекста.
+     * @param sync Получить переводчик синхроно, если это первый запрос за ним, вернёт undefined.
      */
     getTranslator(contextName: string, sync: boolean = false): Promise<ITranslator> | ITranslator {
         if (this.hasTranslator(contextName)) {
@@ -269,9 +208,8 @@ class Controller implements IController {
 
     /**
      * Добавляет контекст в хранилище.
-     * @param {String} contextName Имя контекста.
-     * @param {I18n/_i18n/interfaces/IContext} [context] Ресурсы контекста.
-     * @return {Void}
+     * @param contextName Имя контекста.
+     * @param context Ресурсы контекста.
      */
     addContext(contextName: string, context?: IContext): void {
         this.contextStore.set(contextName, context);
@@ -279,10 +217,9 @@ class Controller implements IController {
 
     /**
      * Добавляет локаль в хранилище.
-     * @param {String} localeCode Код локали.
-     * @param {I18n/locales/Interfaces/ILocale} [locale] конфигурация локали.
-     * @param [isAvailable=true] Надо ли добавить локаль в доступные.
-     * @return {Void}
+     * @param localeCode Код локали.
+     * @param locale конфигурация локали.
+     * @param isAvailable Надо ли добавить локаль в доступные.
      */
     addLocale(localeCode: string, locale?: ILocale, isAvailable: boolean = true): void {
         if (isAvailable) {
@@ -403,13 +340,12 @@ class Controller implements IController {
 
     /**
      * Возврашает языки из заголовка accept-language.
-     * @param {IRequest} [request]  Тело https запроса.
+     * @param request Тело https запроса.
      * @example
      * В accept-language лежит en-US,en;q=0.9,ru;q=0.8.
      * <pre>
      *    Controller.getAcceptLanguage() // ['en-US', 'en;q=0.9', 'ru;q=0.8']
      * </pre>
-     * @return {String[]}
      */
     static getAcceptLanguage(request?: IRequest): string[] {
         // tslint:disable-next-line:ban-ts-ignore
@@ -422,14 +358,13 @@ class Controller implements IController {
 
     /**
      * Проверяет явлется ли строка кодом языка.
-     * @param {String} code Проверяемый код.
+     * @param code Проверяемый код.
      * @example
      * <pre>
      *    Controller.isLangCode('en-US') // false
      *    Controller.isLangCode('en') // true
      *    Controller.isLangCode('gg') // true
      * </pre>
-     * @return {Boolean}
      */
     static isLangCode(code: string): boolean {
         return code.length === LENGTH_LANG_CODE;
@@ -437,14 +372,13 @@ class Controller implements IController {
 
     /**
      * Проверяет явлется ли строка кодом локали.
-     * @param {String} code Проверяемый код.
+     * @param code Проверяемый код.
      * @example
      * <pre>
      *    Controller.isLocaleCode('en') // false
      *    Controller.isLocaleCode('en-US') // true
      *    Controller.isLocaleCode('gg-gg') // true
      * </pre>
-     * @return {Boolean}
      */
     static isLocaleCode(code: string): boolean {
         return code.length === LENGTH_LOCALE_CODE;

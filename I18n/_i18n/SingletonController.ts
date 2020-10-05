@@ -2,7 +2,7 @@ import Controller, {IConfigController} from './Controller';
 import Translator from './Translator';
 import {constants, cookie} from 'Env/Env';
 
-import IContents from './interfaces/IContents';
+import IContents from './../interfaces/IContents';
 
 import 'text';
 import 'native-css';
