@@ -4,14 +4,14 @@ import Loader from './Loader';
 import Store from './Store';
 import Translator from './Translator';
 
-import IContext from './../interfaces/IContext';
-import ILoader from './../interfaces/ILoader';
-import IController from './../interfaces/IController';
-import ILocale from '../locales/interfaces/ILocale';
-import ITranslator from './../interfaces/ITranslator';
-import IStore from './../interfaces/IStore';
-import ILoadingsHistory from './../interfaces/ILoadingsHistory';
-import IModule from './../interfaces/IModule';
+import IContext from '../interfaces/IContext';
+import ILoader from '../interfaces/ILoader';
+import IController from '../interfaces/IController';
+import ILocale from '../interfaces/ILocale';
+import ITranslator from '../interfaces/ITranslator';
+import IStore from '../interfaces/IStore';
+import ILoadingsHistory from '../interfaces/ILoadingsHistory';
+import IModule from '../interfaces/IModule';
 
 const LENGTH_LANG_CODE = 2;
 const LENGTH_LOCALE_CODE = 5;

@@ -1,4 +1,4 @@
-import ITranslatableString from './../interfaces/ITranslatableString';
+import ITranslatableString from '../interfaces/ITranslatableString';
 
 /**
  * Класс локализуемой строки.

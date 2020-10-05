@@ -1,4 +1,4 @@
-import ILocale from '../locales/interfaces/ILocale';
+import ILocale from './ILocale';
 import ILoadingsHistory from './ILoadingsHistory';
 
 /**

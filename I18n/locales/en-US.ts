@@ -8,10 +8,10 @@ import NumberAspect from './_aspects/Number/Europe';
 import CalendarEntitiesAspect from './_aspects/CalendarEntities/English';
 import pluralFunction from './_aspects/Plural/English';
 
-import ILocale from './interfaces/ILocale';
-import IDate from './interfaces/IDate';
-import INumber from './interfaces/INumber';
-import ICalendarEntities from './interfaces/ICalendarEntities';
+import ILocale from '../interfaces/ILocale';
+import IDate from '../interfaces/IDate';
+import INumber from '../interfaces/INumber';
+import ICalendarEntities from '../interfaces/ICalendarEntities';
 
 /**
  * Конфигурация для англо-амереканcкой локали.

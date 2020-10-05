@@ -1,4 +1,4 @@
-import ICalendarEntities from '../../interfaces/ICalendarEntities';
+import ICalendarEntities from '../../../interfaces/ICalendarEntities';
 
 /**
  * Описание констан каледнарных значений для русского языка.

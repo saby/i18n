@@ -3,10 +3,10 @@ import NumberAspect from './_aspects/Number/Europe';
 import CalendarEntitiesAspect from './_aspects/CalendarEntities/Russian';
 import pluralFunction from './_aspects/Plural/Russian';
 
-import ILocale from './interfaces/ILocale';
-import IDate from './interfaces/IDate';
-import INumber from './interfaces/INumber';
-import ICalendarEntities from './interfaces/ICalendarEntities';
+import ILocale from '../interfaces/ILocale';
+import IDate from '../interfaces/IDate';
+import INumber from '../interfaces/INumber';
+import ICalendarEntities from '../interfaces/ICalendarEntities';
 
 class EuropeRuDate extends DateAspect {
     shortQuarterFormat: string = 'QQr \'YY';

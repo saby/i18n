@@ -1,4 +1,4 @@
-import INumber from '../../interfaces/INumber';
+import INumber from '../../../interfaces/INumber';
 
 /**
  * Описание числовых констан для европеской системы.

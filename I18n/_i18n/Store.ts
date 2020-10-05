@@ -1,4 +1,4 @@
-import IStore from './../interfaces/IStore';
+import IStore from '../interfaces/IStore';
 
 /**
  * Класс хранилища загружаемых ресурсов.
