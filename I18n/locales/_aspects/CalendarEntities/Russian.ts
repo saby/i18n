@@ -1,9 +1,8 @@
-import ICalendarEntities from '../../Interfaces/ICalendarEntities';
+import ICalendarEntities from '../../../interfaces/ICalendarEntities';
 
 /**
- * Описание конастан каледнарных значений для русского языка.
- * @class I18n/locales/_aspects/CalendarEntities/Russian
- * @implements I18n/locales/Interfaces/ICalendarEntities
+ * Описание констан каледнарных значений для русского языка.
+ * @public
  * @author Кудрявцев И.С.
  */
 export default class Russian implements ICalendarEntities {

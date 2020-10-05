@@ -1,10 +1,7 @@
-import ITranslatableString from './interfaces/ITranslatableString';
+import ITranslatableString from '../interfaces/ITranslatableString';
 
 /**
  * Класс локализуемой строки.
- * @class I18n/_i18n/TranslatableString
- * @extends String
- * @implements I18n/_i18n/interfaces/ITranslatableString
  * @private
  * @author Кудрявцев И.С.
  */

@@ -1,9 +1,8 @@
-import INumber from '../../Interfaces/INumber';
+import INumber from '../../../interfaces/INumber';
 
 /**
- * Описание числовых конастан для американской системы.
- * @class I18n/locales/_aspects/Number/USA
- * @implements I18n/locales/Interfaces/INumber
+ * Описание числовых констан для американской системы.
+ * @public
  * @author Кудрявцев И.С.
  */
 export default class USA implements INumber {
