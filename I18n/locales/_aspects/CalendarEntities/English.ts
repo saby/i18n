@@ -1,4 +1,4 @@
-import ICalendarEntities from '../../Interfaces/ICalendarEntities';
+import ICalendarEntities from '../../interfaces/ICalendarEntities';
 
 const months = [
     'January',

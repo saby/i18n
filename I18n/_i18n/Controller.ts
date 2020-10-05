@@ -43,9 +43,6 @@ class Controller implements IController {
     pluralPrefix: string = 'plural#';
     pluralDelimiter: string = '|';
 
-    /**
-     * Дефолтная локаль приложения.
-     */
     readonly defaultLocale: string = '';
 
     /**
@@ -80,29 +77,10 @@ class Controller implements IController {
         return constants.isServerSide ? this.availableLocales : [this.currentLocale];
     }
 
-    /**
-     * Дефолтный язык приложения.
-     */
     get defaultLang(): string {
         return this.defaultLocale.split('-')[0];
     }
 
-    /**
-     * Код установленной локали приложения.
-     * Если не удалось определить код локали или выключена локализация, вернёт дефолтную локаль.
-     * @example
-     * Приложение отображается в англо-амереканской локале.
-     * <pre>
-     *    controller.currentLocale === 'ru-RU' // false
-     *    controller.currentLocale === 'en-US' // true
-     * </pre>
-     *
-     * @example
-     * Локализация выключена.
-     * <pre>
-     *    controller.currentLocale === 'ru-RU' // true
-     * </pre>
-     */
     get currentLocale(): string {
         if (!this.isEnabled) {
             return this.defaultLocale;
@@ -119,44 +97,24 @@ class Controller implements IController {
         }
     }
 
-    /**
-     * Установленный язык приложения.
-     * Если не удалось определить код языка или выключена локализация, вернёт дефолтный язык.
-     * @example
-     * Приложение отображается в англо-амереканской локале.
-     * <pre>
-     *    controller.currentLang === 'ru' // false
-     *    controller.currentLang === 'en-US' // false
-     *    controller.currentLang === 'en' // true
-     * </pre>
-     *
-     * @example
-     * Локализация выключена.
-     * <pre>
-     *    controller.currentLang === 'ru' // true
-     * </pre>
-     */
     get currentLang(): string {
         return this.currentLocale.split('-')[0];
     }
 
-    /**
-     * История загрузки ресурсов локализации.
-     */
     get loadingsHistory(): ILoadingsHistory {
         return this.loader.history;
     }
 
-    /**
-     * Конфигурация установленной локали прилолжения.
-     */
     get currentLocaleConfig(): ILocale {
         return this.localesStore.get(this.currentLocale, true) as ILocale || {} as ILocale;
     }
 
-    /**
-     * Включена ли локализация.
-     */
+    getCurrentLocaleConfig(): Promise<ILocale> {
+        return this.isReady().then(() => {
+           return this.currentLocaleConfig;
+        });
+    }
+
     get isEnabled(): boolean {
         return this.availableLocales.length !== 0;
     }
@@ -191,9 +149,6 @@ class Controller implements IController {
         return this._isSupportedLocale(this._normalizeCode(code));
     }
 
-    /**
-     * Сигнализирует о готовности контролера.
-     */
     isReady(): Promise<boolean> {
         return new Promise((resolve, reject) => {
             const locales = [];
