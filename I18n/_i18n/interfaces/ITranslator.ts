@@ -3,7 +3,6 @@ import IContext from './IContext';
 
 /**
  * Интерфейс класса переводчика.
- * @interface I18n/_i18n/interfaces/ITranslator
  * @public
  * @author Кудрявцев И.С.
  */

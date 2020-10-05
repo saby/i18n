@@ -1,6 +1,5 @@
 /**
  * Интерфейс конфигурации для локализация дат.
- * @interface I18n/locales/Interfaces/IDate
  * @public
  * @author Кудрявцев И.С.
  */

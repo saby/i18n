@@ -3,9 +3,7 @@ import Base from './Base';
 
 /**
  * Описание форматов отоброжения дат в европейской системе.
- * @class I18n/locales/_aspects/Date/Europe
- * @extends I18n/locales/_aspects/Date/Base
- * @implements I18n/locales/Interfaces/IDate
+ * @public
  * @author Кудрявцев И.С.
  */
 export default class Europe extends Base implements IDate {

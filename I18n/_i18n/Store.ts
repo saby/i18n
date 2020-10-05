@@ -2,8 +2,6 @@ import IStore from './interfaces/IStore';
 
 /**
  * Класс хранилища загружаемых ресурсов.
- * @class I18n/_i18n/Store
- * @implements I18n/_i18n/interfaces/IStore
  * @private
  * @author Кудрявцев И.С.
  */

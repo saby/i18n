@@ -15,12 +15,10 @@ import ICalendarEntities from './Interfaces/ICalendarEntities';
 
 /**
  * Конфигурация для англо-амереканcкой локали.
- * @class I18n/locales/en-US
- * @implements I18n/locales/Interfaces/ILocale
  * @public
  * @author Кудрявцев И.С.
  */
-class ENUS implements ILocale {
+class EnUs implements ILocale {
     code: string = 'en-US';
     date: IDate = new DateAspect();
     number: INumber = new NumberAspect();
@@ -28,4 +26,4 @@ class ENUS implements ILocale {
     plural: (pluralNumber: number, ...words: string[]) => string = pluralFunction;
 }
 
-export default new ENUS();
+export default new EnUs();

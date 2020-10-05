@@ -13,8 +13,6 @@ interface IRequiredResources {
 
 /**
  * Загрузчик ресурсов локализации.
- * @class I18n/_i18n/Loader
- * @implements I18n/_i18n/interfaces/ILoader
  * @public
  * @author Кудрявцев И.С.
  */
@@ -32,9 +30,8 @@ class Loader implements ILoader {
    constructor(private availableContexts: {[contextName: string]: IModule}) {}
 
    /**
-    * Стандартный загрузчик requirejs.
-    * @param {String} url - имя загружаемого ресурса.
-    * @return {Promise<unknown>}
+    * Стандартный загрузчик, requirejs.
+    * @param url Имя загружаемого ресурса.
     */
    load(url: string): Promise<unknown> {
       return import(url);
@@ -42,9 +39,8 @@ class Loader implements ILoader {
 
    /**
     * Загружает конфигураци для локали.
-    * @param {String} localeCode - код локали для которой надо загрузить конфигурацию.
-    * @param {Function} [load] - функция загрузчик.
-    * @return {Promise<I18n/locales/Interfaces/ILocale>}
+    * @param localeCode Код локали для которой надо загрузить конфигурацию.
+    * @param load Функция загрузчик.
     */
    locale(localeCode: string, load: Function = this.load): Promise<ILocale> {
       return new Promise<ILocale>((resolve, reject) => {
@@ -60,9 +56,8 @@ class Loader implements ILoader {
 
    /**
     * Загружает необходимые ресурсы для интерфейсного модуля.
-    * @param {String} contextName - имя интрефесного модуля.
-    * @param {String[]} requiredLocale - список локалей, для которых надо загрузить ресурсы.
-    * @return {Promise<I18n/_i18n/interfaces/IContext>}
+    * @param contextName Имя интрефесного модуля.
+    * @param requiredLocale Список локалей, для которых надо загрузить ресурсы.
     */
    context(contextName: string, requiredLocale: string[]): Promise<IContext> {
       return new Promise((resolve, reject) => {
@@ -101,10 +96,9 @@ class Loader implements ILoader {
 
    /**
     * Загружает словарь интерфейсного модуля.
-    * @param {String} contextName - имя интрефесного модуля.
-    * @param {String} localeCode - локалm, для которых надо загрузить ресурс.
-    * @param {Function} [load] - функция загрузчик.
-    * @return {Promise<[string, I18n/_i18n/interfaces/IDictionary]>}
+    * @param contextName Имя интрефесного модуля.
+    * @param localeCode Локаль, для которых надо загрузить ресурс.
+    * @param load Функция загрузчик.
     */
    dictionary(contextName: string, localeCode: string, load: Function = this.load): Promise<[string, IDictionary]> {
       const langCode = localeCode.split('-')[0];
@@ -119,10 +113,9 @@ class Loader implements ILoader {
 
    /**
     * Загружает локализуемые стили интерфейсного модуля.
-    * @param {String} contextName - имя интрефесного модуля.
-    * @param {String} localeCode - локаль, для которых надо загрузить ресурс.
-    * @param {Function} [load] - функция загрузчик.
-    * @return {Promise<void>}
+    * @param contextName Имя интрефесного модуля.
+    * @param localeCode Локаль, для которых надо загрузить ресурс.
+    * @param load Функция загрузчик.
     */
    style(contextName: string, localeCode: string, load: Function = this.load): Promise<void> {
       const langCode = localeCode.split('-')[0];
@@ -136,9 +129,8 @@ class Loader implements ILoader {
 
    /**
     * Загружает информацию о доступных ресурсах для интерфейсного модуля.
-    * @param {String} contextName - имя интрефесного модуля.
-    * @param {Function} [load] - функция загрузчик.
-    * @return {Promise<I18n/_i18n/interfaces/IContents>}
+    * @param contextName Имя интрефесного модуля.
+    * @param load Функция загрузчик.
     */
    contents(contextName: string, load: Function = this.load): Promise<IContents> {
       return new Promise((resolve, reject) => {

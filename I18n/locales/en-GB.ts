@@ -10,12 +10,10 @@ import ICalendarEntities from './Interfaces/ICalendarEntities';
 
 /**
  * Конфигурация для англо-британской локали.
- * @class I18n/locales/en-GB
- * @implements I18n/locales/Interfaces/ILocale
  * @public
  * @author Кудрявцев И.С.
  */
-class ENGB implements ILocale {
+class EnGb implements ILocale {
     code: string = 'en-GB';
     date: IDate = new DateAspect();
     number: INumber = new NumberAspect();
@@ -23,4 +21,4 @@ class ENGB implements ILocale {
     plural: (pluralNumber: number, ...words: string[]) => string = pluralFunction;
 }
 
-export default new ENGB();
+export default new EnGb();

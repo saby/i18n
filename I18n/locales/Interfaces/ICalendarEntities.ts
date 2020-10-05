@@ -1,6 +1,5 @@
 /**
  * Интерфейс конфигурации для локализация календарнной обозначений(Дни недели, месяц, квартал).
- * @interface I18n/locales/Interfaces/ICalendarEntities
  * @public
  * @author Кудрявцев И.С.
  */

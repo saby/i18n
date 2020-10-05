@@ -2,7 +2,6 @@ import ILocale from '../../locales/Interfaces/ILocale';
 
 /**
  * Интерфейс класса для взаимодействия с механизмом локализации.
- * @interface I18n/_i18n/interfaces/IController
  * @public
  * @author Кудрявцев И.С.
  */

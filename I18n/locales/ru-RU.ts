@@ -23,12 +23,10 @@ class EuropeRuDate extends DateAspect {
 
 /**
  * Конфигурация для русской локали.
- * @class I18n/locales/ru-RU
- * @implements I18n/locales/Interfaces/ILocale
  * @public
  * @author Кудрявцев И.С.
  */
-class RURU implements ILocale {
+class RuRu implements ILocale {
     code: string = 'ru-RU';
     date: IDate = new EuropeRuDate();
     number: INumber = new NumberAspect();
@@ -36,4 +34,4 @@ class RURU implements ILocale {
     plural: (pluralNumber: number, ...words: string[]) => string = pluralFunction;
 }
 
-export default new RURU();
+export default new RuRu();

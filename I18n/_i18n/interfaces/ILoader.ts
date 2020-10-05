@@ -4,7 +4,6 @@ import ILoadingsHistory from './ILoadingsHistory';
 
 /**
  * Интерфейс класса загрузчика для ресурсов локализации.
- * @interface I18n/_i18n/interfaces/ILoader
  * @public
  * @author Кудрявцев И.С.
  */
