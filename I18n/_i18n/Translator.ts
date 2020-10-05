@@ -1,10 +1,10 @@
 import {constants} from 'Env/Env';
 import TranslatableString from './TranslatableString';
-import ITranslator from './interfaces/ITranslator';
-import IController from './interfaces/IController';
-import ILocale from '../locales/Interfaces/ILocale';
-import IContext from './interfaces/IContext';
-import ITranslatableString from './interfaces/ITranslatableString';
+import ITranslator from './../interfaces/ITranslator';
+import IController from './../interfaces/IController';
+import ILocale from '../locales/interfaces/ILocale';
+import IContext from './../interfaces/IContext';
+import ITranslatableString from './../interfaces/ITranslatableString';
 
 /**
  * Класс переводчика. Содержит API для локализации строковых значений.

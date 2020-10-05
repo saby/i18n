@@ -1,10 +1,10 @@
-import ILocale from '../locales/Interfaces/ILocale';
-import ILoader from './interfaces/ILoader';
-import IContext from './interfaces/IContext';
-import ILoadingsHistory from './interfaces/ILoadingsHistory';
-import IDictionary from './interfaces/IDictionary';
-import IModule from './interfaces/IModule';
-import IContents from './interfaces/IContents';
+import ILocale from '../locales/interfaces/ILocale';
+import ILoader from './../interfaces/ILoader';
+import IContext from './../interfaces/IContext';
+import ILoadingsHistory from './../interfaces/ILoadingsHistory';
+import IDictionary from './../interfaces/IDictionary';
+import IModule from './../interfaces/IModule';
+import IContents from './../interfaces/IContents';
 
 interface IRequiredResources {
    dictionary: string[];
