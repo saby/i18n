@@ -16,12 +16,6 @@ import ITranslatableString from '../interfaces/ITranslatableString';
 class Translator implements ITranslator {
     constructor(private dictionaries: IContext, private controller: IController) {}
 
-    /**
-     * Функция перевода строкового значения в локализванный вариант.
-     * @param key Значение которое надо локолизовать.
-     * @param context Контекст перевода или число для плюральной формы.
-     * @param pluralNumber Число для плюральной формы.
-     */
     translate(key: string, context?: string | number, pluralNumber?: number): string | ITranslatableString | String {
         if (typeof key === 'string') {
             let contextValue = context;
@@ -49,10 +43,6 @@ class Translator implements ITranslator {
         return key;
     }
 
-    /**
-     * Выставляет словари для переводчика.
-     * @param dictionaries Объект со словарями.
-     */
     setDictionaries(dictionaries: IContext): void {
         this.dictionaries = dictionaries;
     }

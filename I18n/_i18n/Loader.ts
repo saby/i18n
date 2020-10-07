@@ -17,10 +17,6 @@ interface IRequiredResources {
  * @author Кудрявцев И.С.
  */
 class Loader implements ILoader {
-
-   /**
-    * Объект c именами загруженных ресурсов.
-    */
    history: ILoadingsHistory = {
       contexts: {},
       locales: {},
@@ -37,11 +33,6 @@ class Loader implements ILoader {
       return import(url);
    }
 
-   /**
-    * Загружает конфигураци для локали.
-    * @param localeCode Код локали для которой надо загрузить конфигурацию.
-    * @param load Функция загрузчик.
-    */
    locale(localeCode: string, load: Function = this.load): Promise<ILocale> {
       return new Promise<ILocale>((resolve, reject) => {
          const url = `I18n/locales/${localeCode}`;
@@ -54,11 +45,6 @@ class Loader implements ILoader {
       });
    }
 
-   /**
-    * Загружает необходимые ресурсы для интерфейсного модуля.
-    * @param contextName Имя интрефесного модуля.
-    * @param requiredLocale Список локалей, для которых надо загрузить ресурсы.
-    */
    context(contextName: string, requiredLocale: string[]): Promise<IContext> {
       return new Promise((resolve, reject) => {
          if (this.availableContexts.hasOwnProperty(contextName)) {
