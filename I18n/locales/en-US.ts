@@ -14,7 +14,7 @@ import INumber from '../interfaces/INumber';
 import ICalendarEntities from '../interfaces/ICalendarEntities';
 
 /**
- * Конфигурация для англо-амереканcкой локали.
+ * Конфигурация для англо-американcкой локали.
  * @public
  * @author Кудрявцев И.С.
  */
