@@ -20,7 +20,7 @@ class Loader implements ILoader {
    history: ILoadingsHistory = {
       contexts: {},
       locales: {},
-      contents: []
+      contents: {}
    };
 
    constructor(private availableContexts: {[contextName: string]: IModule}) {}
@@ -35,11 +35,9 @@ class Loader implements ILoader {
 
    locale(localeCode: string, load: Function = this.load): Promise<ILocale> {
       return new Promise<ILocale>((resolve, reject) => {
-         const url = `I18n/locales/${localeCode}`;
+         this.history.locales[localeCode] = `I18n/locales/${localeCode}`;
 
-         this.history.locales[localeCode] = url;
-
-         load(url).then((locale) => {
+         load(this.history.locales[localeCode]).then((locale) => {
             resolve(locale.default);
          }).catch(reject);
       });
@@ -120,11 +118,9 @@ class Loader implements ILoader {
     */
    contents(contextName: string, load: Function = this.load): Promise<IContents> {
       return new Promise((resolve, reject) => {
-         const url = `json!${contextName}/contents.json`;
+         this.history.contents[contextName] = `${contextName}/contents.json`;
 
-         this.history.contents.push(url);
-
-         load(url).then((contents) => {
+         load(this.history.contents[contextName]).then((contents) => {
             resolve(contents);
          }, (err) => {
             reject(err);

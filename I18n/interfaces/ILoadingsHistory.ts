@@ -13,5 +13,5 @@ export default interface ILoadingsHistory {
         }
     };
     locales: {[localeCode: string]: string};
-    contents: string[];
+    contents: {[moduleName: string]: string};
 }
