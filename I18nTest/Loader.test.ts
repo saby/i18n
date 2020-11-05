@@ -42,7 +42,7 @@ describe('Loader', () => {
                 return Promise.resolve({});
             });
 
-            assert.isTrue(loader.history.contents.includes('json!contentsHistory/contents.json'));
+            assert.strictEqual(loader.history.contents.contentsHistory, 'contentsHistory/contents.json');
         });
 
         it('should add locale in history', () => {
@@ -181,7 +181,7 @@ describe('Loader', () => {
     describe('contents', () => {
         it('should return loaded contents', () => {
             const fakeLoader = (url) => new Promise((resolve) => {
-                assert.strictEqual(url, 'json!externalContext/contents.json');
+                assert.strictEqual(url, 'externalContext/contents.json');
                 resolve(externalContents);
             });
 
