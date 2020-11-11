@@ -109,10 +109,11 @@ function getConfig(): IConfigController {
         return this || (0, eval)('this');
     })();
 
-    const defaultLocale = global.contents.defaultLanguage || 'ru-RU';
+    let defaultLocale = 'ru-RU';
 
     if (global.contents) {
         const availableLanguage = global.contents.availableLanguage;
+        defaultLocale = global.contents.defaultLanguage || defaultLocale;
 
         if (constants.isBrowserPlatform) {
             setLocalizationBL(availableLanguage, defaultLocale);
