@@ -19,6 +19,7 @@ const alias = {
     Transport: 'WS.Core'
 };
 const EXPIRES_IGNORE_LANG_BL = 365;
+const MINIMALLY_COUNT_AVAILABLE_LANGUAGES = 2;
 
 const configController = getConfig();
 
@@ -108,45 +109,50 @@ function getConfig(): IConfigController {
         return this || (0, eval)('this');
     })();
 
-    const config = {
-        defaultLocale: 'ru-RU'
-    };
+    let defaultLocale = 'ru-RU';
 
     if (global.contents) {
         const availableLanguage = global.contents.availableLanguage;
+        defaultLocale = global.contents.defaultLanguage || defaultLocale;
 
         if (constants.isBrowserPlatform) {
-            setLocalizationBL(availableLanguage);
+            setLocalizationBL(availableLanguage, defaultLocale);
         }
 
         return {
             availableLocales: availableLanguage && prepareAvailableLanguage(availableLanguage),
-            defaultLocale: global.contents.defaultLanguage || config.defaultLocale,
+            defaultLocale,
             availableContexts: global.contents.modules
         };
     }
 
-    return config;
+    return {
+        defaultLocale
+    };
 }
 
 /* Диспетчер выставляет единую куки lang по всем приложениям персоны, но есть приложения,
 которые могут не поддерживать выбранный язык, ui-локализация имеет информацию о доступных языках для приложения,
 но в BL-локализации такой инормации нет и она переводит ключи согласно переданной куке lang,
-в результате компоненты, которые имеют поддержку локали установленой в куке lang, вернутся переведёнными,
+в результате компоненты, которые имеют поддержку локали из в куке lang, вернутся переведёнными,
 в итоге получаем частично лоаклизованный интерфейс.
 Пример: reg.tensor и online имеют общие компоненты, но reg не поддерживает английский язык,
 а персона у приложений общая, в результате данные с бл для общих компонентов приходят в английской локале.
-Поэтому выставляем куку, которая скажет BL-локализации, что надо игнорировать локаль из куки и брать дефолтную.  */
-function setLocalizationBL(availableLanguage: object = {}): void {
-    if (!availableLanguage.hasOwnProperty(cookie.get('lang'))) {
-        cookie.set('bl_lang_ignore', 1, {
+Поэтому выставляем куку, чтобы диспетчер не перебивал lang и выставляем в неё дефолтную локаль. */
+function setLocalizationBL(availableLanguage: object = {}, defaultLocale: string): void {
+    if (Object.keys(availableLanguage).length < MINIMALLY_COUNT_AVAILABLE_LANGUAGES) {
+        cookie.set('lang_ignore', 'bl', {
             expires: EXPIRES_IGNORE_LANG_BL,
             path: '/'
         });
-    } else if (cookie.get('bl_lang_ignore')) {
+        cookie.set('lang', defaultLocale, {
+            expires: EXPIRES_IGNORE_LANG_BL,
+            path: '/'
+        });
+    } else if (cookie.get('lang_ignore') === 'bl') {
 
         // Если для приложения есть поддержка указаного языка, то надо убрать куку для bl.
-        cookie.set('bl_lang_ignore', null,  { path: '/' });
+        cookie.set('lang_ignore', null,  { path: '/' });
     }
 }
 
