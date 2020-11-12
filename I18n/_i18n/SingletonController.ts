@@ -112,15 +112,15 @@ function getConfig(): IConfigController {
     let defaultLocale = 'ru-RU';
 
     if (global.contents) {
-        const availableLanguage = global.contents.availableLanguage;
+        const availableLocales = prepareAvailableLanguage(global.contents.availableLanguage);
         defaultLocale = global.contents.defaultLanguage || defaultLocale;
 
         if (constants.isBrowserPlatform) {
-            setLocalizationBL(availableLanguage, defaultLocale);
+            setLocalizationBL(availableLocales, defaultLocale);
         }
 
         return {
-            availableLocales: availableLanguage && prepareAvailableLanguage(availableLanguage),
+            availableLocales,
             defaultLocale,
             availableContexts: global.contents.modules
         };
@@ -139,8 +139,8 @@ function getConfig(): IConfigController {
 Пример: reg.tensor и online имеют общие компоненты, но reg не поддерживает английский язык,
 а персона у приложений общая, в результате данные с бл для общих компонентов приходят в английской локале.
 Поэтому выставляем куку, чтобы диспетчер не перебивал lang и выставляем в неё дефолтную локаль. */
-function setLocalizationBL(availableLanguage: object = {}, defaultLocale: string): void {
-    if (Object.keys(availableLanguage).length < MINIMALLY_COUNT_AVAILABLE_LANGUAGES) {
+function setLocalizationBL(availableLocales: string[] = [], defaultLocale: string): void {
+    if (availableLocales.length < MINIMALLY_COUNT_AVAILABLE_LANGUAGES) {
         cookie.set('lang_ignore', 'bl', {
             expires: EXPIRES_IGNORE_LANG_BL,
             path: '/'
@@ -156,7 +156,7 @@ function setLocalizationBL(availableLanguage: object = {}, defaultLocale: string
     }
 }
 
-function prepareAvailableLanguage(availableLanguage: object): string[] {
+function prepareAvailableLanguage(availableLanguage: object = {}): string[] {
     const result = [];
 
     for (const locale of Object.keys(availableLanguage)) {
