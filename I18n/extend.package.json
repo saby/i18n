@@ -1,6 +1,0 @@
-{
-  "include": [
-    "I18n/i18n"
-  ],
-  "extendsTo": "online-superbundle.package.js"
-}
