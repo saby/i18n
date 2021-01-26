@@ -5,6 +5,5 @@ def version = '20.7200'
 node ('controls') {
     checkout_pipeline("rc-${version}")
     run_branch = load '/home/sbis/jenkins_pipeline/platforma/branch/run_branch'
-    return
     run_branch.execute('i18n', version)
 }
