@@ -158,7 +158,7 @@ class Controller implements IController {
             }
 
             Promise.all(locales).then(() => {
-                resolve();
+                resolve(true);
             }).catch(reject);
         });
     }
