@@ -1,5 +1,5 @@
 import DateAspect from './_aspects/Date/Europe';
-import NumberAspect from './_aspects/Number/Europe';
+import NumberAspect from './_aspects/Number/SABY';
 import CalendarEntitiesAspect from './_aspects/CalendarEntities/English';
 import pluralFunction from './_aspects/Plural/English';
 
