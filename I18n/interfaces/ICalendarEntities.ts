@@ -84,4 +84,24 @@ export default interface ICalendarEntities {
     * Полные название кварталов.
     */
    longQuarters: string[];
+
+   /**
+    * Название для сегоднящнего дня.
+    */
+   today: string;
+
+   /**
+    * Название всего периода.
+    */
+   allPeriod: string;
+
+   /**
+    * Период неопределённым концом.
+    */
+   openFinishPeriod: string;
+
+   /**
+    * Период неопределённым началом.
+    */
+   openStartPeriod: string;
 }
