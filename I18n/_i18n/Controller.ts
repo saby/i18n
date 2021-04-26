@@ -222,12 +222,14 @@ class Controller implements IController {
      * @param isAvailable Надо ли добавить локаль в доступные.
      */
     addLocale(localeCode: string, locale?: ILocale, isAvailable: boolean = true): void {
-        if (isAvailable) {
-            this.availableLocales.push(localeCode);
-            this.buildMapOfDefaultLocales();
-        }
+        if (!this.availableLocales.includes(localeCode)) {
+            if (isAvailable) {
+                this.availableLocales.push(localeCode);
+                this.buildMapOfDefaultLocales();
+            }
 
-        this.localesStore.set(localeCode, locale);
+            this.localesStore.set(localeCode, locale);
+        }
     }
 
     private readConfig(config: IConfigController): void {

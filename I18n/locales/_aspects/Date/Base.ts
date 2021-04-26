@@ -3,11 +3,11 @@
  * @author Кудрявцев И.С.
  */
 export default class Base {
-    fullHalfYearFormat: string = 'YYYYhr \'YY';
-    fullQuarterFormat: string = 'QQQQr \'YY';
+    fullHalfYearFormat: string = 'YYYYhr\'YY';
+    fullQuarterFormat: string = 'QQQQr\'YY';
     fullTimeFormat: string = 'HH:mm:ss';
-    shortHalfYearFormat: string = 'YYhr \'YY';
-    shortQuarterFormat: string = 'QQQr \'YY';
+    shortHalfYearFormat: string = 'YYhr\'YY';
+    shortQuarterFormat: string = 'QQQr\'YY';
     shortTimeFormat: string = 'HH:mm';
     shortMonthFormat: string = 'MMM\'YY';
     shortDateFullMonthFormat: string = 'DD MMMM';
