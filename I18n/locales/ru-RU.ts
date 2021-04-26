@@ -9,7 +9,7 @@ import INumber from '../interfaces/INumber';
 import ICalendarEntities from '../interfaces/ICalendarEntities';
 
 class EuropeRuDate extends DateAspect {
-    shortQuarterFormat: string = 'QQr \'YY';
+    shortQuarterFormat: string = 'QQr\'YY';
     fullDateDayOfWeekFormat: string = 'DD MMMMlo\'YY, ddddl';
     shortDateDayOfWeekFormat: string = 'DD MMMMlo, ddddl';
     fullDateFullMonthFormat: string = 'DD MMMMlo\'YY';
