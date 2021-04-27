@@ -10,6 +10,6 @@ export default class Base {
     shortQuarterFormat: string = 'QQQr\'YY';
     shortTimeFormat: string = 'HH:mm';
     shortMonthFormat: string = 'MMM\'YY';
-    shortDateFullMonthFormat: string = 'DD MMMM';
-    shortDateShortMonthFormat: string = 'DD MMM';
+    shortDateFullMonthFormat: string = 'D MMMM';
+    shortDateShortMonthFormat: string = 'D MMM';
 }
