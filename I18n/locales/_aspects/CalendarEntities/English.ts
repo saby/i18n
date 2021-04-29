@@ -37,8 +37,8 @@ export default class English implements ICalendarEntities {
     longQuarter: string  = '$digit$s$ quarter';
     quarters: string[] = ['I', 'II', 'III', 'IV'];
     longQuarters: string[] = ['I quarter', 'II quarter', 'III quarter', 'IV quarter'];
-    today: 'Today';
-    allPeriod: 'Whole period';
+    today: string = 'Today';
+    allPeriod: string = 'Whole period';
     openFinishPeriod: string  = 'from $digit$s$';
     openStartPeriod: string  = 'to $digit$s$';
 }

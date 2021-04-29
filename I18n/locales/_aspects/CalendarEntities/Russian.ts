@@ -61,8 +61,8 @@ export default class Russian implements ICalendarEntities {
     longQuarter: string  = '$digit$s$ квартал';
     quarters: string[] = ['I', 'II', 'III', 'IV'];
     longQuarters: string[] = ['I квартал', 'II квартал', 'III квартал', 'IV квартал'];
-    today: 'Сегодня';
-    allPeriod: 'Весь период';
+    today: string = 'Сегодня';
+    allPeriod: string = 'Весь период';
     openFinishPeriod: string  = 'с $digit$s$';
     openStartPeriod: string  = 'по $digit$s$';
 }

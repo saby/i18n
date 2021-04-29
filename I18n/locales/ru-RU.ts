@@ -9,16 +9,16 @@ import INumber from '../interfaces/INumber';
 import ICalendarEntities from '../interfaces/ICalendarEntities';
 
 class EuropeRuDate extends DateAspect {
-    shortQuarterFormat: string = 'QQr \'YY';
-    fullDateDayOfWeekFormat: string = 'DD MMMMlo\'YY, ddddl';
-    shortDateDayOfWeekFormat: string = 'DD MMMMlo, ddddl';
-    fullDateFullMonthFormat: string = 'DD MMMMlo\'YY';
-    fullDateFullMonthFullYearFormat: string = 'DD MMMMlo YYYY';
-    fullDateShortMonthFormat: string = 'DD MMMl\'YY';
-    fullDateShortMonthFullYearFormat: string = 'DD MMMl YYYY';
+    shortQuarterFormat: string = 'QQr\'YY';
+    fullDateDayOfWeekFormat: string = 'D MMMMlo\'YY, ddddl';
+    shortDateDayOfWeekFormat: string = 'D MMMMlo, ddddl';
+    fullDateFullMonthFormat: string = 'D MMMMlo\'YY';
+    fullDateFullMonthFullYearFormat: string = 'D MMMMlo YYYY';
+    fullDateShortMonthFormat: string = 'D MMMl\'YY';
+    fullDateShortMonthFullYearFormat: string = 'D MMMl YYYY';
     fullMonthFormat: string = 'MMMM\'YY';
-    shortDateFullMonthFormat: string = 'DD MMMMlo';
-    shortDateShortMonthFormat: string = 'DD MMMl';
+    shortDateFullMonthFormat: string = 'D MMMMlo';
+    shortDateShortMonthFormat: string = 'D MMMl';
 }
 
 /**
