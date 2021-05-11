@@ -14,11 +14,11 @@ class EuropeRuDate extends DateAspect {
     shortDateDayOfWeekFormat: string = 'D MMMMlo, ddddl';
     fullDateFullMonthFormat: string = 'D MMMMlo\'YY';
     fullDateFullMonthFullYearFormat: string = 'D MMMMlo YYYY';
-    fullDateShortMonthFormat: string = 'D MMMl\'YY';
-    fullDateShortMonthFullYearFormat: string = 'D MMMl YYYY';
+    fullDateShortMonthFormat: string = 'D MMMlo\'YY';
+    fullDateShortMonthFullYearFormat: string = 'D MMMlo YYYY';
     fullMonthFormat: string = 'MMMM\'YY';
     shortDateFullMonthFormat: string = 'D MMMMlo';
-    shortDateShortMonthFormat: string = 'D MMMl';
+    shortDateShortMonthFormat: string = 'D MMMlo';
 }
 
 /**
