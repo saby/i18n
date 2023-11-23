@@ -1,0 +1,36 @@
+{
+   "name": "saby-i18n",
+   "version": "23.7000.0",
+   "repository": {
+      "type": "git",
+      "url": "git@git.sbis.ru:saby/i18n.git"
+   },
+   "files": [
+      "I18n/*"
+   ],
+   "scripts": {
+      "prepare": "npm run build:init && npm run build:typescript && wasaby-cli initGitHooks",
+      "build:init": "wasaby-cli loadProject --dependentModules",
+      "build:typescript": "wasaby-cli initTSEnv",
+      "build:app": "wasaby-cli buildProject --watcher --dependentModules",
+      "test": "wasaby-cli runUnitTests --NodeJS --modules=Controls --testPathPattern=ControlsUnit/Date/MonthList.test.js --report=console",
+      "test:coverage": "wasaby-cli runUnitTests --NodeJS --coverage",
+      "lint": "eslint .",
+      "lint:fix": "eslint . --fix",
+      "lint:css": "stylelint \"**/*.{css,less}\"",
+      "lint:css:fix": "stylelint \"**/*.{css,less}\" --fix",
+      "prettier": "prettier --write ."
+   },
+   "wasaby-cli": {
+      "umd": true,
+      "copy": true,
+      "preCommitHooks": [
+         "Prettier",
+         "ESLint",
+         "Stylelint"
+      ]
+   },
+   "devDependencies": {
+      "wasaby-cli": "git+https://git.sbis.ru/saby/wasaby-cli.git#rc-23.7000"
+   }
+}
