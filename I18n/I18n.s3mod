@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ui_module id="832cda0a-e19c-4ffc-a1d1-47edbb6b7501" name="I18n" package="Internationalization" responsible="Кудрявцев И.С." responsible_uuid="836e31cb-65f0-4d1e-afc5-59bf776ef48b" kaizen_zone="e920bcd0-cece-44b6-b24d-ee6191ce6063" required="1" version="1.00">
+
+  <description>Подсистема, осуществляющая перевод пользовательского интерфейса, документов и сопутствующих файлов программного обеспечения с одного языка на другие.</description>
+
+  <depends>
+    <module id="636177e5-4d75-44fa-9173-977dc90ff111" name="Env"/>
+    <module id="323fd54f-1fab-42a6-8aea-6726d6392d53" name="Application"/>
+    <module id="7e8aabad-d60f-4c48-aa74-f29d78fd8be2" name="RequireJsLoader"/>
+    <module id="42b71438-721f-4b7c-8dfa-443444d7a0e7" name="LocalizationConfigs"/>
+  </depends>
+
+  <load_after/>
+
+  <parameters/>
+
+  <resources/>
+
+  <preload/>
+
+  <typescript>
+    <arg key="typecheck" value="0"/>
+  </typescript>
+</ui_module>
