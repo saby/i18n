@@ -1,0 +1,4 @@
+include:
+    - project: 'on.elifantev/review-system'
+      ref: master
+      file: '/infra/pipeline.yml'
